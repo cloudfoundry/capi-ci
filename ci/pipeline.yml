@@ -865,6 +865,7 @@ jobs:
       - capi-ci/cf-deployment-operations/temporary/disable-uaa-get-requests.yml
       # Use bits service
       - cf-deployment/operations/experimental/bits-service.yml
+      - cf-deployment/operations/experimental/enable-bits-service-https.yml
       - cf-deployment/operations/experimental/enable-bits-service-consul.yml
       - cf-deployment/operations/experimental/bits-service-webdav.yml
   - task: download-vars-store
