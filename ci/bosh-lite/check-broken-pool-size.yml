@@ -13,3 +13,6 @@ inputs:
 
 run:
   path: capi-ci/ci/bosh-lite/check-broken-pool-size.sh
+
+params:
+  POOL_NAME: ""
