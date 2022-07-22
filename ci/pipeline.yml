@@ -1091,6 +1091,11 @@ jobs:
       BBL_STATE_DIR: "mulan"
       SYSTEM_DOMAIN: *mulan-domain
       ENABLED_FEATURE_FLAGS: "diego_docker"
+  - task: cleanup-acceptance-test-leftovers
+    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
+    params:
+      CF_API_TARGET: &mulan-api-url https://api.mulan.capi.land
+      BBL_STATE_DIR: mulan
   - in_parallel:
     - task: acceptance-tests
       file: cf-deployment-concourse-tasks/run-cats/task.yml
@@ -1115,7 +1120,7 @@ jobs:
       params:
         BOSH_DEPLOYMENT_NAME: cf
         BOSH_API_INSTANCE: api/0
-        CF_API_TARGET: &mulan-api-url https://api.mulan.capi.land
+        CF_API_TARGET: *mulan-api-url
         CF_SKIP_SSL_VALIDATION: true
         CF_APPS_DOMAIN: *mulan-domain
         BBL_STATE_DIR: mulan
@@ -1124,11 +1129,6 @@ jobs:
   - task: run-blobstore-benchmarks
     file: capi-ci/ci/benchmarks/run-blobstore-benchmarks.yml
     params:
-      BBL_STATE_DIR: mulan
-  - task: cleanup-acceptance-test-leftovers
-    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
-    params:
-      CF_API_TARGET: *mulan-api-url
       BBL_STATE_DIR: mulan
 
 - name: ripley-nfs
@@ -1230,6 +1230,11 @@ jobs:
       SYSTEM_DOMAIN: *ripley-domain
       ENABLED_FEATURE_FLAGS: "diego_docker"
       BBL_STATE_DIR: "ripley"
+  - task: cleanup-acceptance-test-leftovers
+    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
+    params:
+      CF_API_TARGET: &ripley-api-url https://api.ripley.capi.land
+      BBL_STATE_DIR: ripley
   - in_parallel:
     - task: acceptance-tests
       file: cf-deployment-concourse-tasks/run-cats/task.yml
@@ -1246,7 +1251,7 @@ jobs:
       params:
         BOSH_DEPLOYMENT_NAME: cf
         BOSH_API_INSTANCE: api/0
-        CF_API_TARGET: &ripley-api-url https://api.ripley.capi.land
+        CF_API_TARGET: *ripley-api-url
         CF_SKIP_SSL_VALIDATION: true
         CF_APPS_DOMAIN: *ripley-domain
         BBL_STATE_DIR: ripley
@@ -1255,11 +1260,6 @@ jobs:
   - task: run-blobstore-benchmarks
     file: capi-ci/ci/benchmarks/run-blobstore-benchmarks.yml
     params:
-      BBL_STATE_DIR: ripley
-  - task: cleanup-acceptance-test-leftovers
-    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
-    params:
-      CF_API_TARGET: *ripley-api-url
       BBL_STATE_DIR: ripley
 
 - name: rotate-certs-ripley
@@ -1327,12 +1327,6 @@ jobs:
 - name: elsa-HA
   serial: true
   serial_groups: [elsa]
-  ensure:
-    task: cleanup-acceptance-test-leftovers
-    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
-    params:
-      CF_API_TARGET: &elsa-api-url https://api.elsa.capi.land
-      BBL_STATE_DIR: elsa
   plan:
   - in_parallel:
     - get: cloud_controller_ng
@@ -1469,6 +1463,11 @@ jobs:
       SYSTEM_DOMAIN: *elsa-domain
       BBL_STATE_DIR: elsa
       ENABLED_FEATURE_FLAGS: "diego_docker"
+  - task: cleanup-acceptance-test-leftovers
+    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
+    params:
+      CF_API_TARGET: &elsa-api-url https://api.elsa.capi.land
+      BBL_STATE_DIR: elsa
   - in_parallel:
     - task: acceptance-tests
       file: cf-deployment-concourse-tasks/run-cats/task.yml
@@ -2399,6 +2398,11 @@ jobs:
       params:
         repository: updated-integration-configs
         rebase: true
+  - task: cleanup-acceptance-test-leftovers
+    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
+    params:
+      CF_API_TARGET: https://api.leia-azure-storage.capi.land
+      BBL_STATE_DIR: leia-azure-storage
   - task: acceptance-tests
     file: cf-deployment-concourse-tasks/run-cats/task.yml
     input_mapping:
@@ -2410,11 +2414,6 @@ jobs:
   - task: run-blobstore-benchmarks
     file: capi-ci/ci/benchmarks/run-blobstore-benchmarks.yml
     params:
-      BBL_STATE_DIR: leia-azure-storage
-  - task: cleanup-acceptance-test-leftovers
-    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
-    params:
-      CF_API_TARGET: https://api.leia-azure-storage.capi.land
       BBL_STATE_DIR: leia-azure-storage
 
 - name: rotate-certs-leia-azure-storage
@@ -2629,6 +2628,11 @@ jobs:
       params:
         repository: updated-integration-configs
         rebase: true
+  - task: cleanup-acceptance-test-leftovers
+    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
+    params:
+      CF_API_TARGET: https://api.rey-gcs-storage.capi.land
+      BBL_STATE_DIR: rey-gcs-storage
   - task: acceptance-tests
     file: cf-deployment-concourse-tasks/run-cats/task.yml
     input_mapping:
@@ -2640,11 +2644,6 @@ jobs:
   - task: run-blobstore-benchmarks
     file: capi-ci/ci/benchmarks/run-blobstore-benchmarks.yml
     params:
-      BBL_STATE_DIR: rey-gcs-storage
-  - task: cleanup-acceptance-test-leftovers
-    file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
-    params:
-      CF_API_TARGET: https://api.rey-gcs-storage.capi.land
       BBL_STATE_DIR: rey-gcs-storage
 
 - name: rotate-certs-rey-gcs-storage
