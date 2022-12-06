@@ -1501,6 +1501,7 @@ jobs:
         BBL_STATE_DIR: elsa
         USE_CREDHUB: true
         RUN_REVISIONS_TESTS: true
+        FLAKE_ATTEMPTS: 2
   - task: extract-bbl-environment
     file: capi-ci/ci/bbl-tasks/extract_bbl_environment.yml
     params:
