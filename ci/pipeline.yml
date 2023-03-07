@@ -130,20 +130,6 @@ resources:
     location: America/Los_Angeles
     fire_immediately: true
 
-- name: deliver-capi-stories
-  type: tracker
-  source:
-    token: ((deliver_capi_tracker_token))
-    project_id: '966314'
-    tracker_url: https://www.pivotaltracker.com
-
-- name: deliver-vat-stories
-  type: tracker
-  source:
-    token: ((deliver_capi_tracker_token))
-    project_id: '2196383'
-    tracker_url: https://www.pivotaltracker.com
-
 - name: capi-final-releases
   type: s3
   source:
@@ -2877,18 +2863,6 @@ jobs:
   - put: capi-release-ci-passed
     params:
       repository: capi-release
-  - put: deliver-capi-stories
-    params:
-      repos:
-      - capi-release-ci-passed/src/cloud_controller_ng
-      - capi-release-ci-passed/src/code.cloudfoundry.org/tps
-      - capi-release-ci-passed
-  - put: deliver-vat-stories
-    params:
-      repos:
-      - capi-release-ci-passed/src/cloud_controller_ng
-      - capi-release-ci-passed/src/code.cloudfoundry.org/tps
-      - capi-release-ci-passed
 
 - name: xena-mysql-drats
   serial: true
