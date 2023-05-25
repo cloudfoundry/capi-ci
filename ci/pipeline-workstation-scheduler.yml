@@ -24,6 +24,15 @@ resources:
       stop: 6:30 PM
       days: [Monday, Tuesday, Wednesday, Thursday, Friday]
 
+  - name: end-of-work-week
+    type: time
+    icon: surfing
+    source:
+      location: America/Los_Angeles
+      start: 6:15 PM
+      stop: 6:45 PM
+      days: [Friday]
+
 jobs:
   - name: startup-capi-ws-1
     plan:
@@ -169,3 +178,15 @@ jobs:
           GCP_VM_NAME: capi-ws-6
           GCP_VM_ZONE: us-central1-a
           GCP_SERVICE_ACCOUNT_KEY: ((arya_gcp_json_key))
+
+  - name: shutdown-workstations
+    plan:
+      - get: capi-ci
+      - get: end-of-work-week
+        trigger: true
+      - task: shutdown-all
+        file: capi-ci/ci/workstation-scheduler/shutdown-all-ws.yml
+        params:
+          GCP_VM_ZONE: us-central1-a
+          GCP_SERVICE_ACCOUNT_KEY: ((arya_gcp_json_key))
+

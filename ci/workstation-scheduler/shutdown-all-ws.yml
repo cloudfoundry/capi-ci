@@ -1,0 +1,29 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: google/cloud-sdk
+
+params:
+  GCP_VM_ZONE: ""
+  GCP_PROJECT_ID: "cf-capi-arya"
+  GCP_SERVICE_ACCOUNT_KEY: ""
+
+run:
+  path: bash
+  args:
+    - -c
+    - |
+      set -e
+
+      gcloud auth activate-service-account --key-file=<(echo $GCP_SERVICE_ACCOUNT_KEY)
+
+      echo "Shutting down non-legacy workstations in zone $GCP_VM_ZONE for project $GCP_PROJECT_ID..."
+
+      instances=$(gcloud compute instances list --filter="name~'capi-ws-' AND name!~'capi-ws-\d\b'" --format="value(name)")
+      for i in $instances
+      do
+       gcloud compute instances stop $i --project cf-capi-arya --zone us-central1-a
+      done;
