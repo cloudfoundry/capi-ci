@@ -19,11 +19,14 @@ run:
       set -e
 
       gcloud auth activate-service-account --key-file=<(echo $GCP_SERVICE_ACCOUNT_KEY)
-
+      
+      gcloud config set project $GCP_PROJECT_ID
+      
       echo "Shutting down non-legacy workstations in zone $GCP_VM_ZONE for project $GCP_PROJECT_ID..."
 
       instances=$(gcloud compute instances list --filter="name~'capi-ws-' AND name!~'capi-ws-\d\b'" --format="value(name)")
       for i in $instances
       do
-       gcloud compute instances stop $i --project cf-capi-arya --zone us-central1-a
+      echo "Shutting down $i..."
+       gcloud compute instances stop $i --zone us-central1-a
       done;
