@@ -27,6 +27,6 @@ run:
       instances=$(gcloud compute instances list --filter="name~'capi-ws-' AND name!~'capi-ws-\d\b'" --format="value(name)")
       for i in $instances
       do
-      echo "Shutting down $i..."
+       echo "Shutting down $i..."
        gcloud compute instances stop $i --zone us-central1-a
       done;
