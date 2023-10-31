@@ -1062,7 +1062,7 @@ jobs:
       BBL_STATE_DIR: "mulan"
       SYSTEM_DOMAIN: *mulan-domain
       OPS_FILES: &mulan-ops-files |
-        base-ops-files/operations/test/add-persistent-isolation-segment-diego-cell.yml
+        base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
         base-ops-files/operations/use-compiled-releases.yml
         skip-cert-verify.yml
         use-latest-capi.yml
@@ -1220,7 +1220,7 @@ jobs:
       BBL_STATE_DIR: "ripley"
       SYSTEM_DOMAIN: *ripley-domain
       OPS_FILES: &ripley-ops-files |
-        base-ops-files/operations/test/add-persistent-isolation-segment-diego-cell.yml
+        base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
         base-ops-files/operations/scale-to-one-az.yml
         base-ops-files/operations/test/scale-to-one-az-addon-parallel-cats.yml
         scale-up-cells.yml
@@ -1430,7 +1430,7 @@ jobs:
       BBL_STATE_DIR: "elsa"
       SYSTEM_DOMAIN: *elsa-domain
       OPS_FILES: &elsa-ops-files-for-deploy |
-        base-ops-files/base-ops-files/operations/test/add-persistent-isolation-segment-diego-cell.yml
+        base-ops-files/base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
         base-ops-files/base-ops-files/operations/windows2019-cell.yml
         base-ops-files/base-ops-files/operations/use-online-windows2019fs.yml
         base-ops-files/skip-cert-verify-on-windows-cell.yml
@@ -1602,7 +1602,7 @@ jobs:
       BBL_STATE_DIR: kiki
       SYSTEM_DOMAIN: *kiki-domain
       OPS_FILES: &kiki-ops-files-for-deploy |
-        base-ops-files/operations/test/add-persistent-isolation-segment-diego-cell.yml
+        base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
         skip-cert-verify.yml
         base-ops-files/operations/scale-to-one-az.yml
         base-ops-files/operations/test/scale-to-one-az-addon-parallel-cats.yml
@@ -1917,7 +1917,7 @@ jobs:
       BBL_STATE_DIR: "elsa"
       SYSTEM_DOMAIN: *elsa-domain
       OPS_FILES: |
-        base-ops-files/base-ops-files/operations/test/add-persistent-isolation-segment-diego-cell.yml
+        base-ops-files/base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
         base-ops-files/base-ops-files/operations/windows2019-cell.yml
         base-ops-files/base-ops-files/operations/use-online-windows2019fs.yml
         base-ops-files/skip-cert-verify-on-windows-cell.yml
