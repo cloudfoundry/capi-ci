@@ -3,9 +3,6 @@ set -xeu
 
 build_dir=${PWD}
 
-version=$(cat cf-cli/version)
-curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${version:1}&source=github-rel" | tar -zx
-mv cf7 /usr/local/bin/cf
 cf -v
 
 export CONFIG
@@ -34,11 +31,11 @@ export CF_DIAL_TIMEOUT=11
 
 export CF_PLUGIN_HOME=$HOME
 
-./bin/test -keepGoing \
-  -randomizeAllSpecs \
-  -skipPackage=helpers \
-  -slowSpecThreshold=300 \
-  --flakeAttempts="${FLAKE_ATTEMPTS}" \
+./bin/test -keep-going \
+  -randomize-all \
+  -skip-package=helpers \
+  -poll-progress-after=300s \
+  --flake-attempts="${FLAKE_ATTEMPTS}" \
   -nodes="${NODES}" \
-  -noisySkippings=false \
+  -timeout=2h \
   . stack
