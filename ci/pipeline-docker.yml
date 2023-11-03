@@ -164,22 +164,6 @@ resources:
     repository: bosh-cli
     access_token: ((github_access_token))
 
-- name: capi-dockerfiles-pack-builder
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-    paths: [capi-pack-builder/Dockerfile]
-
-- name: docker-image-capi-pack-builder
-  type: docker-image
-  source:
-    repository: cloudfoundry/capi
-    tag: capi-pack-builder
-    username: ((dockerhub_user))
-    password: ((dockerhub_pass))
-    email: ((dockerhub_email))
-
 - name: capi-ci
   type: git
   source:
@@ -276,18 +260,6 @@ jobs:
   - put: docker-image-bosh-lite
     params:
       build: capi-dockerfiles-bosh-lite/bosh-lite
-- name: capi-dockerfiles-pack-builder
-  serial: true
-  plan:
-  - in_parallel:
-      steps:    
-      - get: weekly
-        trigger: true
-      - get: capi-dockerfiles-pack-builder
-        trigger: true
-  - put: docker-image-capi-pack-builder
-    params:
-      build: capi-dockerfiles-pack-builder/capi-pack-builder
 - name: capi-dockerfiles-bbr-run-drats
   serial: true
   plan:
