@@ -88,15 +88,7 @@ Kiki starts with an older version of cf-deployment. It then runs the new migrati
 
 ### capi
 
-This pipeline is responsible for testing, building, and releasing capi-release and capi-k8s-release.
-
-#### capi-k8s-release
-
-This is where the testing for capi-k8s-release components live.
-
-- Runs unit tests for various capi-k8s-release components
-- Builds images for the components and deploys to Samus
-- Runs CATs & BARAs against Samus
+This pipeline is responsible for testing, building, and releasing capi-release.
 
 #### capi-release
 
@@ -116,11 +108,11 @@ Additional blobstore tests that do no block the pipeline. These were removed fro
 
 #### ship-it
 
-Jobs responsible for cutting capi-release and capi-k8s-release.
+Jobs responsible for cutting capi-release.
 
 - Bump API versions
 - Update API docs
-- Release capi-release and capi-k8s-release
+- Release capi-release
 
 #### dependencies-docs
 
@@ -164,8 +156,6 @@ Build the [docker images](https://github.com/cloudfoundry/capi-dockerfiles) that
    - Deploying pipeline bosh environments
    - Creating releases and other random things (`runtime-ci` tag)
    - Manging the bosh-lite pool
-   - Deploying/Building/Testing cf-for-k8s
-   - Building cloud controller with [pack](https://github.com/buildpacks/pack)
 
 ### bosh-lite
 
@@ -178,8 +168,3 @@ Pipeline responsible for managing the development [bosh-lite pool](https://githu
 ### streamline-team
 
 Very important pipeline that randomly selects a person every week and posts about it in slack.
-
-### backup-metadata
-
-Tests backup and restore for cf-for-k8s.
-
