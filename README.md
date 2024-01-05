@@ -47,7 +47,7 @@ See [pipeline.yml](https://github.com/cloudfoundry/capi-ci/blob/main/ci/pipeline
     |                                                                      |
     |  Kiki: used for testing that db migrations are backwards compatible  |
     |          · Short-lived                                               |
-    |          · Database: MySQL                                           |
+    |          · Database: Postgres                                        |
     |          · Blobstore: WebDAV                                         |
     |                                                                      |
     |  Xena: used for testing BBR on MySQL                                 |
