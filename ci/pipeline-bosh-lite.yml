@@ -7,11 +7,6 @@ resource_types:
   type: docker-image
   source:
     repository: cloudfoundry/bosh-deployment-resource
-- name: slack-notification
-  type: docker-image
-  source:
-    repository: cfcommunity/slack-notification-resource
-    tag: latest
 - name: cron-resource
   type: docker-image
   source:
@@ -80,15 +75,6 @@ resources:
     type: bosh-deployment
     source:
       skip_check: true
-  - name: slack-alert
-    type: slack-notification
-    source:
-      url: ((slack_url))
-  - name: friday-afternoon
-    type: cron-resource
-    source:
-      expression: "30 13 * * 5"
-      location: "America/Los_Angeles"
   - name: 1h
     type: time
     source:
@@ -269,24 +255,3 @@ jobs:
           on_success:
             put: broken-pool
             params: { acquire: true }
-
-  - name: slack-claimed-envs
-    plan:
-      - in_parallel:
-          steps:
-          - get: capi-ci
-          - get: pool-repo
-          - get: friday-afternoon
-            trigger: true
-      - task: print-claimed-envs
-        file: capi-ci/ci/bosh-lite/print-claimed-envs.yml
-        input_mapping:
-          env-pool: pool-repo
-        params:
-          MESSAGE_PREFIX: ((slack_notification_prefix))
-      - put: slack-alert
-        params:
-          text_file: message/message.txt
-          silent: true
-          username: "BOSH Herder"
-          icon_emoji: ":bosh:"
