@@ -1,0 +1,10 @@
+- type: replace
+  path: /resource_pools/name=vms/cloud_properties/root_disk_type?
+  value: pd-ssd
+- type: replace
+  path: /resource_pools/name=vms/cloud_properties/root_disk_size_gb?
+  value: 64
+- type: replace
+  path: /disk_pools/name=disks/cloud_properties?
+  value:
+    type: pd-ssd

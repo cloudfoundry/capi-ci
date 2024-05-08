@@ -1,0 +1,16 @@
+---
+# must be included after credhub.yml and uaa.yml ops-files
+- type: replace
+  path: /variables/name=credhub_tls/options/alternative_names
+  value:
+  - ((internal_ip))
+  - ((external_ip))
+
+- type: replace
+  path: /instance_groups/name=bosh/jobs/name=uaa/properties/uaa/zones?/internal/hostnames
+  value:
+  - ((internal_ip))
+
+- type: replace
+  path: /instance_groups/name=bosh/jobs/name=credhub/properties/credhub/authentication/uaa/url
+  value: "https://((external_ip)):8443"

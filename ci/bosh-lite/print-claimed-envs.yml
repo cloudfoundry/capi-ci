@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/capi
+    tag: bosh-lite
+
+inputs:
+  - name: capi-ci
+  - name: env-pool
+
+outputs:
+  - name: message
+
+run:
+  path: capi-ci/ci/bosh-lite/print-claimed-envs.sh
+
+params:
+  MESSAGE_PREFIX: ""
