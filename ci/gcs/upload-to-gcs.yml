@@ -1,0 +1,23 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/capi
+    tag: bosh-lite
+
+inputs:
+  - name: capi-ci
+  - name: source-directory
+  - name: environment
+
+run:
+  path: capi-ci/ci/gcs/upload-to-gcs.sh
+
+params:
+  GCP_JSON_KEY:
+  GCP_BUCKET:
+  GCP_PATH:
+  USE_ENV_NAMED_SUBDIR:
+  CLOUDSDK_CORE_DISABLE_PROMPTS: 1
