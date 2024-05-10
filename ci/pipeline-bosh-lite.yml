@@ -96,9 +96,11 @@ jobs:
         params:
           add_claimed: fake-placeholder-env/
       - do:
+          - task: name-bosh-lite
+            file: capi-ci/ci/bosh-lite/name-bosh-lite.yml
           - put: terraform
             params:
-              generate_random_name: true
+              env_name_file: env-name/env-name
               delete_on_failure: true
               terraform_source: capi-ci/terraform/bosh-lite/
               vars: &terraform-vars
