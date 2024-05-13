@@ -135,3 +135,10 @@ Build the [docker images](https://github.com/cloudfoundry/capi-dockerfiles) that
    - Deploying pipeline bosh environments
    - Creating releases and other random things (`runtime-ci` tag)
    - Manging the bosh-lite pool
+
+### bosh-lite
+
+Pipeline responsible for managing the development [bosh-lite pool](https://github.com/cloudfoundry/capi-env-pool/).
+
+- Create new bosh-lites if there is room in the pool
+- Delete released bosh-lites
