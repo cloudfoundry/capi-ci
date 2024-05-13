@@ -75,7 +75,7 @@ resources:
     type: bosh-deployment
     source:
       skip_check: true
-  - name: 1h
+  - name: one-hour
     type: time
     source:
       interval: 1h
@@ -227,7 +227,7 @@ jobs:
           steps:
           - get: capi-ci
           - get: pool-repo
-          - get: 1h
+          - get: one-hour
             trigger: true
       - task: check-pool-size
         file: capi-ci/ci/bosh-lite/check-pool-size.yml
@@ -247,7 +247,7 @@ jobs:
           steps:
           - get: capi-ci
           - get: pool-repo
-          - get: 1h
+          - get: one-hour
             trigger: true
       - try:
           task: check-broken-pool-size
