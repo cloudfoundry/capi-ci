@@ -142,3 +142,12 @@ Pipeline responsible for managing the development [bosh-lite pool](https://githu
 
 - Create new bosh-lites if there is room in the pool
 - Delete released bosh-lites
+
+ #### Using Pooled Environments
+
+ There are a number of helpful scripts in
+ [capi-workspace](https://github.com/cloudfoundry/capi-workspace) for using the
+ bosh lite pool. Most notably, `claim_bosh_lite`, `unclaim_bosh_lite`, and
+ `print_env_info`. See [the commands
+ list](https://github.com/cloudfoundry/capi-workspace?tab=readme-ov-file#capi-commands)
+ for a full list of useful commands for interacting with the pool.
