@@ -6,8 +6,8 @@ set -eu
 : "${MIN_UNCLAIMED_COUNT:?}"
 : "${POOL_NAME:="bosh-lites"}"
 : "${BUILDING_POOL_NAME:="building-bosh-lites"}"
-: "${GIT_USERNAME:="CAPI CI"}"
-: "${GIT_EMAIL:="cf-capi-eng+ci@pivotal.io"}"
+: "${GIT_USERNAME:="ari-wg-gitbot"}"
+: "${GIT_EMAIL:="app-runtime-interfaces@cloudfoundry.org"}"
 
 # INPUTS
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

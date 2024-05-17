@@ -56,10 +56,9 @@ See [pipeline.yml](https://github.com/cloudfoundry/capi-ci/blob/main/ci/pipeline
 - HA: https://docs.cloudfoundry.org/concepts/high-availability.html
 - Short-lived/Long-lived: Short-lived environments are destroyed and re-deployed every test run. Long-lived ones are not torn down between runs.
 - DB Encryption: https://docs.cloudfoundry.org/adminguide/encrypting-cc-db.html
-- Clustered DB: https://docs.pivotal.io/application-service/2-9/mysql/scaling-mysql.html
-- Runtime Credhub: https://docs.pivotal.io/application-service/2-10/operating/secure-si-creds.html
+- Clustered DB: https://github.com/cloudfoundry/pxc-release?tab=readme-ov-file#pxc-release
+- Runtime Credhub: https://github.com/pivotal-cf/docs-operating-pas/blob/master/secure-si-creds.html.md.erb
 - Windows Cells: https://docs.cloudfoundry.org/deploying/cf-deployment/deploy-cf.html#ops-files
-- Telemetry: https://docs.pivotal.io/telemetry-collector/0-5/index.html
 - Certs: https://docs.cloudfoundry.org/adminguide/securing-traffic.html (CATs etc are actually validating SSL certs (no `--skip-ssl-validation`))
 
 ### What's Up with Kiki

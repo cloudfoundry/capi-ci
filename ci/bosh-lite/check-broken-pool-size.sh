@@ -4,8 +4,6 @@ set -eu
 
 # ENV
 : "${POOL_NAME:="broken-bosh-lites"}"
-: "${GIT_USERNAME:="CAPI CI"}"
-: "${GIT_EMAIL:="cf-capi-eng+ci@pivotal.io"}"
 
 # INPUTS
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

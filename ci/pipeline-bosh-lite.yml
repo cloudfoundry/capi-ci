@@ -38,6 +38,13 @@ resources:
       uri: git@github.com:cloudfoundry/capi-env-pool.git
       pool: bosh-lites
       private_key: ((pcf_bosh_lite_pool_deploy_key))
+      git_config: &pool-git-config
+        -
+          name: "user.name"
+          value: ((ari-wg-gitbot-username))
+        -
+          name: "user.email"
+          value: ((ari-wg-gitbot-email))
   - name: broken-pool
     type: pool
     source:
@@ -45,6 +52,7 @@ resources:
       uri: git@github.com:cloudfoundry/capi-env-pool.git
       pool: broken-bosh-lites
       private_key: ((pcf_bosh_lite_pool_deploy_key))
+      git_config: *pool-git-config
   - name: building-pool
     type: pool
     source:
@@ -52,6 +60,7 @@ resources:
       uri: git@github.com:cloudfoundry/capi-env-pool.git
       pool: building-bosh-lites
       private_key: ((pcf_bosh_lite_pool_deploy_key))
+      git_config: *pool-git-config
   - name: pool-repo
     type: git
     source:
@@ -235,6 +244,8 @@ jobs:
           env-pool: pool-repo
         params:
           MIN_UNCLAIMED_COUNT: 4
+          GIT_USERNAME: ((ari-wg-gitbot-username))
+          GIT_EMAIL: ((ari-wg-gitbot-email))
       - put: pool-repo
         params:
           repository: updated-env-pool
