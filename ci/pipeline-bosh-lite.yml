@@ -24,7 +24,7 @@ resources:
   - name: capi-ci
     type: git
     source:
-      branch: ari-bosh-lite
+      branch: main
       uri: https://github.com/cloudfoundry/capi-ci.git
   - name: bosh-deployment
     type: git
