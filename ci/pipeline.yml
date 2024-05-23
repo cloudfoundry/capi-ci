@@ -754,9 +754,9 @@ jobs:
         cf-deployment-operations/skip-cert-verify.yml
         cf-deployment-operations/scale-up-cells.yml
         cf-deployment-operations/scale-up-dopplers.yml
-        cf-deployment-operations/performance/scale-generic-worker-processes.yml
+        cf-deployment-operations/scale-generic-worker-processes.yml
         cf-deployment-operations/log-all-sequel-activity.yml
-        cf-deployment-operations/temporary/disable-uaa-get-requests.yml
+        cf-deployment-operations/disable-uaa-get-requests.yml
   - task: deploy
     file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
     input_mapping:
@@ -1495,11 +1495,11 @@ jobs:
         NEW_OPS_FILES: |
           cf-deployment-operations/use-latest-capi.yml
           cf-deployment-operations/scale-up-cloud-controller.yml
-          cf-deployment-operations/rotate-cc-database-key/add-database-encryption-keys.yml
+          cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
           cf-deployment-operations/scale-up-cells.yml
-          cf-deployment-operations/performance/scale-generic-worker-processes.yml
+          cf-deployment-operations/scale-generic-worker-processes.yml
           cf-deployment-operations/use-latest-capi.yml
-          cf-deployment-operations/temporary/disable-uaa-get-requests.yml
+          cf-deployment-operations/disable-uaa-get-requests.yml
           cf-deployment-operations/seed-credhub-asg.yml
           cf-deployment-operations/seed-uaa-asg.yml
     - task: deploy
@@ -1515,7 +1515,7 @@ jobs:
           base-ops-files/operations/use-compiled-releases.yml
           use-latest-capi.yml
           scale-up-cloud-controller.yml
-          add-database-encryption-keys.yml
+          add-database-encryption-key.yml
           scale-up-cells.yml
           scale-generic-worker-processes.yml
           disable-uaa-get-requests.yml
@@ -1710,11 +1710,11 @@ jobs:
         NEW_OPS_FILES: |
           cf-deployment-operations/use-latest-capi.yml
           cf-deployment-operations/scale-up-cloud-controller.yml
-          cf-deployment-operations/rotate-cc-database-key/add-database-encryption-keys.yml
+          cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
           cf-deployment-operations/scale-up-cells.yml
-          cf-deployment-operations/performance/scale-generic-worker-processes.yml
+          cf-deployment-operations/scale-generic-worker-processes.yml
           cf-deployment-operations/use-latest-capi.yml
-          cf-deployment-operations/temporary/disable-uaa-get-requests.yml
+          cf-deployment-operations/disable-uaa-get-requests.yml
           cf-deployment-operations/seed-credhub-asg.yml
           cf-deployment-operations/seed-uaa-asg.yml
     - task: deploy
@@ -1731,7 +1731,7 @@ jobs:
           base-ops-files/operations/use-postgres.yml
           use-latest-capi.yml
           scale-up-cloud-controller.yml
-          add-database-encryption-keys.yml
+          add-database-encryption-key.yml
           scale-up-cells.yml
           scale-generic-worker-processes.yml
           disable-uaa-get-requests.yml
@@ -1919,14 +1919,14 @@ jobs:
         NEW_OPS_FILES: |
           cf-deployment-operations/use-latest-capi.yml
           cf-deployment-operations/scale-up-cloud-controller.yml
-          cf-deployment-operations/rotate-cc-database-key/add-database-encryption-keys.yml
+          cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
           cf-deployment-operations/scale-up-cells.yml
-          cf-deployment-operations/performance/scale-generic-worker-processes.yml
+          cf-deployment-operations/scale-generic-worker-processes.yml
           cf-deployment-operations/use-latest-capi.yml
-          cf-deployment-operations/temporary/disable-uaa-get-requests.yml
+          cf-deployment-operations/disable-uaa-get-requests.yml
           cf-deployment-operations/seed-credhub-asg.yml
           cf-deployment-operations/seed-uaa-asg.yml
-          cf-deployment-operations/rotate-cc-database-key/add-database-encryption-keys.yml
+          cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
           cf-deployment-operations/disable-skip-cert-verify.yml
           cf-deployment-operations/disable-skip-cert-verify-iso-seg.yml
     - task: deploy
@@ -1948,14 +1948,14 @@ jobs:
           base-ops-files/operations/use-gcs-blobstore-service-account.yml
           use-latest-capi.yml
           scale-up-cloud-controller.yml
-          add-database-encryption-keys.yml
+          add-database-encryption-key.yml
           scale-up-cells.yml
           scale-generic-worker-processes.yml
           disable-uaa-get-requests.yml
           seed-credhub-asg.yml
           base-ops-files/operations/scale-database-cluster.yml
           base-ops-files/operations/test/speed-up-dynamic-asgs.yml
-          add-database-encryption-keys.yml
+          add-database-encryption-key.yml
           seed-uaa-asg.yml
           disable-skip-cert-verify.yml
           disable-skip-cert-verify-iso-seg.yml

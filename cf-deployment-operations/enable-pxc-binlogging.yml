@@ -1,6 +1,0 @@
----
-- type: replace
-  path: /instance_groups/name=database/jobs/name=pxc-mysql/properties/engine_config?/binlog?
-  value:
-    enabled: true
-    expire_logs_days: 1

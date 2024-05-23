@@ -1,4 +1,0 @@
-- type: remove
-  path: /instance_groups/name=nats/networks/name=default/static_ips?/1
-- type: remove
-  path: /instance_groups/name=database/jobs/name=proxy/properties/nats/machines?/1

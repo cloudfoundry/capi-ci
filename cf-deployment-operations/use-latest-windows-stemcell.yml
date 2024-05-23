@@ -1,4 +1,0 @@
----
-- type: replace
-  path: /stemcells/alias=windows2012R2/version
-  value: 'latest'

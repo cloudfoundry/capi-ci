@@ -9,9 +9,11 @@
     - destination: 0.0.0.0/0
       ports: '8443'
       protocol: tcp
+
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/default_running_security_groups?/-
   value: uaa
+
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/default_staging_security_groups?/-
   value: uaa

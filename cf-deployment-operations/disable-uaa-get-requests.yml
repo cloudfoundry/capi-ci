@@ -1,5 +1,3 @@
----
-# This file can be removed once cf-deployment defaults `uaa.jwt.queryString.enabled` to false
 - type: replace
   path: /instance_groups/name=uaa/jobs/name=uaa/properties/uaa?/jwt?/queryString?/enabled?
   value: false

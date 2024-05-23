@@ -1,5 +1,0 @@
----
-# Avoid "Found no compatible cell" and "Insufficient Resources" errors in CI
-- type: replace
-  path: /instance_groups/name=diego-cell/instances
-  value: 4

@@ -1,9 +1,0 @@
----
-# Comply with the "You must scale to 1 node before migrating to pxc" error message in CI
-- type: replace
-  path: /instance_groups/name=database/instances
-  value: 1
-
-- type: replace
-  path: /instance_groups/name=database/azs?
-  value: [z1]

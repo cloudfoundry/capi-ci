@@ -1,5 +1,0 @@
----
-# Tell CC not to interpolate service binding refs from credhub. Used to test "non-assisted" credhub interactions.
-- type: replace
-  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/credential_references?/interpolate_service_bindings
-  value: false

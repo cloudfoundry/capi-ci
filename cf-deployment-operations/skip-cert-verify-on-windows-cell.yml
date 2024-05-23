@@ -1,6 +1,0 @@
----
-# There is currently a bug with Windows stemcells on GCP where they do not include the AWS CA certificates.
-# This causes SSL verification errors when downloading from a CF deployed on GCP with a AWS S3 blobstore.
--  type: replace
-   path: /instance_groups/name=windows2019-cell/jobs/name=rep_windows/properties/diego/ssl?/skip_cert_verify
-   value: true

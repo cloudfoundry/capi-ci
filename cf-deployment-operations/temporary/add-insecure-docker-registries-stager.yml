@@ -1,6 +1,0 @@
-- type: replace
-  path: /instance_groups/name=api/jobs/name=stager?/properties/capi/stager/insecure_docker_registry_list?/-
-  value: '35.192.228.67:5000'
-- type: replace
-  path: /instance_groups/name=diego-cell/jobs/name=garden?/properties/garden/insecure_docker_registry_list?/-
-  value: '35.192.228.67:5000'

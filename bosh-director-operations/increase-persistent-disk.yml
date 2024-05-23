@@ -1,7 +1,0 @@
-- type: replace
-  path: /disk_pools/name=disks/disk_size
-  value: 500_000
-# TODO: this might be unnecessary since the bosh-lite plan patches for GCP also do this
-- type: replace
-  path: /disk_pools/name=disks/cloud_properties?/type
-  value: pd-ssd
