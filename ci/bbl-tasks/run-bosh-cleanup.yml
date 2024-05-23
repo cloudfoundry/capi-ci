@@ -11,7 +11,7 @@ inputs:
 - name: bbl-state
 
 run:
-  path: capi-ci/ci/bbl-tasks/run-bosh-cleanup
+  path: capi-ci/ci/bbl-tasks/run-bosh-cleanup.sh
 
 params:
   BBL_STATE_DIR:

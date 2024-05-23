@@ -13,4 +13,4 @@ inputs:
   - name: capi-release-main
 
 run:
-  path: capi-ci/ci/test-unit/run_capi_release_commit_test
+  path: capi-ci/ci/test-unit/run_capi_release_commit_test.sh

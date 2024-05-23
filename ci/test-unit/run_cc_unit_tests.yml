@@ -12,7 +12,7 @@ inputs:
   - name: capi-ci
 
 run:
-  path: capi-ci/ci/test-unit/run_cc_unit_tests
+  path: capi-ci/ci/test-unit/run_cc_unit_tests.sh
 
 params:
   DB: ~

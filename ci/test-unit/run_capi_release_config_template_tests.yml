@@ -12,4 +12,4 @@ inputs:
   - name: capi-release
 
 run:
-  path: capi-ci/ci/test-unit/run_capi_release_config_template_tests
+  path: capi-ci/ci/test-unit/run_capi_release_config_template_tests.sh

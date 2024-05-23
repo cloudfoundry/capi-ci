@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-workspace_dir="$( pwd )"
-capi_ci_private="${workspace_dir}/capi-ci-private"
-
-cd ${capi_ci_private}/${ENVIRONMENT}
-
-eval "$(bbl print-env)"
-bosh update-resurrection ${ON_OR_OFF}

@@ -21,4 +21,4 @@ params:
   PRIVATE_YAML:
 
 run:
-  path: capi-ci/ci/bosh/finalize_release
+  path: capi-ci/ci/bosh/finalize_release.sh

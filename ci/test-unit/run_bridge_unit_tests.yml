@@ -15,4 +15,4 @@ inputs:
   - name: tps
 
 run:
-  path: capi-ci/ci/test-unit/run_bridge_unit_tests
+  path: capi-ci/ci/test-unit/run_bridge_unit_tests.sh

@@ -16,4 +16,4 @@ outputs:
   - name: generated-release
 
 run:
-  path: capi-ci/ci/git/generate_github_release
+  path: capi-ci/ci/git/generate_github_release.sh

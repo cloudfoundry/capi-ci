@@ -31,14 +31,7 @@ groups:
   - elsa-ha-acquire-pool
   - elsa-ha-deploy-cf
   - elsa-ha-tests
-#  - mulan-postgres
-#  - elsa-HA
-#  - kiki-back-compat-migrations
-#  - xena-mysql-drats
-#  - gabrielle-postgres-drats
-#  - ripley-nfs
   - bump-ci-passed
-#  - bump-bbs-protos
 
 - name: ship-it
   jobs:
@@ -53,7 +46,6 @@ groups:
 - name: dependencies-docs
   jobs:
     - rc-docs-v3
-    - update-and-push-docs-v2
 
 - name: bbl-up
   jobs:
@@ -79,12 +71,7 @@ groups:
     - autobump-golang-package
     - bump-redis-blob
 
-
 resource_types:
-- name: slack-notification
-  type: registry-image
-  source:
-    repository: cfcommunity/slack-notification-resource
 - name: terraform
   type: registry-image
   source:
@@ -124,7 +111,6 @@ resources:
     start: 22:30
     stop: 23:00
 
-
 - name: capi-ci
   type: git
   source:
@@ -157,7 +143,6 @@ resources:
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
 
-
 - name: capi-release-develop
   type: git
   source:
@@ -165,18 +150,6 @@ resources:
     uri: https://github.com/cloudfoundry/capi-release.git
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
-
-
-
-
-- name: api-docs
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/api-docs.git
-    username: ((ari-wg-gitbot-username))
-    password: ((ari-wg-gitbot-token))
-
 
 - name: capi-release-tarball
   type: gcs-resource
@@ -211,7 +184,6 @@ resources:
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
 
-
 - name: cc-api-v2-version
   type: semver
   source:
@@ -221,16 +193,6 @@ resources:
     uri: https://github.com/cloudfoundry/cloud_controller_ng.git
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
-
-#- name: staticfile-app
-#  type: git
-#  source:
-#    branch: release-candidate
-#    uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
-#    username: ((ari-wg-gitbot-username))
-#    password: ((ari-wg-gitbot-token))
-#    paths:
-#    - assets/staticfile/**
 
 - name: cc-uploader
   type: git
@@ -289,16 +251,6 @@ resources:
     uri: https://github.com/cloudfoundry/diego-release.git
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
-
-#- name: slack-alert
-#  type: slack-notification
-#  source:
-#    url: ((slack_failure_hook_url))
-#
-#- name: slack-rotation-alert
-#  type: slack-notification
-#  source:
-#    url: ((slack_channel_webhook_for_cert_rotations))
 
 - name: sync-integration-tests
   type: git
@@ -370,13 +322,6 @@ resources:
     uri: https://github.com/cloudfoundry/capi-bara-tests.git
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
-#
-#- name: bbr-github-release
-#  type: github-release
-#  source:
-#    owner: cloudfoundry-incubator
-#    repository: bosh-backup-and-restore
-#    access_token: ((ari-wg-gitbot-token))
 
 - name: runtime-ci
   type: git
@@ -386,19 +331,6 @@ resources:
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
 
-#- name: gcp-xenial-stemcell
-#  type: bosh-io-stemcell
-#  source:
-#    name: bosh-google-kvm-ubuntu-xenial-go_agent
-#
-#- name: bosh-deployment
-#  type: git
-#  source:
-#    branch: master
-#    uri: https://github.com/cloudfoundry/bosh-deployment.git
-#    username: ((ari-wg-gitbot-username))
-#    password: ((ari-wg-gitbot-token))
-#
 # Elsa resources
 - name: elsa-ha-bbl-state
   type: git
@@ -425,7 +357,6 @@ resources:
     pool: elsa-ha
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
-
 
 # Kiki resources
 - name: kiki-mig-bbl-state
@@ -498,12 +429,6 @@ resources:
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
 
-#- name: drats
-#  type: git
-#  source:
-#    branch: main
-#    uri: https://github.com/cloudfoundry-incubator/disaster-recovery-acceptance-tests
-
 jobs:
 - name: autobump-golang-package
   plan:
@@ -559,10 +484,6 @@ jobs:
       params:
         DB: mysql
         RUN_IN_PARALLEL: true
-#      on_failure:
-#        put: slack-alert
-#        params:
-#          text: '[cc-unit-tests] OH NO! Failed when running with mysql'
     - task: run-cc-unit-tests-postgres
       attempts: 3
       file: capi-ci/ci/test-unit/run_cc_unit_tests.yml
@@ -570,10 +491,6 @@ jobs:
       params:
         DB: postgres
         RUN_IN_PARALLEL: true
-#      on_failure:
-#        put: slack-alert
-#        params:
-#          text: '[cc-unit-tests] OH NO! Failed when running with postgres'
 
 - name: verify-capi-release-commits
   plan:
@@ -586,10 +503,6 @@ jobs:
       trigger: true
   - task: run-capi-release-commit-test
     file: capi-ci/ci/test-unit/run_capi_release_commit_test.yml
-#    on_failure:
-#      put: slack-alert
-#      params:
-#        text: "[verify-capi-release-commits] OH NO! There's a bad commit on capi-release"
 
 - name: capi-release-template-tests
   plan:
@@ -632,24 +545,6 @@ jobs:
     params:
       repository: bumped/capi-release
       rebase: true
-
-#- name: bump-bbs-protos
-#  plan:
-#  - in_parallel:
-#    - get: capi-ci
-#    - get: capi-release
-#      resource: capi-release-develop
-#      passed: [verify-capi-release-commits]
-#    - get: diego-release
-#      trigger: true
-#    - get: cloud_controller_ng
-#      passed: [cc-unit-tests]
-#  - task: bump-bbs-protos
-#    file: capi-ci/ci/protos/bump_bbs_protos.yml
-#  - put: cloud_controller_ng
-#    params:
-#      repository: bumped/cloud_controller_ng
-#      rebase: true
 
 - name: bridge-unit-tests
   plan:
@@ -923,43 +818,6 @@ jobs:
     file: capi-ci/ci/docs/push_rc_docs_v3.yml
     params:
       GITHUB_PUSH_KEY: ((ari-wg-gitbot-ssh.private_key))
-#    on_failure:
-#      put: slack-alert
-#      params:
-#        text: '[rc-docs-v3] OH NO! Failed to update documentation https://capi.ci.cf-app.com/?groups=migrations-dependencies-docs'
-
-- name: update-and-push-docs-v2
-  serial: true
-  plan:
-  - in_parallel:
-    - get: cf-deployment-release
-      trigger: true
-    - get: cf-deployment-main
-    - get: capi-ci
-    - get: api-docs
-    - get: capi-release-main
-      params:
-        submodules:
-        - src/cloud_controller_ng
-  - task: update-docs-v2
-    file: capi-ci/ci/docs/update_docs_v2.yml
-    params: &docs-aws-account
-      AWS_DEFAULT_REGION: us-east-1
-      AWS_ACCESS_KEY_ID: ((cloudgate_docs_s3_access_key))
-      AWS_SECRET_ACCESS_KEY: ((cloudgate_docs_s3_secret_key))
-      AWS_ROLE_ARN: ((cloudgate_docs_s3_role_arn))
-      CF_VERSIONS_FILE_PATH: api-docs/data/cf-deployment-api-versions.json
-      GIT_COMMIT_USERNAME: "ari-wg-gitbot"
-      GIT_COMMIT_EMAIL: "app-runtime-interfaces@cloudfoundry.org"
-    input_mapping:
-      capi-release: capi-release-main
-      cf-deployment: cf-deployment-main
-  - put: api-docs
-    resource: api-docs
-    params:
-      repository: updated-api-docs/api-docs
-      branch: main
-      rebase: true
 
 - name: bump-cc-v3-api
   serial: true
@@ -1022,10 +880,6 @@ jobs:
     privileged: true
     params:
       GITHUB_PUSH_KEY: ((ari-wg-gitbot-ssh.private_key))
-#    on_failure:
-#      put: slack-alert
-#      params:
-#        text: '[publish-docs-v3] OH NO! Failed to update documentation https://capi.ci.cf-app.com/?groups=migrations-dependencies-docs'
 - name: elsa-ha-acquire-bbl-up-pool
   serial: true
   plan:
@@ -1100,7 +954,6 @@ jobs:
     - put: elsa-ha-pool
       params: { release: elsa-ha-pool }
 
-
 - name: bbl-up-kiki-mig
   serial: true
   serial_groups:
@@ -1120,7 +973,6 @@ jobs:
         bbl-config: kiki-mig-bbl-state
         bbl-state: kiki-mig-bbl-state
       params:
-        #BBL_CONFIG_DIR: kiki-mig/bbl-config
         BBL_ENV_NAME: kiki-mig
         BBL_GCP_PROJECT_ID: app-runtime-interfaces-wg
         BBL_GCP_REGION: us-east4
@@ -1369,7 +1221,6 @@ jobs:
           repository: updated-bbl-state
           rebase: true
 
-
 - name: emergency-bbl-destroy-elsa-ha
   serial: true
   serial_groups: [elsa-ha]
@@ -1393,7 +1244,6 @@ jobs:
         params:
           repository: updated-bbl-state
           rebase: true
-
 
 - name: merge-capi-release-main
   serial: true
@@ -1659,7 +1509,6 @@ jobs:
           params: {acquire: true}
       timeout: 4h
 
-
 - name: scar-psql-deploy-cf
   serial: true
   serial_groups: [scar-psql]
@@ -1875,7 +1724,6 @@ jobs:
           params: {acquire: true}
       timeout: 4h
 
-
 - name: elsa-ha-deploy-cf
   serial: true
   serial_groups: [elsa-ha]
@@ -2065,17 +1913,3 @@ jobs:
         BBL_STATE_DIR: "elsa-ha/bbl-state"
     - put: elsa-ha-pool
       params: { release: elsa-ha-pool }
-#
-#- name: thirtyfirstly-warning
-#  plan:
-#  - get: thirtiethly
-#    trigger: true
-#  - put: slack-rotation-alert
-#    params:
-#      silent: true
-#      username: "cert rotator"
-#      text: |-
-#        If there's another day in this month,
-#        all the certs are going to rotate TONIGHT at 7pm PST
-#        unless you pause the "thirtyfirstly" resource in concourse.
-#        January, March, May, July, August, October, and December all have 31 days.
