@@ -275,21 +275,6 @@ resources:
     username: ((ari-wg-gitbot-username))
     password: ((ari-wg-gitbot-token))
 
-- name: cf-deployment-main
-  type: git
-  source:
-    uri: https://github.com/cloudfoundry/cf-deployment.git
-    username: ((ari-wg-gitbot-username))
-    password: ((ari-wg-gitbot-token))
-    branch: main
-
-- name: cf-deployment-release
-  type: github-release
-  source:
-    owner: cloudfoundry
-    repository: cf-deployment
-    access_token: ((ari-wg-gitbot-token))
-
 - name: cf-deployment-concourse-tasks
   type: git
   source:
