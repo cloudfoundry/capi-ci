@@ -92,8 +92,6 @@ resources:
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: capi-ci-private
     type: git
     source:

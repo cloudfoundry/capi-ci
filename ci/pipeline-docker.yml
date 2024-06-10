@@ -10,8 +10,9 @@ resources:
     type: git
     source:
       branch: main
-      uri: git@github.com:cloudfoundry/capi-dockerfiles.git
-      private_key: ((capi_dockerfiles_private_key))
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
   - name: capi-dockerfiles-rc-docs
     type: git
     source:
@@ -107,13 +108,12 @@ resources:
     source:
       user: cloudfoundry
       repository: bosh-cli
-      access_token: ((github_access_token))
+      access_token: ((ari-wg-gitbot-token))
   - name: capi-ci
     type: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci.git
-      access_token: ((github_access_token))
 jobs:
   - name: bump-bosh-cli-version
     serial: true
