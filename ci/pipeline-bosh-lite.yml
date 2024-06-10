@@ -1,17 +1,16 @@
 resource_types:
-- name: terraform
-  type: docker-image
-  source:
-    repository: ljfranklin/terraform-resource
-- name: bosh-deployment
-  type: docker-image
-  source:
-    repository: cloudfoundry/bosh-deployment-resource
-- name: cron-resource
-  type: docker-image
-  source:
-    repository: cftoolsmiths/cron-test
-
+  - name: terraform
+    type: docker-image
+    source:
+      repository: ljfranklin/terraform-resource
+  - name: bosh-deployment
+    type: docker-image
+    source:
+      repository: cloudfoundry/bosh-deployment-resource
+  - name: cron-resource
+    type: docker-image
+    source:
+      repository: cftoolsmiths/cron-test
 resources:
   - name: terraform
     type: terraform
@@ -39,11 +38,9 @@ resources:
       pool: bosh-lites
       private_key: ((pcf_bosh_lite_pool_deploy_key))
       git_config: &pool-git-config
-        -
-          name: "user.name"
+        - name: user.name
           value: ((ari-wg-gitbot-username))
-        -
-          name: "user.email"
+        - name: user.email
           value: ((ari-wg-gitbot-email))
   - name: broken-pool
     type: pool
@@ -88,17 +85,16 @@ resources:
     type: time
     source:
       interval: 1h
-
 jobs:
   - name: create-bosh-lite
     plan:
       - in_parallel:
           steps:
-          - get: capi-ci
-          - get: bosh-deployment
-          - get: cf-deployment
-          - get: create-bosh-lite-trigger
-            trigger: true
+            - get: capi-ci
+            - get: bosh-deployment
+            - get: cf-deployment
+            - get: create-bosh-lite-trigger
+              trigger: true
       - task: generate-fake-env-for-building-pool
         file: capi-ci/ci/bosh-lite/generate-fake-env-for-building-pool.yml
       - put: building-pool
@@ -135,13 +131,13 @@ jobs:
                   source_file: bosh-target/target.yml
                   manifest: cf-deployment/cf-deployment.yml
                   vars_files:
-                  - bosh-target/vars.yml
+                    - bosh-target/vars.yml
                   ops_files:
-                  - capi-ci/cf-deployment-operations/skip-cert-verify.yml
-                  - capi-ci/cf-deployment-operations/use-latest-stemcell.yml
-                  - cf-deployment/operations/bosh-lite.yml
-                  - cf-deployment/operations/use-compiled-releases.yml
-                  - capi-ci/cf-deployment-operations/seed-credhub-asg.yml
+                    - capi-ci/cf-deployment-operations/skip-cert-verify.yml
+                    - capi-ci/cf-deployment-operations/use-latest-stemcell.yml
+                    - cf-deployment/operations/bosh-lite.yml
+                    - cf-deployment/operations/use-compiled-releases.yml
+                    - capi-ci/cf-deployment-operations/seed-credhub-asg.yml
               - task: upload-to-gcs
                 file: capi-ci/ci/gcs/upload-to-gcs.yml
                 input_mapping:
@@ -161,83 +157,82 @@ jobs:
             on_failure:
               in_parallel:
                 steps:
-                - put: building-pool
-                  params:
-                    remove: fake-placeholder-env/
-                - task: delete-bosh-lite
-                  file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
+                  - put: building-pool
+                    params:
+                      remove: fake-placeholder-env/
+                  - task: delete-bosh-lite
+                    file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
         on_failure:
           in_parallel:
             steps:
-            - put: terraform
-              params:
-                action: destroy
-                env_name_file: terraform/name
-                terraform_source: capi-ci/terraform/bosh-lite/
-                vars: *terraform-vars
-              get_params:
-                action: destroy
-            - put: building-pool
-              params:
-                remove: fake-placeholder-env/
-
+              - put: terraform
+                params:
+                  action: destroy
+                  env_name_file: terraform/name
+                  terraform_source: capi-ci/terraform/bosh-lite/
+                  vars: *terraform-vars
+                get_params:
+                  action: destroy
+              - put: building-pool
+                params:
+                  remove: fake-placeholder-env/
   - name: delete-bosh-lite
     plan:
       - in_parallel:
           steps:
-          - get: capi-ci
-          - get: bosh-deployment
-          - get: broken-pool
-            passed: [ check-broken-pool-size ]
-            trigger: true
+            - get: capi-ci
+            - get: bosh-deployment
+            - get: broken-pool
+              passed:
+                - check-broken-pool-size
+              trigger: true
       - do:
-        - task: download-from-gcs
-          file: capi-ci/ci/gcs/download-from-gcs.yml
-          input_mapping:
-            environment: broken-pool
-          output_mapping:
-            destination-directory: director-state
-          params:
-            GCP_JSON_KEY: ((bosh_lite_gcp_json_key))
-            GCP_BUCKET: ((bosh_lite_storage_bucket))
-            GCP_PATH: director-state
-            USE_ENV_NAMED_SUBDIR: true
-        - task: delete-bosh-lite
-          file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
-        - put: terraform
-          params:
-            action: destroy
-            env_name_file: broken-pool/name
-            terraform_source: capi-ci/terraform/bosh-lite/
-            vars: *terraform-vars
-          get_params:
-            action: destroy
-        - task: delete-from-gcs
-          file: capi-ci/ci/gcs/delete-from-gcs.yml
-          input_mapping:
-            environment: broken-pool
-          params:
-            GCP_JSON_KEY: ((bosh_lite_gcp_json_key))
-            GCP_BUCKET: ((bosh_lite_storage_bucket))
-            GCP_PATH: director-state
-            USE_ENV_NAMED_SUBDIR: true
-        - put: broken-pool
-          params:
-            remove: broken-pool/
+          - task: download-from-gcs
+            file: capi-ci/ci/gcs/download-from-gcs.yml
+            input_mapping:
+              environment: broken-pool
+            output_mapping:
+              destination-directory: director-state
+            params:
+              GCP_JSON_KEY: ((bosh_lite_gcp_json_key))
+              GCP_BUCKET: ((bosh_lite_storage_bucket))
+              GCP_PATH: director-state
+              USE_ENV_NAMED_SUBDIR: true
+          - task: delete-bosh-lite
+            file: capi-ci/ci/bosh-lite/delete-bosh-lite.yml
+          - put: terraform
+            params:
+              action: destroy
+              env_name_file: broken-pool/name
+              terraform_source: capi-ci/terraform/bosh-lite/
+              vars: *terraform-vars
+            get_params:
+              action: destroy
+          - task: delete-from-gcs
+            file: capi-ci/ci/gcs/delete-from-gcs.yml
+            input_mapping:
+              environment: broken-pool
+            params:
+              GCP_JSON_KEY: ((bosh_lite_gcp_json_key))
+              GCP_BUCKET: ((bosh_lite_storage_bucket))
+              GCP_PATH: director-state
+              USE_ENV_NAMED_SUBDIR: true
+          - put: broken-pool
+            params:
+              remove: broken-pool/
         on_failure:
           put: broken-pool
           params:
             release: broken-pool/
-
   - name: check-pool-size
     build_logs_to_retain: 100
     plan:
       - in_parallel:
           steps:
-          - get: capi-ci
-          - get: pool-repo
-          - get: one-hour
-            trigger: true
+            - get: capi-ci
+            - get: pool-repo
+            - get: one-hour
+              trigger: true
       - task: check-pool-size
         file: capi-ci/ci/bosh-lite/check-pool-size.yml
         input_mapping:
@@ -250,16 +245,15 @@ jobs:
         params:
           repository: updated-env-pool
           rebase: true
-
   - name: check-broken-pool-size
     build_logs_to_retain: 100
     plan:
       - in_parallel:
           steps:
-          - get: capi-ci
-          - get: pool-repo
-          - get: one-hour
-            trigger: true
+            - get: capi-ci
+            - get: pool-repo
+            - get: one-hour
+              trigger: true
       - try:
           task: check-broken-pool-size
           file: capi-ci/ci/bosh-lite/check-broken-pool-size.yml
@@ -267,4 +261,5 @@ jobs:
             env-pool: pool-repo
           on_success:
             put: broken-pool
-            params: { acquire: true }
+            params:
+              acquire: true

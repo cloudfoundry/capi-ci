@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -e -u
+
+set -eu
 
 pushd capi-release
   echo "----- Set git identity"

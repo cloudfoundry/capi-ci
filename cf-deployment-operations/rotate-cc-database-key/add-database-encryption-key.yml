@@ -2,18 +2,15 @@
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc?/database_encryption?
   value: &key_0
     keys:
-      - encryption_key: '((cc_db_encryption_key))'
-        label: 'encryption_key_0'
+      - encryption_key: ((cc_db_encryption_key))
+        label: encryption_key_0
         active: true
-
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc?/database_encryption?
   value: *key_0
-
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cc_deployment_updater/properties/cc?/database_encryption?
   value: *key_0
-
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc?/database_encryption?
   value: *key_0

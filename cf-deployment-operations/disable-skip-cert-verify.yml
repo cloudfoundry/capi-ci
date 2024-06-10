@@ -1,27 +1,21 @@
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/ssl?/skip_cert_verify?
   value: false
-
 - type: replace
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/ssl?/skip_cert_verify?
   value: false
-
 - type: replace
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/ssl?/skip_cert_verify?
   value: false
-
 - type: replace
   path: /instance_groups/name=smoke-tests/jobs/name=smoke_tests/properties/smoke_tests?/skip_ssl_validation?
   value: false
-
 - type: replace
   path: /instance_groups/name=doppler/jobs/name=doppler/properties/doppler?/syslog_skip_cert_verify?
   value: false
-
 - type: replace
   path: /instance_groups/name=log-api/jobs/name=loggregator_trafficcontroller/properties/ssl?/skip_cert_verify?
   value: false
-
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/name=rep/properties/diego?/ssl?/skip_cert_verify?
   value: false

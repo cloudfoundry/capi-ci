@@ -1,52 +1,51 @@
 resources:
-- name: capi-ci-private
-  type: git
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/capi-ci-private.git
-    username: ((ari-wg-gitbot-username))
-    password: ((ari-wg-gitbot-token))
-- name: runtime-ci
-  type: git
-  icon: github
-  source:
-    branch: main
-    uri: https://github.com/cloudfoundry/runtime-ci.git
-- name: daily
-  type: time
-  icon: clock-outline
-  source:
-    interval: 24h
-
+  - name: capi-ci-private
+    type: git
+    source:
+      branch: main
+      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: runtime-ci
+    type: git
+    icon: github
+    source:
+      branch: main
+      uri: https://github.com/cloudfoundry/runtime-ci.git
+  - name: daily
+    type: time
+    icon: clock-outline
+    source:
+      interval: 24h
 jobs:
-- name: validate-certs
-  serial: true
-  public: true
-  plan:
-    - in_parallel:
-        - get: capi-ci-private
-          trigger: true
-        - get: runtime-ci
-          trigger: true
-        - get: daily
-          trigger: true
-    - task: validate-certs
-      file: runtime-ci/tasks/check-certs/task.yml
-      input_mapping:
-        relint-envs: capi-ci-private
-      params:
-        DAYS_LEFT_THRESHOLD: 16
-        PATH_TO_VERIFY: relint-envs
-        PATHS_TO_IGNORE:
-          - arya/certs/load-balancer
-          - ci-green/vars
-          - elsa/self-signed-certs/load-balancer
-          - gabrielle-postgres/certs/load-balancer
-          - kiki/certs/load-balancer
-          - leia-azure-storage/certs/load-balancer
-          - mulan/certs/load-balancer
-          - rey-gcs-storage/certs/load-balancer
-          - ripley/certs/load-balancer
-          - rose/certs
-          - rose/vars
-          - xena-mysql/certs/load-balancer
+  - name: validate-certs
+    serial: true
+    public: true
+    plan:
+      - in_parallel:
+          - get: capi-ci-private
+            trigger: true
+          - get: runtime-ci
+            trigger: true
+          - get: daily
+            trigger: true
+      - task: validate-certs
+        file: runtime-ci/tasks/check-certs/task.yml
+        input_mapping:
+          relint-envs: capi-ci-private
+        params:
+          DAYS_LEFT_THRESHOLD: 16
+          PATH_TO_VERIFY: relint-envs
+          PATHS_TO_IGNORE:
+            - arya/certs/load-balancer
+            - ci-green/vars
+            - elsa/self-signed-certs/load-balancer
+            - gabrielle-postgres/certs/load-balancer
+            - kiki/certs/load-balancer
+            - leia-azure-storage/certs/load-balancer
+            - mulan/certs/load-balancer
+            - rey-gcs-storage/certs/load-balancer
+            - ripley/certs/load-balancer
+            - rose/certs
+            - rose/vars
+            - xena-mysql/certs/load-balancer

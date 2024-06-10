@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -e
 
 function setup_v3_ssh() {

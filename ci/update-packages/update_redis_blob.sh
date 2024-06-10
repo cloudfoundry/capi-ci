@@ -19,7 +19,6 @@ echo "${PRIVATE_YAML}" > "$PWD"/capi-release/config/private.yml
 
 capi_blobs_path="$PWD/capi-release/config/blobs.yml"
 
-
 #e.g. redis/7.0.11.tar.gz
 current_redis_blob_name=$(grep -m 1  "redis" "$capi_blobs_path" | awk -F':' '{print $1}') || { echo "Error: grep command failed."; exit 1; }
 # e.g. 7.0.11
@@ -52,7 +51,6 @@ pushd capi-release
     sed -i "0,/$current_redis_version/s//$new_redis_version/" packages/redis/spec || { echo "Error: sed command for 'spec' failed."; exit 1; }
 
     bosh upload-blobs -n
-
 
     git --no-pager diff packages .final_builds config
 

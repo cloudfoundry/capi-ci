@@ -1,11 +1,9 @@
 ---
 platform: linux
-
 image_resource:
   type: registry-image
   source:
     repository: cloudfoundry/cf-deployment-concourse-tasks
-
 inputs:
   - name: cloud_controller_ng
   - name: capi-release
@@ -13,9 +11,7 @@ inputs:
   - name: diego-release
   - name: cc-uploader
   - name: tps
-
 outputs:
   - name: bumped
-
 run:
   path: capi-ci/ci/git/bump_capi_release.sh

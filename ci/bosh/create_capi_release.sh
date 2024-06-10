@@ -45,10 +45,10 @@ pushd capi-release
     exit $EXIT_STATUS
   fi
 
- if [ ! -f $TARBALL_NAME ]; then
+  if [ ! -f $TARBALL_NAME ]; then
     echo "No release tarball found"
     exit 1
- fi
+  fi
 
 popd
 

@@ -1,18 +1,14 @@
 ---
 platform: linux
-
 image_resource:
   type: docker-image
   source:
     repository: cloudfoundry/capi
     tag: bosh-lite
-
 inputs:
   - name: capi-ci
   - name: bosh-lite-env-info
-
 outputs:
   - name: bosh-target
-
 run:
   path: capi-ci/ci/bosh-lite/write-bosh-target-file.sh

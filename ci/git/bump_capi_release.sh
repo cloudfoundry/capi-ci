@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -e
 
 source ~/.bashrc
@@ -41,7 +42,7 @@ pushd capi-release
 
   if [[ $exit_code -eq 0 ]]
   then
-   echo "There are no changes to commit."
+    echo "There are no changes to commit."
   else
     git config user.name "ari-wg-gitbot"
     git config user.email "app-runtime-interfaces@cloudfoundry.org"

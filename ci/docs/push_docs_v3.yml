@@ -1,18 +1,14 @@
 ---
 platform: linux
-
 image_resource:
   type: registry-image
   source:
     repository: cloudfoundry/capi
     tag: rc-docs
-
 inputs:
   - name: capi-release
   - name: capi-ci
-
 run:
   path: capi-ci/ci/docs/push_docs_v3.sh
-
 params:
   GITHUB_PUSH_KEY:

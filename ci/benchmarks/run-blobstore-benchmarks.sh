@@ -1,6 +1,6 @@
 #!/bin/bash
+
 set -eu
-set +x
 
 # ENV
 : "${BOSH_API_INSTANCE:="api/0"}"
@@ -59,7 +59,7 @@ kill_background_ssh_tunnel() {
   echo "${green}Killing SSH tunnel...${reset}"
 
   ssh_pid="$(lsof -i ":${tunnel_port}" | tail -n1 | awk '{ printf $2 }')"
-    kill "${ssh_pid}"
+  kill "${ssh_pid}"
 }
 
 cache_ip_for_hostname() {

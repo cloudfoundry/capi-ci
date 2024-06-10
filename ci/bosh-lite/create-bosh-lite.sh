@@ -60,8 +60,8 @@ pushd "${state_dir}" > /dev/null
 
     echo -e "\nDeploying new Bosh-Lite..."
     bosh create-env \
-       --state ./state.json \
-       --vars-store ./creds.yml \
+      --state ./state.json \
+      --vars-store ./creds.yml \
       ./director.yml
 
     export BOSH_ENVIRONMENT=$(bosh int director.yml --path=/instance_groups/name=bosh/networks/name=public/static_ips/0)

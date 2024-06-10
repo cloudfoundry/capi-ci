@@ -5,14 +5,12 @@
   value:
     name: credhub
     rules:
-    - destination: 0.0.0.0/0
-      ports: '8844'
-      protocol: tcp
-
+      - destination: 0.0.0.0/0
+        ports: "8844"
+        protocol: tcp
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/default_running_security_groups?/-
   value: credhub
-
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/default_staging_security_groups?/-
   value: credhub

@@ -1,21 +1,15 @@
 ---
 platform: linux
-
 image_resource:
   type: registry-image
   source:
     repository: cloudfoundry/capi
     tag: rc-docs
-
 inputs:
   - name: cloud_controller_ng
   - name: capi-ci
   - name: cc-api-v2-version
-
-
 outputs:
   - name: cloud_controller_ng_bumped_docs
-
 run:
   path: capi-ci/ci/docs/update_v2_docs_info_api_version.sh
-

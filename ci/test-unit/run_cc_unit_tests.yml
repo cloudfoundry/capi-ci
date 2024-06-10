@@ -1,19 +1,15 @@
 ---
 platform: linux
-
 image_resource:
   type: registry-image
   source:
     repository: cloudfoundry/capi
     tag: ruby-units
-
 inputs:
   - name: cloud_controller_ng
   - name: capi-ci
-
 run:
   path: capi-ci/ci/test-unit/run_cc_unit_tests.sh
-
 params:
   DB: ~
   RUN_IN_PARALLEL: ~

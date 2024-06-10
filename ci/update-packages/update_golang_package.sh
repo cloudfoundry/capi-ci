@@ -1,11 +1,11 @@
 #!/bin/bash
 
-set -e -x
+set -e
 
 echo "${PRIVATE_YAML}" > $PWD/capi-release/config/private.yml
 
 pushd golang-release
-	new_go_version=$(bosh blobs | grep linux | grep go${GO_VERSION} | cut -d . -f 1-3 | sort | tail -1)
+  new_go_version=$(bosh blobs | grep linux | grep go${GO_VERSION} | cut -d . -f 1-3 | sort | tail -1)
 popd
 
 cd capi-release

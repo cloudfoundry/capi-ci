@@ -1,6 +1,5 @@
 ---
 platform: linux
-
 inputs:
   - name: capi-ci
   - name: capi-ci-private
@@ -8,15 +7,12 @@ inputs:
   - name: golang-release
 outputs:
   - name: updated-capi-release
-
 image_resource:
   type: registry-image
   source:
     repository: cloudfoundry/cf-deployment-concourse-tasks
-
 params:
   GO_VERSION:
   PRIVATE_YAML:
-
 run:
   path: capi-ci/ci/update-packages/update_golang_package.sh

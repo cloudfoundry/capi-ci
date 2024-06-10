@@ -1,5 +1,6 @@
 #!/bin/bash
-set -xeu
+
+set -eu
 
 build_dir=${PWD}
 

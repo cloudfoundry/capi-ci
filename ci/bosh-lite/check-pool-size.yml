@@ -1,22 +1,17 @@
 ---
 platform: linux
-
 image_resource:
   type: docker-image
   source:
     repository: cloudfoundry/capi
     tag: bosh-lite
-
 inputs:
   - name: capi-ci
   - name: env-pool
-
 outputs:
   - name: updated-env-pool
-
 run:
   path: capi-ci/ci/bosh-lite/check-pool-size.sh
-
 params:
   POOL_NAME: ""
   MIN_UNCLAIMED_COUNT: ""

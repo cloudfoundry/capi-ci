@@ -1,20 +1,16 @@
 ---
 platform: linux
-
 image_resource:
   type: registry-image
   source:
     repository: cloudfoundry/capi
     tag: migration-compatibility
-
 inputs:
   - name: capi-ci
   - name: environment
   - name: capi-ci-private
-
 run:
   path: capi-ci/ci/benchmarks/run-blobstore-benchmarks.sh
-
 params:
   BOSH_API_INSTANCE:
   BOSH_DEPLOYMENT_NAME:

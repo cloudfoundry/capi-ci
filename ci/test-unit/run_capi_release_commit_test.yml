@@ -1,16 +1,13 @@
 ---
 platform: linux
-
 image_resource:
   type: registry-image
   source:
     repository: cloudfoundry/capi
     tag: ruby-units
-
 inputs:
   - name: capi-ci
   - name: capi-release
   - name: capi-release-main
-
 run:
   path: capi-ci/ci/test-unit/run_capi_release_commit_test.sh

@@ -1,19 +1,15 @@
 ---
 platform: linux
-
 image_resource:
   type: docker-image
   source:
     repository: cloudfoundry/capi
     tag: bosh-lite
-
 inputs:
   - name: capi-ci
   - name: director-state
   - name: terraform
-
 outputs:
   - name: bosh-lite-env-info
-
 run:
   path: capi-ci/ci/bosh-lite/create-env-vars-file.sh

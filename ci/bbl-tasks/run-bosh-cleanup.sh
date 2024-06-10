@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -eu
 
 function setup_bosh_env_vars() {
