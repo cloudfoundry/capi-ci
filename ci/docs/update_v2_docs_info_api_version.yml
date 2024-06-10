@@ -3,8 +3,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: cloudfoundry/capi
-    tag: rc-docs
+    repository: cloudfoundry/cf-deployment-concourse-tasks
 inputs:
   - name: cloud_controller_ng
   - name: capi-ci
