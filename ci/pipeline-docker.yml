@@ -34,21 +34,6 @@ resources:
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
       paths:
         - capi-runtime-ci/Dockerfile
-  - name: capi-dockerfiles-sits
-    type: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - sits/Dockerfile
-  - name: docker-image-sits
-    type: registry-image
-    source:
-      repository: cloudfoundry/capi
-      tag: sits
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-      email: ((dockerhub_email))
   - name: docker-image-runtime-ci
     type: registry-image
     source:
@@ -87,21 +72,6 @@ resources:
       username: ((dockerhub_user))
       password: ((dockerhub_pass))
       email: ((dockerhub_email))
-  - name: capi-dockerfiles-bbl
-    type: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - bbl/Dockerfile
-  - name: docker-image-bbl
-    type: registry-image
-    source:
-      repository: cloudfoundry/capi
-      tag: bbl
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-      email: ((dockerhub_email))
   - name: capi-dockerfiles-bosh-lite
     type: git
     source:
@@ -117,13 +87,6 @@ resources:
       username: ((dockerhub_user))
       password: ((dockerhub_pass))
       email: ((dockerhub_email))
-  - name: capi-dockerfiles-bbr-run-drats
-    type: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - bbr-run-drats/Dockerfile
   - name: capi-dockerfiles-migration-compatibility
     type: git
     source:
@@ -131,14 +94,6 @@ resources:
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
       paths:
         - capi-migration-compatibility/Dockerfile
-  - name: docker-image-bbr-run-drats
-    type: registry-image
-    source:
-      repository: cloudfoundry/capi
-      tag: bbr-run-drats
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-      email: ((dockerhub_email))
   - name: docker-image-migration-compatibility
     type: registry-image
     source:
@@ -211,18 +166,6 @@ jobs:
       - put: docker-image-go-units
         params:
           build: capi-dockerfiles-go-units/capi-go-units
-  - name: bbl-docker
-    serial: true
-    plan:
-      - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-bbl
-              trigger: true
-      - put: docker-image-bbl
-        params:
-          build: capi-dockerfiles-bbl/bbl
   - name: runtime-ci
     serial: true
     plan:
@@ -247,18 +190,6 @@ jobs:
       - put: docker-image-bosh-lite
         params:
           build: capi-dockerfiles-bosh-lite/bosh-lite
-  - name: capi-dockerfiles-bbr-run-drats
-    serial: true
-    plan:
-      - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-bbr-run-drats
-              trigger: true
-      - put: docker-image-bbr-run-drats
-        params:
-          build: capi-dockerfiles-bbr-run-drats/bbr-run-drats
   - name: migration-compatibility-docker
     serial: true
     plan:
@@ -271,15 +202,3 @@ jobs:
       - put: docker-image-migration-compatibility
         params:
           build: capi-dockerfiles-migration-compatibility/capi-migration-compatibility
-  - name: sits-docker
-    serial: true
-    plan:
-      - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-sits
-              trigger: true
-      - put: docker-image-sits
-        params:
-          build: capi-dockerfiles-sits/sits
