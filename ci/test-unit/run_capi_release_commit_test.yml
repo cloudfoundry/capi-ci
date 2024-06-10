@@ -3,8 +3,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: cloudfoundry/capi
-    tag: ruby-units
+    repository: cloudfoundry/cf-deployment-concourse-tasks
 inputs:
   - name: capi-ci
   - name: capi-release
