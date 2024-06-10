@@ -67,23 +67,6 @@ groups:
       - autobump-golang-package
       - bump-redis-blob
 resource_types:
-  - name: terraform
-    type: registry-image
-    source:
-      repository: ljfranklin/terraform-resource
-  - name: gcs
-    type: registry-image
-    source:
-      repository: frodenas/gcs-resource
-  - name: file-url
-    type: registry-image
-    source:
-      repository: pivotalservices/concourse-curl-resource
-      tag: latest
-  - name: cron-resource
-    type: registry-image
-    source:
-      repository: cftoolsmiths/cron-resource
   - name: gcs-resource
     type: registry-image
     source:
