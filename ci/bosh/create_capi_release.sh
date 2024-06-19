@@ -2,7 +2,8 @@
 
 set -e
 
-SCRIPT_DIR=$(dirname "$0")
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 VERSION=`cat next-version/version`
 
 pushd cloud_controller_ng

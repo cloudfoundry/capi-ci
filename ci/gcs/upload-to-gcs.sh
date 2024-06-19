@@ -3,7 +3,6 @@
 set -eu
 
 # ENV
-
 : ${GCP_JSON_KEY:?}
 : ${GCP_BUCKET:?}
 
@@ -11,9 +10,8 @@ set -eu
 : ${USE_ENV_NAMED_SUBDIR:="false"}
 
 # INPUTS
-
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../../" && pwd )"
+workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
 source_dir="${workspace_dir}/source-directory"
 environment="$( cat ${workspace_dir}/environment/name )"
 

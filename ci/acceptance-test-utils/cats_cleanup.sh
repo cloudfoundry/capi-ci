@@ -14,10 +14,6 @@ pushd "capi-ci-private/${BBL_STATE_DIR}"
   unset BOSH_ALL_PROXY
 popd
 
-# INPUTS
-script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../../" && pwd )"
-
 CF_ADMIN_PASSWORD="$(credhub get --name=/${DIRECTOR_NAME}/${CF_DEPLOYMENT_NAME}/cf_admin_password -j | jq .value -r)"
 
 echo "Logging in and setting up..."

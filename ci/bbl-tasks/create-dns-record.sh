@@ -12,7 +12,7 @@ set -eu -o pipefail
 
 # INPUTS
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../../" && pwd )"
+workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
 bbl_state_dir="${workspace_dir}/bbl-state/${BBL_STATE_DIR}"
 
 tmp_dir="$(mktemp -d /tmp/create-dns-record.XXXXXXXX)"

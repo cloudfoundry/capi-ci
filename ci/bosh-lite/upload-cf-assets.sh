@@ -4,7 +4,7 @@ set -eu -o pipefail
 
 # INPUTS
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../../" && pwd )"
+workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
 cf_deployment_repo="${workspace_dir}/cf-deployment"
 env_info="${workspace_dir}/bosh-lite-env-info"
 

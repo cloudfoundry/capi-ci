@@ -4,7 +4,7 @@ set -eu
 
 # INPUTS
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../../" && pwd )"
+workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
 director_state="${workspace_dir}/director-state"
 terraform_dir="${workspace_dir}/terraform"
 

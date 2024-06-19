@@ -10,13 +10,11 @@ set -eu
 : ${USE_ENV_NAMED_SUBDIR:="false"}
 
 # INPUTS
-
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../../" && pwd )"
+workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
 environment="$( cat ${workspace_dir}/environment/name )"
 
 # OUTPUTS
-
 destination_dir="${workspace_dir}/destination-directory"
 
 # TASK

@@ -2,9 +2,6 @@
 
 set -eu
 
-script_dir="$( cd "$( dirname "$0" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
-
 read_with_escaped_newlines() {
   perl -pe 's|\n|\\n|' "$1"
 }
@@ -14,6 +11,8 @@ read_with_escaped_newlines() {
 : ${DEPLOYMENT_NAME:?}
 
 # INPUTS
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
 capi_ci_private="$( cd "${workspace_dir}/capi-ci-private" && pwd )"
 
 # OUTPUTS
