@@ -73,7 +73,6 @@ groups:
   - name: bump-dependencies
     jobs:
       - autobump-golang-package
-      - bump-redis-blob
       - bump-valkey-blob
 resource_types:
   - name: gcs-resource
@@ -188,14 +187,6 @@ resources:
       repository: capi-release
       drafts: false
       access_token: ((ari-wg-gitbot-token))
-  - name: redis-release
-    type: github-release
-    source:
-      owner: redis
-      repository: redis
-      access_token: ((ari-wg-gitbot-token))
-      pre_release: false
-      semver_constraint: 7.2.x
   - name: valkey-release
     type: github-release
     source:
@@ -408,24 +399,6 @@ jobs:
           GO_VERSION: 1
           PRIVATE_YAML: ((capi_release_private_yaml))
         file: capi-ci/ci/update-packages/update_golang_package.yml
-      - put: capi-release-develop
-        params:
-          repository: updated-capi-release
-  - name: bump-redis-blob
-    plan:
-      - in_parallel:
-          - get: redis-release
-            trigger: true
-            params:
-              include_source_tarball: true
-          - get: capi-release
-            resource: capi-release-develop
-            trigger: false
-          - get: capi-ci
-      - task: update-redis-blob
-        params:
-          PRIVATE_YAML: ((capi_release_private_yaml))
-        file: capi-ci/ci/update-packages/update_redis_blob.yml
       - put: capi-release-develop
         params:
           repository: updated-capi-release
