@@ -27,20 +27,6 @@ resources:
       tag: rc-docs
       username: ((dockerhub_user))
       password: ((dockerhub_pass))
-  - name: capi-dockerfiles-runtime-ci
-    type: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - capi-runtime-ci/Dockerfile
-  - name: docker-image-runtime-ci
-    type: docker-image
-    source:
-      repository: cloudfoundry/capi
-      tag: runtime-ci
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
   - name: capi-dockerfiles-ruby-units
     type: git
     source:
@@ -181,18 +167,6 @@ jobs:
       - put: docker-image-go-units
         params:
           build: capi-dockerfiles-go-units/capi-go-units
-  - name: runtime-ci
-    serial: true
-    plan:
-      - in_parallel:
-          steps:
-#            - get: weekly
-#              trigger: true
-            - get: capi-dockerfiles-runtime-ci
-              trigger: true
-      - put: docker-image-runtime-ci
-        params:
-          build: capi-dockerfiles-runtime-ci/capi-runtime-ci
   - name: bosh-lite-docker
     serial: true
     plan:

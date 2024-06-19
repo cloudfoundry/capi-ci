@@ -2,14 +2,12 @@
 
 set -e
 
-source ~/.bashrc
-
 FINAL_RELEASE_VERSION=$(cat next-version/version)
 
 function setup_git_user() {
   pushd capi-release
     git config user.name 'ari-wg-gitbot'
-    git config user.email app-runtime-interfaces@cloudfoundry.org
+    git config user.email 'app-runtime-interfaces@cloudfoundry.org'
   popd
 }
 

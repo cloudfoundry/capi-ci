@@ -2,8 +2,6 @@
 
 set -e
 
-source ~/.bashrc
-
 pushd cloud_controller_ng
   SOURCE_MASTER_SHA=$(git rev-parse HEAD)
   PASSED_UNIT_TESTS_SHA=$(git log -n1 --format="%H" -- db)
