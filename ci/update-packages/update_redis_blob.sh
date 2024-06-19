@@ -19,9 +19,7 @@ echo "${PRIVATE_YAML}" > "$PWD"/capi-release/config/private.yml
 
 capi_blobs_path="$PWD/capi-release/config/blobs.yml"
 
-#e.g. redis/7.0.11.tar.gz
 current_redis_blob_name=$(grep -m 1  "redis" "$capi_blobs_path" | awk -F':' '{print $1}') || { echo "Error: grep command failed."; exit 1; }
-# e.g. 7.0.11
 current_redis_version=$(echo "${current_redis_blob_name}" | awk -F'/' '{print $2}' | awk -F'.tar.gz' '{print $1}') || { echo "Error: awk command failed."; exit 1; }
 echo "Current Redis version is '${current_redis_version}'"
 

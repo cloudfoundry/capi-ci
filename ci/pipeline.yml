@@ -66,6 +66,7 @@ groups:
     jobs:
       - autobump-golang-package
       - bump-redis-blob
+      - bump-valkey-blob
 resource_types:
   - name: gcs-resource
     type: registry-image
@@ -184,6 +185,14 @@ resources:
     source:
       owner: redis
       repository: redis
+      access_token: ((ari-wg-gitbot-token))
+      pre_release: false
+      semver_constraint: 7.2.x
+  - name: valkey-release
+    type: github-release
+    source:
+      owner: valkey-io
+      repository: valkey
       access_token: ((ari-wg-gitbot-token))
       pre_release: false
       semver_constraint: 7.2.x
@@ -385,6 +394,24 @@ jobs:
         params:
           PRIVATE_YAML: ((capi_release_private_yaml))
         file: capi-ci/ci/update-packages/update_redis_blob.yml
+      - put: capi-release-develop
+        params:
+          repository: updated-capi-release
+  - name: bump-valkey-blob
+    plan:
+      - in_parallel:
+          - get: valkey-release
+            trigger: true
+            params:
+              include_source_tarball: true
+          - get: capi-release
+            resource: capi-release-develop
+            trigger: false
+          - get: capi-ci
+      - task: update-valkey-blob
+        params:
+          PRIVATE_YAML: ((capi_release_private_yaml))
+        file: capi-ci/ci/update-packages/update_valkey_blob.yml
       - put: capi-release-develop
         params:
           repository: updated-capi-release

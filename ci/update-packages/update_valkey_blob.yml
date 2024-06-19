@@ -1,0 +1,16 @@
+---
+platform: linux
+inputs:
+  - name: capi-ci
+  - name: capi-release
+  - name: valkey-release
+outputs:
+  - name: updated-capi-release
+image_resource:
+  type: registry-image
+  source:
+    repository: cloudfoundry/cf-deployment-concourse-tasks
+params:
+  PRIVATE_YAML:
+run:
+  path: capi-ci/ci/update-packages/update_valkey_blob.sh
