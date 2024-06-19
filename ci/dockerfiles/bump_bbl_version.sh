@@ -6,7 +6,7 @@ BBL_VERSION=$(cat bbl-github-release/version)
 
 pushd capi-dockerfiles > /dev/null
   for dockerfile in $(grep -Rl "ENV bbl_version" .); do
-    sed -i "s/ENV bbl_version.*$/ENV bbl_version BBL_VERSION/" $dockerfile
+    sed -i "s/ENV bbl_version.*$/ENV bbl_version $BBL_VERSION/" $dockerfile
   done
 
   if [[ -n $(git status --porcelain) ]]; then
