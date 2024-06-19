@@ -28,7 +28,7 @@ pushd capi-release
     bosh sync-blobs --sha2 --parallel=10 && break
   done
 
-  ./scripts/unused_blobs
+  #./scripts/unused_blobs
 
   TARBALL_NAME=capi-${VERSION}-${CAPI_COMMIT_SHA}-${CC_COMMIT_SHA}.tgz
   for i in {1..5}; do
