@@ -11,4 +11,4 @@ inputs:
 outputs:
   - name: capi-dockerfiles-updated
 run:
-  path: capi-ci/ci/dockerfiles/bump_bosh_version.sh
+  path: capi-ci/ci/dockerfiles/bump_bosh_cli_version.sh

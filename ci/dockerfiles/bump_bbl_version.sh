@@ -2,11 +2,11 @@
 
 set -eu
 
-BOSH_CLI_VERSION=$(cat bosh-cli-github-release/version)
+BBL_VERSION=$(cat bbl-github-release/version)
 
 pushd capi-dockerfiles > /dev/null
-  for dockerfile in $(grep -Rl "ENV bosh_cli_version" .); do
-    sed -i "s/ENV bosh_cli_version.*$/ENV bosh_cli_version $BOSH_CLI_VERSION/" $dockerfile
+  for dockerfile in $(grep -Rl "ENV bbl_version" .); do
+    sed -i "s/ENV bbl_version.*$/ENV bbl_version BBL_VERSION/" $dockerfile
   done
 
   if [[ -n $(git status --porcelain) ]]; then
@@ -14,7 +14,7 @@ pushd capi-dockerfiles > /dev/null
     git config user.email "app-runtime-interfaces@cloudfoundry.org"
     git add .
     git commit --allow-empty \
-      -m "Update bosh version in Dockerfiles"
+      -m "Update bbl version in Dockerfiles"
   fi
 popd > /dev/null
 
