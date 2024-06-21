@@ -1458,8 +1458,6 @@ jobs:
           NEW_OPS_FILES: |
             cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
-            cf-deployment-operations/scale-up-cloud-controller.yml
-            cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
             cf-deployment-operations/disable-uaa-get-requests.yml
@@ -1478,8 +1476,6 @@ jobs:
             base-ops-files/operations/use-compiled-releases.yml
             use-valkey.yml
             use-latest-capi.yml
-            scale-up-cloud-controller.yml
-            add-database-encryption-key.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
             disable-uaa-get-requests.yml
@@ -1708,9 +1704,9 @@ jobs:
             scale-generic-worker-processes.yml
             disable-uaa-get-requests.yml
             seed-credhub-asg.yml
-            seed-uaa-asg.yml
             base-ops-files/operations/scale-database-cluster.yml
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
+            seed-uaa-asg.yml
           VARS_FILES: |
             olaf-mysql/bbl-state/vars/director-vars-file.yml
   - name: olaf-mysql-tests
@@ -1914,8 +1910,6 @@ jobs:
           NEW_OPS_FILES: |
             cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
-            cf-deployment-operations/scale-up-cloud-controller.yml
-            cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
             cf-deployment-operations/disable-uaa-get-requests.yml
@@ -1935,8 +1929,6 @@ jobs:
             base-ops-files/operations/use-postgres.yml
             use-valkey.yml
             use-latest-capi.yml
-            scale-up-cloud-controller.yml
-            add-database-encryption-key.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
             disable-uaa-get-requests.yml
@@ -2132,14 +2124,11 @@ jobs:
           NEW_OPS_FILES: |
             cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
-            cf-deployment-operations/scale-up-cloud-controller.yml
-            cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
             cf-deployment-operations/disable-uaa-get-requests.yml
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
-            cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
             cf-deployment-operations/disable-skip-cert-verify.yml
             cf-deployment-operations/disable-skip-cert-verify-iso-seg.yml
       - task: deploy
@@ -2161,15 +2150,12 @@ jobs:
             base-ops-files/operations/use-gcs-blobstore-service-account.yml
             use-valkey.yml
             use-latest-capi.yml
-            scale-up-cloud-controller.yml
-            add-database-encryption-key.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
             disable-uaa-get-requests.yml
             seed-credhub-asg.yml
             base-ops-files/operations/scale-database-cluster.yml
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
-            add-database-encryption-key.yml
             seed-uaa-asg.yml
             disable-skip-cert-verify.yml
             disable-skip-cert-verify-iso-seg.yml
