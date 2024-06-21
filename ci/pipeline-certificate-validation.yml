@@ -1,6 +1,8 @@
+---
 resources:
   - name: capi-ci-private
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -8,7 +10,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: runtime-ci
     type: git
-    icon: github
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/runtime-ci.git

@@ -1,6 +1,8 @@
+---
 resources:
 #  - name: weekly
 #    type: time
+#    icon: clock-outline
 #    source:
 #      start: 23:00 -0700
 #      stop: 23:30 -0700
@@ -8,6 +10,7 @@ resources:
 #        - Sunday
   - name: capi-dockerfiles
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
@@ -15,6 +18,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: capi-dockerfiles-rc-docs
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
@@ -22,6 +26,7 @@ resources:
         - rc-docs/Dockerfile
   - name: docker-image-rc-docs
     type: docker-image
+    icon: docker
     source:
       repository: cloudfoundry/capi
       tag: rc-docs
@@ -29,6 +34,7 @@ resources:
       password: ((dockerhub_pass))
   - name: capi-dockerfiles-runtime-ci
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
@@ -36,6 +42,7 @@ resources:
         - capi-runtime-ci/Dockerfile
   - name: docker-image-runtime-ci
     type: docker-image
+    icon: docker
     source:
       repository: cloudfoundry/capi
       tag: runtime-ci
@@ -43,6 +50,7 @@ resources:
       password: ((dockerhub_pass))
   - name: capi-dockerfiles-ruby-units
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
@@ -50,6 +58,7 @@ resources:
         - capi-ruby-units/Dockerfile
   - name: docker-image-ruby-units
     type: docker-image
+    icon: docker
     source:
       repository: cloudfoundry/capi
       tag: ruby-units
@@ -57,6 +66,7 @@ resources:
       password: ((dockerhub_pass))
   - name: capi-dockerfiles-go-units
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
@@ -64,6 +74,7 @@ resources:
         - capi-go-units/Dockerfile
   - name: docker-image-go-units
     type: docker-image
+    icon: docker
     source:
       repository: cloudfoundry/capi
       tag: go-units
@@ -71,6 +82,7 @@ resources:
       password: ((dockerhub_pass))
   - name: capi-dockerfiles-bosh-lite
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
@@ -78,6 +90,7 @@ resources:
         - bosh-lite/Dockerfile
   - name: docker-image-bosh-lite
     type: docker-image
+    icon: docker
     source:
       repository: cloudfoundry/capi
       tag: bosh-lite
@@ -85,6 +98,7 @@ resources:
       password: ((dockerhub_pass))
   - name: capi-dockerfiles-migration-compatibility
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-dockerfiles.git
@@ -92,6 +106,7 @@ resources:
         - capi-migration-compatibility/Dockerfile
   - name: docker-image-migration-compatibility
     type: docker-image
+    icon: docker
     source:
       repository: cloudfoundry/capi
       tag: migration-compatibility
@@ -99,18 +114,21 @@ resources:
       password: ((dockerhub_pass))
   - name: bosh-cli-github-release
     type: github-release
+    icon: github
     source:
       user: cloudfoundry
       repository: bosh-cli
       access_token: ((ari-wg-gitbot-token))
   - name: bbl-github-release
     type: github-release
+    icon: github
     source:
       user: cloudfoundry
       repository: bosh-bootloader
       access_token: ((ari-wg-gitbot-token))
   - name: capi-ci
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci.git

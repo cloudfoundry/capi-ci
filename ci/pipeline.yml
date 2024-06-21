@@ -1,3 +1,4 @@
+---
 # PINNED VERSIONS
 # To pin a version of a git resource, include the commit hash in the list here:
 #
@@ -83,6 +84,7 @@ resources:
   #   schedules
   - name: weekly-sunday
     type: time
+    icon: clock-outline
     source:
       location: America/Los_Angeles
       start: 23:00
@@ -91,17 +93,20 @@ resources:
         - Sunday
   - name: nightly
     type: time
+    icon: clock-outline
     source:
       location: America/Los_Angeles
       start: 22:30
       stop: 23:00
   - name: capi-ci
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci.git
   - name: capi-ci-private
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -109,6 +114,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: capi-release-main
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-release.git
@@ -116,6 +122,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: capi-release-ci-passed
     type: git
+    icon: git
     source:
       branch: ci-passed
       uri: https://github.com/cloudfoundry/capi-release.git
@@ -123,6 +130,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: capi-release-develop
     type: git
+    icon: git
     source:
       branch: develop
       uri: https://github.com/cloudfoundry/capi-release.git
@@ -130,18 +138,21 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: capi-release-tarball
     type: gcs-resource
+    icon: google-cloud
     source:
       bucket: capi-releases-app-runtime-interfaces
       regexp: capi-(.*)-.*-.*.tgz
       json_key: ((capi-release-blobs-uploader_key))
   - name: capi-final-releases
     type: gcs-resource
+    icon: google-cloud
     source:
       bucket: capi-final-releases-app-runtime-interfaces
       regexp: capi-(.*)-.*-.*.tgz
       json_key: ((capi-release-blobs-uploader_key))
   - name: next-version
     type: semver
+    icon: counter
     source:
       driver: gcs
       json_key: ((capi-release-blobs-uploader_key))
@@ -150,6 +161,7 @@ resources:
       key: current-capi-release-version
   - name: cc-api-v3-version
     type: semver
+    icon: counter
     source:
       driver: git
       branch: main
@@ -159,6 +171,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: cc-api-v2-version
     type: semver
+    icon: counter
     source:
       driver: git
       branch: main
@@ -168,6 +181,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: cc-uploader
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/cc-uploader.git
@@ -175,6 +189,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: github-release
     type: github-release
+    icon: github
     source:
       user: cloudfoundry
       repository: capi-release
@@ -182,6 +197,7 @@ resources:
       access_token: ((ari-wg-gitbot-token))
   - name: github-published-release
     type: github-release
+    icon: github
     source:
       user: cloudfoundry
       repository: capi-release
@@ -189,6 +205,7 @@ resources:
       access_token: ((ari-wg-gitbot-token))
   - name: valkey-release
     type: github-release
+    icon: github
     source:
       owner: valkey-io
       repository: valkey
@@ -197,6 +214,7 @@ resources:
       semver_constraint: 7.2.x
   - name: golang-release
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/bosh-package-golang-release
@@ -205,6 +223,7 @@ resources:
       tag_filter: v*
   - name: cloud_controller_ng
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/cloud_controller_ng.git
@@ -212,6 +231,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: diego-release
     type: git
+    icon: git
     source:
       branch: release
       uri: https://github.com/cloudfoundry/diego-release.git
@@ -219,6 +239,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: sync-integration-tests
     type: git
+    icon: git
     source:
       branch: master
       uri: https://github.com/cloudfoundry/sync-integration-tests.git
@@ -226,6 +247,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: tps
     type: git
+    icon: git
     source:
       branch: master
       uri: https://github.com/cloudfoundry/tps.git
@@ -233,12 +255,14 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: cf-deployment
     type: git
+    icon: git
     source:
       uri: https://github.com/cloudfoundry/cf-deployment.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: cf-deployment-concourse-tasks
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
@@ -246,6 +270,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: cf-acceptance-tests
     type: git
+    icon: git
     source:
       branch: release-candidate
       uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
@@ -253,6 +278,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: cf-cli
     type: github-release
+    icon: github
     source:
       owner: cloudfoundry
       repository: cli
@@ -261,6 +287,7 @@ resources:
       access_token: ((ari-wg-gitbot-token))
   - name: capi-bara-tests
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-bara-tests.git
@@ -268,6 +295,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: runtime-ci
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/runtime-ci.git
@@ -276,6 +304,7 @@ resources:
   # Elsa resources
   - name: elsa-ha-bbl-state
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -283,6 +312,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: elsa-ha-integration-configs
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -290,7 +320,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: elsa-ha-pool
     type: pool
-    icon: pool
+    icon: cloud-lock-outline
     source:
       uri: https://github.com/cloudfoundry/capi-ci-private.git
       branch: ari-bbl-env-pool
@@ -300,6 +330,7 @@ resources:
   # Kiki resources
   - name: kiki-mig-bbl-state
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -307,6 +338,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: kiki-integration-configs
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -315,6 +347,7 @@ resources:
   # Asha resources
   - name: asha-mysql-bbl-state
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -322,6 +355,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: asha-mysql-integration-configs
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -329,7 +363,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: asha-mysql-pool
     type: pool
-    icon: pool
+    icon: cloud-lock-outline
     source:
       uri: https://github.com/cloudfoundry/capi-ci-private.git
       branch: ari-bbl-env-pool
@@ -339,6 +373,7 @@ resources:
   # Olaf resources
   - name: olaf-mysql-bbl-state
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -346,6 +381,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: olaf-mysql-integration-configs
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -353,7 +389,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: olaf-mysql-pool
     type: pool
-    icon: pool
+    icon: cloud-lock-outline
     source:
       uri: https://github.com/cloudfoundry/capi-ci-private.git
       branch: ari-bbl-env-pool
@@ -363,6 +399,7 @@ resources:
   # Scar resources
   - name: scar-psql-bbl-state
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -370,6 +407,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: scar-psql-integration-configs
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
@@ -377,7 +415,7 @@ resources:
       password: ((ari-wg-gitbot-token))
   - name: scar-psql-pool
     type: pool
-    icon: pool
+    icon: cloud-lock-outline
     source:
       uri: https://github.com/cloudfoundry/capi-ci-private.git
       branch: ari-bbl-env-pool

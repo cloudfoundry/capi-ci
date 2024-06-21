@@ -1,3 +1,4 @@
+---
 resource_types:
   - name: terraform
     type: docker-image
@@ -10,6 +11,7 @@ resource_types:
 resources:
   - name: terraform
     type: terraform
+    icon: terraform
     source:
       backend_type: gcs
       backend_config:
@@ -18,16 +20,19 @@ resources:
         credentials: ((bosh_lite_gcp_json_key))
   - name: capi-ci
     type: git
+    icon: git
     source:
       branch: main
       uri: https://github.com/cloudfoundry/capi-ci.git
   - name: bosh-deployment
     type: git
+    icon: git
     source:
       branch: master
       uri: https://github.com/cloudfoundry/bosh-deployment.git
   - name: ready-pool
     type: pool
+    icon: cloud-lock-outline
     source:
       branch: main
       uri: git@github.com:cloudfoundry/capi-env-pool.git
@@ -40,6 +45,7 @@ resources:
           value: ((ari-wg-gitbot-email))
   - name: broken-pool
     type: pool
+    icon: cloud-lock-outline
     source:
       branch: main
       uri: git@github.com:cloudfoundry/capi-env-pool.git
@@ -48,6 +54,7 @@ resources:
       git_config: *pool-git-config
   - name: building-pool
     type: pool
+    icon: cloud-lock-outline
     source:
       branch: main
       uri: git@github.com:cloudfoundry/capi-env-pool.git
@@ -56,12 +63,14 @@ resources:
       git_config: *pool-git-config
   - name: pool-repo
     type: git
+    icon: git
     source:
       branch: main
       uri: git@github.com:cloudfoundry/capi-env-pool.git
       private_key: ((pcf_bosh_lite_pool_deploy_key))
   - name: create-bosh-lite-trigger
     type: git
+    icon: git
     source:
       branch: main
       uri: git@github.com:cloudfoundry/capi-env-pool.git
@@ -70,15 +79,18 @@ resources:
         - .trigger-bosh-lites-create # updated by check-pool-size
   - name: cf-deployment
     type: git
+    icon: git
     source:
       branch: release-candidate
       uri: https://github.com/cloudfoundry/cf-deployment.git
   - name: cf-deploy
     type: bosh-deployment
+    icon: cloud-upload-outline
     source:
       skip_check: true
   - name: one-hour
     type: time
+    icon: clock-outline
     source:
       interval: 1h
 jobs:
