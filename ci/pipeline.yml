@@ -1418,12 +1418,12 @@ jobs:
           new-ops-files: capi-ci
         params:
           NEW_OPS_FILES: |
+            cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/scale-up-cloud-controller.yml
             cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
-            cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/disable-uaa-get-requests.yml
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
@@ -1438,6 +1438,7 @@ jobs:
           SYSTEM_DOMAIN: *asha-mysql-domain
           OPS_FILES: |
             base-ops-files/operations/use-compiled-releases.yml
+            use-valkey.yml
             use-latest-capi.yml
             scale-up-cloud-controller.yml
             add-database-encryption-key.yml
@@ -1642,6 +1643,7 @@ jobs:
           new-ops-files: capi-ci
         params:
           NEW_OPS_FILES: |
+            cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
@@ -1662,6 +1664,7 @@ jobs:
             base-ops-files/operations/use-external-blobstore.yml
             base-ops-files/operations/use-s3-blobstore.yml
             base-ops-files/operations/use-compiled-releases.yml
+            use-valkey.yml
             use-latest-capi.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
@@ -1871,12 +1874,12 @@ jobs:
           new-ops-files: capi-ci
         params:
           NEW_OPS_FILES: |
+            cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/scale-up-cloud-controller.yml
             cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
-            cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/disable-uaa-get-requests.yml
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
@@ -1892,6 +1895,7 @@ jobs:
           OPS_FILES: |
             base-ops-files/operations/use-compiled-releases.yml
             base-ops-files/operations/use-postgres.yml
+            use-valkey.yml
             use-latest-capi.yml
             scale-up-cloud-controller.yml
             add-database-encryption-key.yml
@@ -2088,12 +2092,12 @@ jobs:
           new-ops-files: capi-ci
         params:
           NEW_OPS_FILES: |
+            cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/scale-up-cloud-controller.yml
             cf-deployment-operations/rotate-cc-database-key/add-database-encryption-key.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
-            cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/disable-uaa-get-requests.yml
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
@@ -2117,6 +2121,7 @@ jobs:
             base-ops-files/operations/experimental/use-compiled-releases-windows.yml
             base-ops-files/operations/use-external-blobstore.yml
             base-ops-files/operations/use-gcs-blobstore-service-account.yml
+            use-valkey.yml
             use-latest-capi.yml
             scale-up-cloud-controller.yml
             add-database-encryption-key.yml
