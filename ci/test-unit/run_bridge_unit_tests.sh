@@ -2,9 +2,6 @@
 
 set -e
 
-echo "======ENVIRONMENT======"
-printenv
-
 service postgresql start
 
 pushd cc-uploader
