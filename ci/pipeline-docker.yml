@@ -1,13 +1,13 @@
 ---
 resources:
-#  - name: weekly
-#    type: time
-#    icon: clock-outline
-#    source:
-#      start: 23:00 -0700
-#      stop: 23:30 -0700
-#      days:
-#        - Sunday
+  - name: weekly
+    type: time
+    icon: clock-outline
+    source:
+      start: 23:00 -0700
+      stop: 23:30 -0700
+      days:
+        - Sunday
   - name: capi-dockerfiles
     type: git
     icon: git
@@ -168,8 +168,8 @@ jobs:
     plan:
       - in_parallel:
           steps:
-#            - get: weekly
-#              trigger: true
+            - get: weekly
+              trigger: true
             - get: capi-dockerfiles-rc-docs
               trigger: true
       - put: docker-image-rc-docs
@@ -180,8 +180,8 @@ jobs:
     plan:
       - in_parallel:
           steps:
-#            - get: weekly
-#              trigger: true
+            - get: weekly
+              trigger: true
             - get: capi-dockerfiles-ruby-units
               trigger: true
       - put: docker-image-ruby-units
@@ -192,8 +192,8 @@ jobs:
     plan:
       - in_parallel:
           steps:
-#            - get: weekly
-#              trigger: true
+            - get: weekly
+              trigger: true
             - get: capi-dockerfiles-go-units
               trigger: true
       - put: docker-image-go-units
@@ -204,8 +204,8 @@ jobs:
     plan:
       - in_parallel:
           steps:
-#            - get: weekly
-#              trigger: true
+            - get: weekly
+              trigger: true
             - get: capi-dockerfiles-runtime-ci
               trigger: true
       - put: docker-image-runtime-ci
@@ -216,8 +216,8 @@ jobs:
     plan:
       - in_parallel:
           steps:
-#            - get: weekly
-#              trigger: true
+            - get: weekly
+              trigger: true
             - get: capi-dockerfiles-bosh-lite
               trigger: true
       - put: docker-image-bosh-lite
@@ -228,8 +228,8 @@ jobs:
     plan:
       - in_parallel:
           steps:
-#            - get: weekly
-#              trigger: true
+            - get: weekly
+              trigger: true
             - get: capi-dockerfiles-migration-compatibility
               trigger: true
       - put: docker-image-migration-compatibility
