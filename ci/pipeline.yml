@@ -229,6 +229,14 @@ resources:
       uri: https://github.com/cloudfoundry/cloud_controller_ng.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+  - name: cc-api-gh-pages
+    type: git
+    icon: git
+    source:
+      branch: gh-pages
+      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
   - name: diego-release
     type: git
     icon: git
@@ -449,7 +457,6 @@ jobs:
               include_source_tarball: true
           - get: capi-release
             resource: capi-release-develop
-            trigger: false
           - get: capi-ci
       - task: update-valkey-blob
         params:
@@ -815,10 +822,14 @@ jobs:
             params:
               submodules:
                 - src/cloud_controller_ng
+          - get: cc-api-gh-pages
       - task: push-rc-docs-v3
-        file: capi-ci/ci/docs/push_rc_docs_v3.yml
+        file: capi-ci/ci/docs/push_docs_v3.yml
         params:
-          GITHUB_PUSH_KEY: ((ari-wg-gitbot-ssh.private_key))
+          VERSION: release-candidate
+      - put: cc-api-gh-pages
+        params:
+          repository: updated-gh-pages
   - name: bump-cc-v3-api
     serial: true
     plan:
@@ -876,11 +887,12 @@ jobs:
             params:
               submodules:
                 - src/cloud_controller_ng
+          - get: cc-api-gh-pages
       - task: push-docs-v3
         file: capi-ci/ci/docs/push_docs_v3.yml
-        privileged: true
+      - put: cc-api-gh-pages
         params:
-          GITHUB_PUSH_KEY: ((ari-wg-gitbot-ssh.private_key))
+          repository: updated-gh-pages
   - name: elsa-ha-acquire-bbl-up-pool
     serial: true
     plan:

@@ -2,39 +2,47 @@
 
 set -e
 
-function setup_ssh_for_git() {
-  mkdir ${HOME}/.ssh
-  chmod 0700 ${HOME}/.ssh
-  ssh-keyscan -H github.com >> ${HOME}/.ssh/known_hosts
-  chmod 0644 ${HOME}/.ssh/known_hosts
-
-  echo "${GITHUB_PUSH_KEY}" > /tmp/push_rc_docs_key
-  chmod 600 /tmp/push_rc_docs_key
-  eval $(ssh-agent -s)
-  ssh-add /tmp/push_rc_docs_key
-  rm /tmp/push_rc_docs_key
-}
-
-function setup_git_user() {
-  git config user.name 'ari-wg-gitbot'
-  git config user.email 'app-runtime-interfaces@cloudfoundry.org'
-}
-
-function build_v3_docs() {
-  ./scripts/publish_docs_for_version.sh ${VERSION}
-}
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 function get_v3_version_from_cc() {
-  VERSION=$(cat config/version)
+  pushd capi-release/src/cloud_controller_ng > /dev/null
+    VERSION=$(cat config/version)
+  popd > /dev/null
+}
+
+function build_docs() {
+  "$SCRIPT_DIR/build_docs_v3.sh" "${VERSION}" "${DOCS_DIR}" "${GH_PAGES_DIR}"
+}
+
+function publish_docs() {
+  pushd cc-api-gh-pages > /dev/null
+    git config user.name 'ari-wg-gitbot'
+    git config user.email 'app-runtime-interfaces@cloudfoundry.org'
+
+    git add index.html --ignore-errors
+    git add versions.json
+    git add "version/${VERSION}"
+
+    if [[ "$(git diff --name-only --staged)" == '' ]]; then
+      echo "No changes to the docs. Nothing to publish"
+      return
+    fi
+
+    git commit -m "Bump v3 API docs version ${VERSION}"
+    cp -r . ../updated-gh-pages
+  popd > /dev/null
 }
 
 function main() {
-  pushd capi-release/src/cloud_controller_ng
-    setup_ssh_for_git
-    setup_git_user
+  if [ -z "$VERSION" ]; then
     get_v3_version_from_cc
-    build_v3_docs
-  popd
+  fi
+
+  DOCS_DIR="$( cd capi-release/src/cloud_controller_ng/docs/v3 && pwd )"
+  GH_PAGES_DIR="$( cd cc-api-gh-pages && pwd )"
+
+  build_docs
+  publish_docs
 }
 
 main

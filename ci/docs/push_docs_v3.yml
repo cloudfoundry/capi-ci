@@ -6,9 +6,12 @@ image_resource:
     repository: cloudfoundry/capi
     tag: rc-docs
 inputs:
-  - name: capi-release
   - name: capi-ci
+  - name: capi-release
+  - name: cc-api-gh-pages
+outputs:
+  - name: updated-gh-pages
 run:
   path: capi-ci/ci/docs/push_docs_v3.sh
 params:
-  GITHUB_PUSH_KEY:
+  VERSION:
