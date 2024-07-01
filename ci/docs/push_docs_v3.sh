@@ -25,10 +25,10 @@ function publish_docs() {
 
     if [[ "$(git diff --name-only --staged)" == '' ]]; then
       echo "No changes to the docs. Nothing to publish"
-      return
+    else
+      git commit -m "Bump v3 API docs version ${VERSION}"
     fi
 
-    git commit -m "Bump v3 API docs version ${VERSION}"
     cp -r . ../updated-gh-pages
   popd > /dev/null
 }
