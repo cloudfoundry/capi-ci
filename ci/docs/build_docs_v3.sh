@@ -81,11 +81,12 @@ function write_versions_json() {
 
     local versions_json=$(echo "$versions" | awk '{print "\t\t\""$0"\","}' | sed '$ s/,$//')
 
+    local tab=$'\t'
     cat <<-EOF > versions.json
 {
-\t"versions": [
+$tab"versions": [
 $versions_json
-\t]
+$tab]
 }
 EOF
   popd > /dev/null

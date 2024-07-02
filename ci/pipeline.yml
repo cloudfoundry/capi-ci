@@ -169,6 +169,7 @@ resources:
       uri: https://github.com/cloudfoundry/cloud_controller_ng.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+      git_user: ((ari-wg-gitbot-email))
   - name: cc-api-v2-version
     type: semver
     icon: counter
@@ -179,6 +180,7 @@ resources:
       uri: https://github.com/cloudfoundry/cloud_controller_ng.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+      git_user: ((ari-wg-gitbot-email))
   - name: cc-uploader
     type: git
     icon: git
@@ -621,7 +623,7 @@ jobs:
           - get: cf-acceptance-tests
           - get: runtime-ci
       - task: kiki-stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcell-from-cf-deployment/task.yml
+        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: kiki-mig-bbl-state
         params:
@@ -773,17 +775,6 @@ jobs:
       - put: next-version
         params:
           bump: minor
-      - task: block
-        config:
-          platform: linux
-          image_resource:
-            type: registry-image
-            source:
-              repository: ubuntu
-          run:
-            path: echo
-            args:
-              - Way to go, Zach!
   - name: push-github-release
     serial_groups:
       - version
@@ -1449,7 +1440,7 @@ jobs:
           BBL_STATE_DIR: asha-mysql/bbl-state
           IGNORE_ERRORS: true
       - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcell-from-cf-deployment/task.yml
+        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: capi-ci-private
         params:
@@ -1670,7 +1661,7 @@ jobs:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           IGNORE_ERRORS: true
       - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcell-from-cf-deployment/task.yml
+        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: capi-ci-private
         params:
@@ -1902,7 +1893,7 @@ jobs:
           BBL_STATE_DIR: scar-psql/bbl-state
           IGNORE_ERRORS: true
       - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcell-from-cf-deployment/task.yml
+        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: capi-ci-private
         params:
@@ -2117,7 +2108,7 @@ jobs:
             trigger: true
           - get: elsa-ha-bbl-state
       - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcell-from-cf-deployment/task.yml
+        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: capi-ci-private
         params:
