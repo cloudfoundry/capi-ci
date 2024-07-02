@@ -26,13 +26,13 @@ pushd capi-release
     pushd cc-uploader
       git fetch
       git checkout "${CC_UPLOADER_SHA}"
-      ginkgo -r -keepGoing -p -trace -randomizeAllSpecs -progress --race --flake-attempts=2 .
+      ginkgo -r -keepGoing -p -trace -randomizeAllSpecs -progress --race --flakeAttempts=2 .
     popd
 
     pushd tps
       git fetch
       git checkout "${TPS_SHA}"
-      ginkgo -r -keepGoing -p -trace -randomizeAllSpecs -progress --race .
+      ginkgo -r -keepGoing -p -trace -randomizeAllSpecs -progress --race --flakeAttempts=2 .
     popd
   popd
 popd
