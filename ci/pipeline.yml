@@ -251,7 +251,7 @@ resources:
     type: git
     icon: git
     source:
-      branch: master
+      branch: use-cf-deployment-concourse-tasks-image
       uri: https://github.com/cloudfoundry/sync-integration-tests.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
@@ -563,6 +563,7 @@ jobs:
                 - src/code.cloudfoundry.org/bbs
                 - src/code.cloudfoundry.org/locket
       - task: run-bridge-unit-tests
+        attempts: 3
         file: capi-ci/ci/test-unit/run_bridge_unit_tests.yml
   - name: create-capi-release
     serial_groups:
@@ -715,17 +716,18 @@ jobs:
           SYSTEM_DOMAIN: *kiki-domain
           ENABLED_FEATURE_FLAGS: diego_docker
       - in_parallel:
-          - task: run-cats
+          - task: acceptance-tests
+            attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
             params:
-              NODES: 6
+              NODES: 10
               CONFIG_FILE_PATH: kiki-mig/cats_integration_config.json
               CAPTURE_LOGS: true
           - task: sync-integration-tests
             file: sync-integration-tests/concourse/task_with_credhub.yml
-            attempts: 5
+            attempts: 3
             input_mapping:
               environment: capi-ci-private
             params:
@@ -737,6 +739,7 @@ jobs:
               BBL_STATE_DIR: kiki-mig
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: false
+              FLAKE_ATTEMPTS: 2
   - name: ship-it
     serial_groups:
       - version
@@ -1459,7 +1462,6 @@ jobs:
           new-ops-files: capi-ci
         params:
           NEW_OPS_FILES: |
-            cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
@@ -1477,7 +1479,6 @@ jobs:
           SYSTEM_DOMAIN: *asha-mysql-domain
           OPS_FILES: |
             base-ops-files/operations/use-compiled-releases.yml
-            use-valkey.yml
             use-latest-capi.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
@@ -1550,6 +1551,7 @@ jobs:
           BBL_STATE_DIR: asha-mysql/bbl-state
       - in_parallel:
           - task: acceptance-tests
+            attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
@@ -1559,6 +1561,7 @@ jobs:
               CAPTURE_LOGS: true
               SKIP_REGEXP: "shows logs and metrics"
           - task: capi-bara-tests
+            attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
             input_mapping:
               integration-config: updated-integration-configs
@@ -1581,10 +1584,6 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
-      - task: extract-bbl-environment
-        file: capi-ci/ci/bbl-tasks/extract_bbl_environment.yml
-        params:
-          ENV_NAME: asha-mysql
   - name: asha-mysql-destroy-cf
     serial: true
     serial_groups:
@@ -1681,7 +1680,6 @@ jobs:
           new-ops-files: capi-ci
         params:
           NEW_OPS_FILES: |
-            cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
@@ -1702,7 +1700,6 @@ jobs:
             base-ops-files/operations/use-external-blobstore.yml
             base-ops-files/operations/use-s3-blobstore.yml
             base-ops-files/operations/use-compiled-releases.yml
-            use-valkey.yml
             use-latest-capi.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
@@ -1777,6 +1774,7 @@ jobs:
           BBL_STATE_DIR: olaf-mysql/bbl-state
       - in_parallel:
           - task: acceptance-tests
+            attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
@@ -1785,6 +1783,7 @@ jobs:
               CONFIG_FILE_PATH: olaf-mysql/cats_integration_config.json
               CAPTURE_LOGS: true
           - task: capi-bara-tests
+            attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
             input_mapping:
               integration-config: updated-integration-configs
@@ -1912,7 +1911,6 @@ jobs:
           new-ops-files: capi-ci
         params:
           NEW_OPS_FILES: |
-            cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
@@ -1931,7 +1929,6 @@ jobs:
           OPS_FILES: |
             base-ops-files/operations/use-compiled-releases.yml
             base-ops-files/operations/use-postgres.yml
-            use-valkey.yml
             use-latest-capi.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
@@ -2013,6 +2010,7 @@ jobs:
               CAPTURE_LOGS: true
               SKIP_REGEXP: "shows logs and metrics"
           - task: capi-bara-tests
+            attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
             input_mapping:
               integration-config: updated-integration-configs
@@ -2035,10 +2033,6 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
-      - task: extract-bbl-environment
-        file: capi-ci/ci/bbl-tasks/extract_bbl_environment.yml
-        params:
-          ENV_NAME: scar-psql
   - name: scar-psql-destroy-cf
     serial: true
     serial_groups:
@@ -2127,7 +2121,6 @@ jobs:
           new-ops-files: capi-ci
         params:
           NEW_OPS_FILES: |
-            cf-deployment-operations/use-valkey.yml
             cf-deployment-operations/use-latest-capi.yml
             cf-deployment-operations/scale-up-cells.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
@@ -2153,7 +2146,6 @@ jobs:
             base-ops-files/operations/experimental/use-compiled-releases-windows.yml
             base-ops-files/operations/use-external-blobstore.yml
             base-ops-files/operations/use-gcs-blobstore-service-account.yml
-            use-valkey.yml
             use-latest-capi.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
@@ -2238,6 +2230,7 @@ jobs:
               CAPTURE_LOGS: true
               SKIP_REGEXP: "shows logs and metrics"
           - task: capi-bara-tests
+            attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
             input_mapping:
               integration-config: updated-integration-configs
