@@ -522,14 +522,6 @@ jobs:
             passed:
               - cc-unit-tests
             trigger: true
-          - get: diego-release
-            passed:
-              - bridge-unit-tests
-            params:
-              submodules:
-                - src/code.cloudfoundry.org/bbs
-                - src/code.cloudfoundry.org/lager
-                - src/code.cloudfoundry.org/locket
           - get: cc-uploader
             passed:
               - bridge-unit-tests

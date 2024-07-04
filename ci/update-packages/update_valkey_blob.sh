@@ -56,6 +56,6 @@ pushd capi-release
     git config user.email "app-runtime-interfaces@cloudfoundry.org"
 
     git add -A packages .final_builds config
-    git commit -n --allow-empty -m "Bump Valkey to $new_valkey_version" -m "Changes: $new_valkey_url"  || { echo "Error: git commit failed."; exit 1; }
+    git commit -m "Bump Valkey to $new_valkey_version" -m "Changes: $new_valkey_url"  || { echo "Error: git commit failed."; exit 1; }
     cp -r "$PWD"/. ../updated-capi-release
 popd

@@ -2,9 +2,10 @@
 
 set -e
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 pushd cloud_controller_ng
   SOURCE_MASTER_SHA=$(git rev-parse HEAD)
-  PASSED_UNIT_TESTS_SHA=$(git log -n1 --format="%H" -- db)
 popd
 
 pushd cc-uploader
@@ -48,8 +49,8 @@ pushd capi-release
     git add src/cloud_controller_ng
     git add src/code.cloudfoundry.org
 
-    scripts/staged_shortlog
-    scripts/staged_shortlog | git commit -F -
+    "$SCRIPT_DIR/staged_shortlog.rb"
+    "$SCRIPT_DIR/staged_shortlog.rb" | git commit -F -
   fi
 popd
 

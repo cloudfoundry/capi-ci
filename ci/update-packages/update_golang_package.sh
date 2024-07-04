@@ -18,5 +18,11 @@ git config user.name "ari-wg-gitbot"
 git config user.email "app-runtime-interfaces@cloudfoundry.org"
 
 git add -A packages .final_builds
-git commit -n --allow-empty -m "Bump Golang to $new_go_version"
+
+if [[ "$(git diff --name-only --staged)" == '' ]]; then
+  echo "No changes"
+else
+  git commit -m "Bump Golang to $new_go_version"
+fi
+
 cp -r $PWD/. ../updated-capi-release
