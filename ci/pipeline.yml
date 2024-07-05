@@ -65,7 +65,7 @@ groups:
       - manual-bbl-destroy-asha-mysql
       - manual-bbl-destroy-olaf-mysql
       - manual-bbl-destroy-scar-psql
-      - manual-bbl-destroy-kiki-mig
+      - manual-cf-bbl-destroy-kiki-mig
       - emergency-bbl-destroy-elsa-ha
       - elsa-ha-release-pool-manual
       - olaf-mysql-release-pool-manual
@@ -1001,7 +1001,7 @@ jobs:
           GCP_DNS_SERVICE_ACCOUNT_KEY: ((capi-bbl-dns-service-account))
           GCP_PROJECT_ID: app-runtime-interfaces-wg
           SHARED_DNS_ZONE_NAME: app-runtime-interfaces
-  - name: manual-bbl-destroy-kiki-mig
+  - name: manual-cf-bbl-destroy-kiki-mig
     serial: true
     serial_groups:
       - kiki-mig
@@ -1013,7 +1013,14 @@ jobs:
             - get: kiki-mig-bbl-state
             - get: capi-ci
             - get: capi-ci-private
-            - get: cf-deployment
+      - try:
+          task: delete-deployment
+          file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+          input_mapping:
+            bbl-state: kiki-mig-bbl-state
+          params:
+            BBL_STATE_DIR: kiki-mig
+            IGNORE_ERRORS: true
       - task: bbl-destroy-kiki-mig
         file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
         ensure:
