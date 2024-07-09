@@ -251,7 +251,7 @@ resources:
     type: git
     icon: git
     source:
-      branch: use-cf-deployment-concourse-tasks-image
+      branch: master
       uri: https://github.com/cloudfoundry/sync-integration-tests.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
