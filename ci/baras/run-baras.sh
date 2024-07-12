@@ -2,8 +2,6 @@
 
 set -eu
 
-build_dir=${PWD}
-
 cf -v
 
 export CONFIG
@@ -17,8 +15,7 @@ if [ -n "${GOOGLE_SERVICE_ACCOUNT_EMAIL}" ]; then
     --project="${GOOGLE_PROJECT_NAME}"
 fi
 
-original_config="${build_dir}/integration-config/${CONFIG_FILE_PATH}"
-cp ${original_config} ${CONFIG}
+cp "integration-config/${CONFIG_FILE_PATH}" ${CONFIG}
 
 CF_GOPATH=/go/src/github.com/cloudfoundry/
 

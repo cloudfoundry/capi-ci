@@ -8,110 +8,6 @@ resources:
       stop: 23:30 -0700
       days:
         - Sunday
-  - name: capi-dockerfiles
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: capi-dockerfiles-rc-docs
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - rc-docs/Dockerfile
-  - name: docker-image-rc-docs
-    type: docker-image
-    icon: docker
-    source:
-      repository: cloudfoundry/capi
-      tag: rc-docs
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-  - name: capi-dockerfiles-runtime-ci
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - capi-runtime-ci/Dockerfile
-  - name: docker-image-runtime-ci
-    type: docker-image
-    icon: docker
-    source:
-      repository: cloudfoundry/capi
-      tag: runtime-ci
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-  - name: capi-dockerfiles-ruby-units
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - capi-ruby-units/Dockerfile
-  - name: docker-image-ruby-units
-    type: docker-image
-    icon: docker
-    source:
-      repository: cloudfoundry/capi
-      tag: ruby-units
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-  - name: capi-dockerfiles-go-units
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - capi-go-units/Dockerfile
-  - name: docker-image-go-units
-    type: docker-image
-    icon: docker
-    source:
-      repository: cloudfoundry/capi
-      tag: go-units
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-  - name: capi-dockerfiles-bosh-lite
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - bosh-lite/Dockerfile
-  - name: docker-image-bosh-lite
-    type: docker-image
-    icon: docker
-    source:
-      repository: cloudfoundry/capi
-      tag: bosh-lite
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-  - name: capi-dockerfiles-migration-compatibility
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      paths:
-        - capi-migration-compatibility/Dockerfile
-  - name: docker-image-migration-compatibility
-    type: docker-image
-    icon: docker
-    source:
-      repository: cloudfoundry/capi
-      tag: migration-compatibility
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
   - name: bosh-cli-github-release
     type: github-release
     icon: github
@@ -130,18 +26,121 @@ resources:
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci.git
+      branch: main
+  - name: capi-dockerfiles
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: capi-dockerfiles-rc-docs
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      branch: main
+      paths:
+        - rc-docs/Dockerfile
+  - name: capi-dockerfiles-runtime-ci
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      branch: main
+      paths:
+        - capi-runtime-ci/Dockerfile
+  - name: capi-dockerfiles-ruby-units
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      branch: main
+      paths:
+        - capi-ruby-units/Dockerfile
+  - name: capi-dockerfiles-go-units
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      branch: main
+      paths:
+        - capi-go-units/Dockerfile
+  - name: capi-dockerfiles-bosh-lite
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      branch: main
+      paths:
+        - bosh-lite/Dockerfile
+  - name: capi-dockerfiles-migration-compatibility
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      branch: main
+      paths:
+        - capi-migration-compatibility/Dockerfile
+  - name: docker-image-rc-docs
+    type: docker-image
+    icon: docker
+    source:
+      repository: cloudfoundry/capi
+      tag: rc-docs
+      username: ((dockerhub_user))
+      password: ((dockerhub_pass))
+  - name: docker-image-runtime-ci
+    type: docker-image
+    icon: docker
+    source:
+      repository: cloudfoundry/capi
+      tag: runtime-ci
+      username: ((dockerhub_user))
+      password: ((dockerhub_pass))
+  - name: docker-image-ruby-units
+    type: docker-image
+    icon: docker
+    source:
+      repository: cloudfoundry/capi
+      tag: ruby-units
+      username: ((dockerhub_user))
+      password: ((dockerhub_pass))
+  - name: docker-image-go-units
+    type: docker-image
+    icon: docker
+    source:
+      repository: cloudfoundry/capi
+      tag: go-units
+      username: ((dockerhub_user))
+      password: ((dockerhub_pass))
+  - name: docker-image-bosh-lite
+    type: docker-image
+    icon: docker
+    source:
+      repository: cloudfoundry/capi
+      tag: bosh-lite
+      username: ((dockerhub_user))
+      password: ((dockerhub_pass))
+  - name: docker-image-migration-compatibility
+    type: docker-image
+    icon: docker
+    source:
+      repository: cloudfoundry/capi
+      tag: migration-compatibility
+      username: ((dockerhub_user))
+      password: ((dockerhub_pass))
 jobs:
   - name: bump-bosh-cli-version
     serial: true
     plan:
       - in_parallel:
-          steps:
-            - get: bosh-cli-github-release
-              trigger: true
-            - get: capi-dockerfiles
-            - get: capi-ci
+          - get: bosh-cli-github-release
+            trigger: true
+          - get: capi-ci
+          - get: capi-dockerfiles
       - task: update-dockerfile-bosh-cli-version
         file: capi-ci/ci/dockerfiles/bump_bosh_cli_version.yml
       - put: capi-dockerfiles
@@ -152,11 +151,10 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          steps:
-            - get: bbl-github-release
-              trigger: true
-            - get: capi-dockerfiles
-            - get: capi-ci
+          - get: bbl-github-release
+            trigger: true
+          - get: capi-ci
+          - get: capi-dockerfiles
       - task: update-dockerfile-bbl-version
         file: capi-ci/ci/dockerfiles/bump_bbl_version.yml
       - put: capi-dockerfiles
@@ -167,23 +165,32 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-rc-docs
-              trigger: true
+          - get: weekly
+            trigger: true
+          - get: capi-dockerfiles-rc-docs
+            trigger: true
       - put: docker-image-rc-docs
         params:
           build: capi-dockerfiles-rc-docs/rc-docs
+  - name: runtime-ci
+    serial: true
+    plan:
+      - in_parallel:
+          - get: weekly
+            trigger: true
+          - get: capi-dockerfiles-runtime-ci
+            trigger: true
+      - put: docker-image-runtime-ci
+        params:
+          build: capi-dockerfiles-runtime-ci/capi-runtime-ci
   - name: ruby-units-docker
     serial: true
     plan:
       - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-ruby-units
-              trigger: true
+          - get: weekly
+            trigger: true
+          - get: capi-dockerfiles-ruby-units
+            trigger: true
       - put: docker-image-ruby-units
         params:
           build: capi-dockerfiles-ruby-units/capi-ruby-units
@@ -191,35 +198,21 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-go-units
-              trigger: true
+          - get: weekly
+            trigger: true
+          - get: capi-dockerfiles-go-units
+            trigger: true
       - put: docker-image-go-units
         params:
           build: capi-dockerfiles-go-units/capi-go-units
-  - name: runtime-ci
-    serial: true
-    plan:
-      - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-runtime-ci
-              trigger: true
-      - put: docker-image-runtime-ci
-        params:
-          build: capi-dockerfiles-runtime-ci/capi-runtime-ci
   - name: bosh-lite-docker
     serial: true
     plan:
       - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-bosh-lite
-              trigger: true
+          - get: weekly
+            trigger: true
+          - get: capi-dockerfiles-bosh-lite
+            trigger: true
       - put: docker-image-bosh-lite
         params:
           build: capi-dockerfiles-bosh-lite/bosh-lite
@@ -227,11 +220,10 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          steps:
-            - get: weekly
-              trigger: true
-            - get: capi-dockerfiles-migration-compatibility
-              trigger: true
+          - get: weekly
+            trigger: true
+          - get: capi-dockerfiles-migration-compatibility
+            trigger: true
       - put: docker-image-migration-compatibility
         params:
           build: capi-dockerfiles-migration-compatibility/capi-migration-compatibility

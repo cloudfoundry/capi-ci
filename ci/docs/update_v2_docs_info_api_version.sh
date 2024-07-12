@@ -25,14 +25,14 @@ function move_cc_to_output_location() {
 }
 
 function main() {
-  pushd cc-api-v2-version
+  pushd cc-api-v2-version > /dev/null
     get_updated_version
-  popd
-  pushd cloud_controller_ng
+  popd > /dev/null
+  pushd cloud_controller_ng > /dev/null
     setup_git_user
     bump_v2_docs
     commit_docs
-  popd
+  popd > /dev/null
   move_cc_to_output_location
 }
 

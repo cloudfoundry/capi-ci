@@ -4,20 +4,20 @@ set -eu
 
 FINAL_RELEASE_DIR=capi-final-releases/
 PREVIOUS_RELEASE_TAG=$(cat github-published-release/tag)
-pushd capi-release
+pushd capi-release > /dev/null
   SHA_CAPI=$(git rev-parse HEAD )
   echo $SHA_CAPI > ../$FINAL_RELEASE_DIR/commitish
   PREVIOUS_SHA_CC=$(git rev-parse $PREVIOUS_RELEASE_TAG:./src/cloud_controller_ng)
-  pushd src/cloud_controller_ng
+  pushd src/cloud_controller_ng > /dev/null
     SHA_CC=$(git rev-parse HEAD)
     MIGRATIONS=($(git diff --diff-filter=A --name-only $PREVIOUS_SHA_CC db/migrations))
-    pushd config
+    pushd config > /dev/null
       VERSION_V2=$(cat version_v2)
       VERSION_V3=$(cat version)
       VERSION_BROKER_API=$(cat osbapi_version)
-    popd
-  popd
-popd
+    popd > /dev/null
+  popd > /dev/null
+popd > /dev/null
 
 ALL_CAPI_REL_TGZS=( "$FINAL_RELEASE_DIR"/capi-*.tgz )
 

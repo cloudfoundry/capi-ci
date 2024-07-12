@@ -18,8 +18,11 @@ groups:
       - bridge-unit-tests
       - verify-capi-release-commits
       - capi-release-template-tests
-      - create-capi-release
       - bump-capi-release
+      - create-capi-release
+      - elsa-ha-acquire-pool
+      - elsa-ha-deploy-cf
+      - elsa-ha-tests
       - kiki-back-compat-migrations
       - asha-mysql-acquire-pool
       - asha-mysql-deploy-cf
@@ -33,48 +36,45 @@ groups:
       - scar-psql-deploy-cf
       - scar-psql-tests
       - scar-psql-destroy-cf
-      - elsa-ha-acquire-pool
-      - elsa-ha-deploy-cf
-      - elsa-ha-tests
       - bump-ci-passed
   - name: ship-it
     jobs:
       - ship-it
       - bump-cc-v2-api
       - bump-cc-v3-api
-      - push-github-release
-      - merge-capi-release-main
-      - publish-docs-v3
       - update-api-info-v2-docs
+      - push-github-release
+      - publish-docs-v3
+      - merge-capi-release-main
   - name: dependencies-docs
     jobs:
       - rc-docs-v3
+  - name: bump-dependencies
+    jobs:
+      - bump-golang-package
+      - bump-valkey-blob
   - name: bbl-up
     jobs:
       - elsa-ha-acquire-bbl-up-pool
-      - bbl-up-elsa-ha
       - asha-mysql-acquire-bbl-up-pool
-      - bbl-up-asha-mysql
       - olaf-mysql-acquire-bbl-up-pool
-      - bbl-up-olaf-mysql
       - scar-psql-acquire-bbl-up-pool
-      - bbl-up-scar-psql
+      - bbl-up-elsa-ha
       - bbl-up-kiki-mig
+      - bbl-up-asha-mysql
+      - bbl-up-olaf-mysql
+      - bbl-up-scar-psql
   - name: bbl-destroy
     jobs:
+      - elsa-ha-release-pool-manual
+      - asha-mysql-release-pool-manual
+      - olaf-mysql-release-pool-manual
+      - scar-psql-release-pool-manual
+      - emergency-bbl-destroy-elsa-ha
+      - manual-cf-bbl-destroy-kiki-mig
       - manual-bbl-destroy-asha-mysql
       - manual-bbl-destroy-olaf-mysql
       - manual-bbl-destroy-scar-psql
-      - manual-cf-bbl-destroy-kiki-mig
-      - emergency-bbl-destroy-elsa-ha
-      - elsa-ha-release-pool-manual
-      - olaf-mysql-release-pool-manual
-      - scar-psql-release-pool-manual
-      - asha-mysql-release-pool-manual
-  - name: bump-dependencies
-    jobs:
-      - autobump-golang-package
-      - bump-valkey-blob
 resource_types:
   - name: gcs-resource
     type: registry-image
@@ -82,6 +82,13 @@ resource_types:
       repository: frodenas/gcs-resource
 resources:
   #   schedules
+  - name: nightly
+    type: time
+    icon: clock-outline
+    source:
+      location: America/Los_Angeles
+      start: 22:30
+      stop: 23:00
   - name: weekly-sunday
     type: time
     icon: clock-outline
@@ -91,49 +98,34 @@ resources:
       stop: 23:30
       days:
         - Sunday
-  - name: nightly
-    type: time
-    icon: clock-outline
-    source:
-      location: America/Los_Angeles
-      start: 22:30
-      stop: 23:00
   - name: capi-ci
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci.git
-  - name: capi-ci-private
-    type: git
-    icon: git
-    source:
       branch: main
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: capi-release-main
     type: git
     icon: git
     source:
+      uri: https://github.com/cloudfoundry/capi-release.git
       branch: main
-      uri: https://github.com/cloudfoundry/capi-release.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: capi-release-ci-passed
-    type: git
-    icon: git
-    source:
-      branch: ci-passed
-      uri: https://github.com/cloudfoundry/capi-release.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: capi-release-develop
     type: git
     icon: git
     source:
-      branch: develop
       uri: https://github.com/cloudfoundry/capi-release.git
+      branch: develop
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: capi-release-ci-passed
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-release.git
+      branch: ci-passed
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: capi-release-tarball
@@ -155,18 +147,18 @@ resources:
     icon: counter
     source:
       driver: gcs
-      json_key: ((capi-release-blobs-uploader_key))
-      initial_version: 1.176.0
       bucket: capi-release-versions-app-runtime-interfaces
       key: current-capi-release-version
+      json_key: ((capi-release-blobs-uploader_key))
+      initial_version: 1.176.0
   - name: cc-api-v3-version
     type: semver
     icon: counter
     source:
       driver: git
+      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
       branch: main
       file: config/version
-      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
       git_user: ((ari-wg-gitbot-email))
@@ -175,20 +167,12 @@ resources:
     icon: counter
     source:
       driver: git
+      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
       branch: main
       file: config/version_v2
-      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
       git_user: ((ari-wg-gitbot-email))
-  - name: cc-uploader
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/cc-uploader.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: github-release
     type: github-release
     icon: github
@@ -205,62 +189,53 @@ resources:
       repository: capi-release
       drafts: false
       access_token: ((ari-wg-gitbot-token))
-  - name: valkey-release
-    type: github-release
-    icon: github
-    source:
-      owner: valkey-io
-      repository: valkey
-      access_token: ((ari-wg-gitbot-token))
-      pre_release: false
-      semver_constraint: 7.2.x
-  - name: golang-release
+  - name: cc-uploader
     type: git
     icon: git
     source:
+      uri: https://github.com/cloudfoundry/cc-uploader.git
       branch: main
-      uri: https://github.com/cloudfoundry/bosh-package-golang-release
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-      tag_filter: v*
-  - name: cloud_controller_ng
-    type: git
-    icon: git
-    source:
-      branch: main
-      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: cc-api-gh-pages
-    type: git
-    icon: git
-    source:
-      branch: gh-pages
-      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: diego-release
-    type: git
-    icon: git
-    source:
-      branch: release
-      uri: https://github.com/cloudfoundry/diego-release.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: sync-integration-tests
-    type: git
-    icon: git
-    source:
-      branch: master
-      uri: https://github.com/cloudfoundry/sync-integration-tests.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: tps
     type: git
     icon: git
     source:
-      branch: master
       uri: https://github.com/cloudfoundry/tps.git
+      branch: master
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: cloud_controller_ng
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: cc-api-gh-pages
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
+      branch: gh-pages
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: golang-release
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/bosh-package-golang-release
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+      tag_filter: v*
+  - name: diego-release
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/diego-release.git
+      branch: release
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: cf-deployment
@@ -268,64 +243,73 @@ resources:
     icon: git
     source:
       uri: https://github.com/cloudfoundry/cf-deployment.git
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: cf-deployment-concourse-tasks
-    type: git
-    icon: git
-    source:
       branch: main
-      uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: cf-acceptance-tests
     type: git
     icon: git
     source:
-      branch: release-candidate
       uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+      branch: release-candidate
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
-  - name: cf-cli
-    type: github-release
-    icon: github
-    source:
-      owner: cloudfoundry
-      repository: cli
-      tag_filter: v8.*
-      pre_release: true
-      access_token: ((ari-wg-gitbot-token))
   - name: capi-bara-tests
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-bara-tests.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: sync-integration-tests
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/sync-integration-tests.git
+      branch: master
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: cf-deployment-concourse-tasks
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: runtime-ci
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/runtime-ci.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+  - name: valkey-release
+    type: github-release
+    icon: github
+    source:
+      owner: valkey-io
+      repository: valkey
+      semver_constraint: 7.2.x
+      pre_release: false
+      access_token: ((ari-wg-gitbot-token))
   # Elsa resources
   - name: elsa-ha-bbl-state
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: elsa-ha-integration-configs
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: elsa-ha-pool
@@ -342,16 +326,16 @@ resources:
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: kiki-integration-configs
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   # Asha resources
@@ -359,16 +343,16 @@ resources:
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: asha-mysql-integration-configs
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: asha-mysql-pool
@@ -385,16 +369,16 @@ resources:
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: olaf-mysql-integration-configs
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: olaf-mysql-pool
@@ -411,16 +395,16 @@ resources:
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: scar-psql-integration-configs
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: scar-psql-pool
@@ -433,46 +417,47 @@ resources:
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
 jobs:
-  - name: autobump-golang-package
+  - name: bump-golang-package
     plan:
       - in_parallel:
           - get: capi-ci
-          - get: capi-ci-private
           - get: capi-release
             resource: capi-release-develop
           - get: golang-release
             trigger: true
       - task: update-golang-package
+        file: capi-ci/ci/update-packages/update_golang_package.yml
         params:
           GO_VERSION: 1
           PRIVATE_YAML: ((capi_release_private_yaml))
-        file: capi-ci/ci/update-packages/update_golang_package.yml
       - put: capi-release-develop
         params:
           repository: updated-capi-release
+          rebase: true
   - name: bump-valkey-blob
     plan:
       - in_parallel:
+          - get: capi-ci
+          - get: capi-release
+            resource: capi-release-develop
           - get: valkey-release
             trigger: true
             params:
               include_source_tarball: true
-          - get: capi-release
-            resource: capi-release-develop
-          - get: capi-ci
       - task: update-valkey-blob
+        file: capi-ci/ci/update-packages/update_valkey_blob.yml
         params:
           PRIVATE_YAML: ((capi_release_private_yaml))
-        file: capi-ci/ci/update-packages/update_valkey_blob.yml
       - put: capi-release-develop
         params:
           repository: updated-capi-release
+          rebase: true
   - name: cc-unit-tests
     plan:
       - in_parallel:
+          - get: capi-ci
           - get: cloud_controller_ng
             trigger: true
-          - get: capi-ci
       - in_parallel:
           - task: run-cc-unit-tests-mysql
             attempts: 3
@@ -493,9 +478,7 @@ jobs:
       - in_parallel:
           - get: capi-ci
           - get: capi-release
-            resource: capi-release-develop
-            trigger: true
-          - get: capi-release-main
+            resource: capi-release-main
             trigger: true
       - task: run-capi-release-commit-test
         file: capi-ci/ci/test-unit/run_capi_release_commit_test.yml
@@ -507,7 +490,8 @@ jobs:
             resource: capi-release-develop
             trigger: true
       - in_parallel:
-          - task: run-config-template-tests
+          - task: run-capi-release-config-template-tests
+            attempts: 3
             file: capi-ci/ci/test-unit/run_capi_release_config_template_tests.yml
   - name: bump-capi-release
     plan:
@@ -516,7 +500,8 @@ jobs:
           - get: capi-release
             resource: capi-release-develop
             passed:
-              - verify-capi-release-commits
+              - capi-release-template-tests
+              - bridge-unit-tests
             trigger: true
           - get: cloud_controller_ng
             passed:
@@ -539,8 +524,7 @@ jobs:
   - name: bridge-unit-tests
     plan:
       - in_parallel:
-          - get: weekly-sunday
-            trigger: true
+          - get: capi-ci
           - get: capi-release
             resource: capi-release-develop
             trigger: true
@@ -548,12 +532,13 @@ jobs:
             trigger: true
           - get: tps
             trigger: true
-          - get: capi-ci
           - get: diego-release
             params:
               submodules:
                 - src/code.cloudfoundry.org/bbs
                 - src/code.cloudfoundry.org/locket
+          - get: weekly-sunday
+            trigger: true
       - task: run-bridge-unit-tests
         attempts: 3
         file: capi-ci/ci/test-unit/run_bridge_unit_tests.yml
@@ -563,27 +548,23 @@ jobs:
     serial: true
     plan:
       - in_parallel:
+          - get: next-version
+            params:
+              pre: rc
+          - get: capi-ci
           - get: capi-release
             resource: capi-release-develop
             passed:
               - bump-capi-release
-              - capi-release-template-tests
             trigger: true
-          - get: capi-ci
-          - get: next-version
-            resource: next-version
             params:
-              pre: rc
-          - get: cloud_controller_ng
-            passed:
-              - bump-capi-release
+              submodules:
+                - src/cloud_controller_ng
       - put: next-version
         params:
           file: next-version/version
-      - task: create-release-tarball
+      - task: create-capi-release
         file: capi-ci/ci/bosh/create_capi_release.yml
-        params:
-          file: created-capi-release/capi-*.tgz
       - put: capi-release-tarball
         params:
           file: created-capi-release/capi-*.tgz
@@ -593,43 +574,26 @@ jobs:
       - kiki-mig
     plan:
       - in_parallel:
-          - get: cloud_controller_ng
-            passed:
-              - create-capi-release
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
-          - get: cf-deployment
           - get: kiki-mig-bbl-state
+          - get: cf-deployment
+          - get: runtime-ci
           - get: kiki-integration-configs
-          - get: sync-integration-tests
-          - get: capi-bara-tests
           - get: capi-ci
-          - get: capi-ci-private
-          - get: capi-release
-            passed:
-              - create-capi-release
-            resource: capi-release-develop
           - get: capi-release-tarball
             passed:
               - create-capi-release
             trigger: true
           - get: cf-acceptance-tests
-          - get: runtime-ci
-      - task: kiki-stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig
-      - task: upload-capi-release-tarball
-        file: capi-ci/ci/bosh/upload-release.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-          release-tarball: capi-release-tarball
-        params:
-          BBL_STATE_DIR: kiki-mig
+          - get: sync-integration-tests
       - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+      - task: stemcell-upload
+        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: kiki-mig-bbl-state
         params:
@@ -640,49 +604,42 @@ jobs:
           base-ops-files: cf-deployment
           new-ops-files: capi-ci
         params:
-          NEW_OPS_FILES: &kiki-ops-files-to-collect |
-            cf-deployment-operations/skip-cert-verify.yml
+          NEW_OPS_FILES: |
             cf-deployment-operations/scale-up-cells.yml
-            cf-deployment-operations/scale-up-dopplers.yml
             cf-deployment-operations/scale-generic-worker-processes.yml
-            cf-deployment-operations/log-all-sequel-activity.yml
             cf-deployment-operations/disable-uaa-get-requests.yml
+            cf-deployment-operations/seed-credhub-asg.yml
+            cf-deployment-operations/seed-uaa-asg.yml
+            cf-deployment-operations/log-all-sequel-activity.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: kiki-mig-bbl-state
           ops-files: collected-ops-files
-          vars-files: capi-ci-private
+          vars-files: kiki-mig-bbl-state
         params:
           BBL_STATE_DIR: kiki-mig
           SYSTEM_DOMAIN: &kiki-domain cf.kiki.app-runtime-interfaces.ci.cloudfoundry.org
-          OPS_FILES: &kiki-ops-files-for-deploy |
-            base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
-            skip-cert-verify.yml
-            base-ops-files/operations/scale-to-one-az.yml
-            base-ops-files/operations/test/scale-to-one-az-addon-parallel-cats.yml
-            scale-up-cells.yml
-            scale-up-dopplers.yml
-            scale-generic-worker-processes.yml
+          OPS_FILES: |
+            base-ops-files/operations/use-compiled-releases.yml
             base-ops-files/operations/use-postgres.yml
-            base-ops-files/operations/test/speed-up-dynamic-asgs.yml
-            log-all-sequel-activity.yml
+            scale-up-cells.yml
+            scale-generic-worker-processes.yml
             disable-uaa-get-requests.yml
+            seed-credhub-asg.yml
+            base-ops-files/operations/test/speed-up-dynamic-asgs.yml
+            seed-uaa-asg.yml
+            log-all-sequel-activity.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
-        params:
-          SYSTEM_DOMAIN: *kiki-domain
-          CONFIG_FILE_PATH: kiki/cats_integration_config.json
-          CATS_INTEGRATION_CONFIG_FILE: kiki/cats_integration_config.json
         input_mapping:
           cats-integration-config: kiki-integration-configs
-          integration-configs: kiki-integration-configs
-      - task: extract-bbl-environment
-        file: capi-ci/ci/bbl-tasks/extract_bbl_environment.yml
         params:
-          ENV_NAME: kiki-mig
-      - task: apply-cc-migrations
+          CONFIG_FILE_PATH: kiki/cats_integration_config.json
+      - task: apply-latest-migrations
         file: capi-ci/ci/migrations/apply_latest_migrations.yml
+        input_mapping:
+          capi-ci-private: kiki-mig-bbl-state
         params:
           BBL_STATE_DIR: kiki-mig
       - task: updated-integration-configs
@@ -691,8 +648,8 @@ jobs:
           bbl-state: kiki-mig-bbl-state
           integration-configs: kiki-integration-configs
         params:
-          BBL_STATE_DIR: kiki-mig
           CATS_INTEGRATION_CONFIG_FILE: kiki-mig/cats_integration_config.json
+          BBL_STATE_DIR: kiki-mig
           SYSTEM_DOMAIN: *kiki-domain
         ensure:
           put: kiki-integration-configs
@@ -704,8 +661,8 @@ jobs:
         input_mapping:
           bbl-state: kiki-mig-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
           SYSTEM_DOMAIN: *kiki-domain
+          BBL_STATE_DIR: kiki-mig
           ENABLED_FEATURE_FLAGS: diego_docker
       - in_parallel:
           - task: acceptance-tests
@@ -718,10 +675,10 @@ jobs:
               CONFIG_FILE_PATH: kiki-mig/cats_integration_config.json
               CAPTURE_LOGS: true
           - task: sync-integration-tests
-            file: sync-integration-tests/concourse/task_with_credhub.yml
             attempts: 3
+            file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
-              environment: capi-ci-private
+              environment: updated-integration-configs
             params:
               BOSH_DEPLOYMENT_NAME: cf
               BOSH_API_INSTANCE: api/0
@@ -730,7 +687,7 @@ jobs:
               CF_APPS_DOMAIN: *kiki-domain
               BBL_STATE_DIR: kiki-mig
               USE_CREDHUB: true
-              RUN_REVISIONS_TESTS: false
+              RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
   - name: ship-it
     serial_groups:
@@ -738,17 +695,16 @@ jobs:
     plan:
       - in_parallel:
           - get: cloud_controller_ng
-            passed:
-              - bump-ci-passed
+#            passed:
+#              - bump-ci-passed
           - get: capi-ci
-          - get: capi-ci-private
           - get: capi-release
             resource: capi-release-ci-passed
             passed:
               - bump-ci-passed
           - get: capi-release-tarball
-            passed:
-              - bump-ci-passed
+#            passed:
+#              - bump-ci-passed
           - get: next-version
             params:
               bump: final
@@ -801,13 +757,13 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          - get: capi-ci
           - get: capi-release
             resource: capi-release-ci-passed
             trigger: true
             params:
               submodules:
                 - src/cloud_controller_ng
+          - get: capi-ci
           - get: cc-api-gh-pages
       - task: push-rc-docs-v3
         file: capi-ci/ci/docs/push_docs_v3.yml
@@ -848,11 +804,11 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          - get: capi-ci
           - get: cc-api-v2-version
-            trigger: true
             passed:
               - bump-cc-v2-api
+            trigger: true
+          - get: capi-ci
           - get: cloud_controller_ng
       - task: update-api-info-v2-docs
         file: capi-ci/ci/docs/update_v2_docs_info_api_version.yml
@@ -904,11 +860,8 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: elsa-ha-bbl-state
           - get: capi-ci
-          - get: capi-ci-private
-          - get: cf-deployment
           - get: elsa-ha-pool
             passed:
               - elsa-ha-acquire-bbl-up-pool
@@ -916,11 +869,11 @@ jobs:
       - task: bbl-up-elsa-ha
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
-          bbl-config: capi-ci-private
-        params: &update-bosh-xena-mysql-params
-          BBL_CONFIG_DIR: elsa-ha/bbl-config
+          bbl-state: elsa-ha-bbl-state
+          bbl-config: elsa-ha-bbl-state
+        params:
           BBL_STATE_DIR: elsa-ha/bbl-state
+          BBL_CONFIG_DIR: elsa-ha/bbl-config
           BBL_IAAS: gcp
           BBL_ENV_NAME: elsa-ha
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-elsa-ha-service-account))
@@ -941,7 +894,6 @@ jobs:
         input_mapping:
           bbl-state: updated-bbl-state
         params:
-          BBL_CONFIG_DIR: elsa-ha/bbl-config
           BBL_STATE_DIR: elsa-ha/bbl-state
           DNS_DOMAIN: *elsa-ha-domain
           GCP_DNS_SERVICE_ACCOUNT_KEY: ((capi-bbl-dns-service-account))
@@ -962,34 +914,32 @@ jobs:
       - kiki-mig
     plan:
       - in_parallel:
-          steps:
-            - get: cf-deployment-concourse-tasks
-              resource: cf-deployment-concourse-tasks
-            - get: kiki-mig-bbl-state
-            - get: capi-ci
-            - get: capi-ci-private
-            - get: cf-deployment
+          - get: nightly
+            trigger: true
+          - get: cf-deployment-concourse-tasks
+          - get: kiki-mig-bbl-state
+          - get: capi-ci
       - task: bbl-up-kiki-mig
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
-          bbl-config: kiki-mig-bbl-state
           bbl-state: kiki-mig-bbl-state
+          bbl-config: kiki-mig-bbl-state
         params:
+          BBL_STATE_DIR: kiki-mig
+          BBL_IAAS: gcp
           BBL_ENV_NAME: kiki-mig
+          BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-kiki-mig-service-account))
           BBL_GCP_PROJECT_ID: app-runtime-interfaces-wg
           BBL_GCP_REGION: us-east4
-          BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-kiki-mig-service-account))
-          BBL_IAAS: gcp
           BBL_LB_CERT: ((kiki_lb.certificate))
           BBL_LB_KEY: ((kiki_lb.private_key))
-          BBL_STATE_DIR: kiki-mig
-          LB_DOMAIN: cf.kiki.app-runtime-interfaces.ci.cloudfoundry.org
+          LB_DOMAIN: *kiki-domain
           TRUSTED_CA: ((relint_ca.certificate))
         ensure:
-          params:
-            rebase: true
-            repository: updated-bbl-state
           put: kiki-mig-bbl-state
+          params:
+            repository: updated-bbl-state
+            rebase: true
       - task: create-dns-record
         attempts: 3
         file: capi-ci/ci/bbl-tasks/create-dns-record.yml
@@ -1001,18 +951,20 @@ jobs:
           GCP_DNS_SERVICE_ACCOUNT_KEY: ((capi-bbl-dns-service-account))
           GCP_PROJECT_ID: app-runtime-interfaces-wg
           SHARED_DNS_ZONE_NAME: app-runtime-interfaces
+      - task: run-bosh-cleanup
+        file: capi-ci/ci/bbl-tasks/run-bosh-cleanup.yml
+        input_mapping:
+          bbl-state: updated-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
   - name: manual-cf-bbl-destroy-kiki-mig
     serial: true
     serial_groups:
       - kiki-mig
     plan:
       - in_parallel:
-          steps:
-            - get: cf-deployment-concourse-tasks
-              resource: cf-deployment-concourse-tasks
-            - get: kiki-mig-bbl-state
-            - get: capi-ci
-            - get: capi-ci-private
+          - get: cf-deployment-concourse-tasks
+          - get: kiki-mig-bbl-state
       - try:
           task: delete-deployment
           file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
@@ -1023,17 +975,17 @@ jobs:
             IGNORE_ERRORS: true
       - task: bbl-destroy-kiki-mig
         file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
-        ensure:
-          params:
-            rebase: true
-            repository: updated-bbl-state
-          put: kiki-mig-bbl-state
         input_mapping:
           bbl-state: kiki-mig-bbl-state
+          bbl-config: kiki-mig-bbl-state
         params:
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-kiki-mig-service-account))
-          BBL_IAAS: gcp
           BBL_STATE_DIR: kiki-mig
+        ensure:
+          put: kiki-mig-bbl-state
+          params:
+            repository: updated-bbl-state
+            rebase: true
   - name: asha-mysql-acquire-bbl-up-pool
     serial: true
     plan:
@@ -1059,11 +1011,8 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: asha-mysql-bbl-state
           - get: capi-ci
-          - get: capi-ci-private
-          - get: cf-deployment
           - get: asha-mysql-pool
             passed:
               - asha-mysql-acquire-bbl-up-pool
@@ -1071,11 +1020,11 @@ jobs:
       - task: bbl-up-asha-mysql
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
-          bbl-config: capi-ci-private
-        params: &update-bosh-xena-mysql-params
-          BBL_CONFIG_DIR: asha-mysql/bbl-config
+          bbl-state: asha-mysql-bbl-state
+          bbl-config: asha-mysql-bbl-state
+        params:
           BBL_STATE_DIR: asha-mysql/bbl-state
+          BBL_CONFIG_DIR: asha-mysql/bbl-config
           BBL_IAAS: gcp
           BBL_ENV_NAME: asha-mysql
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-asha-service-account))
@@ -1116,15 +1065,12 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: asha-mysql-bbl-state
-          - get: capi-ci
-          - get: capi-ci-private
       - task: manual-bbl-destroy-asha-mysql
         file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
-          bbl-config: capi-ci-private
+          bbl-state: asha-mysql-bbl-state
+          bbl-config: asha-mysql-bbl-state
         params:
           BBL_STATE_DIR: asha-mysql/bbl-state
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-asha-service-account))
@@ -1158,11 +1104,8 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: olaf-mysql-bbl-state
           - get: capi-ci
-          - get: capi-ci-private
-          - get: cf-deployment
           - get: olaf-mysql-pool
             passed:
               - olaf-mysql-acquire-bbl-up-pool
@@ -1170,18 +1113,18 @@ jobs:
       - task: bbl-up-olaf-mysql
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
-          bbl-config: capi-ci-private
+          bbl-state: olaf-mysql-bbl-state
+          bbl-config: olaf-mysql-bbl-state
         params:
-          BBL_AWS_ACCESS_KEY_ID: ((capi-bbl-olaf-aws-access-key))
-          BBL_AWS_REGION: eu-central-1
-          BBL_AWS_SECRET_ACCESS_KEY: ((capi-bbl-olaf-aws-secret-key))
+          BBL_STATE_DIR: olaf-mysql/bbl-state
           BBL_CONFIG_DIR: olaf-mysql/bbl-config
-          BBL_ENV_NAME: olaf-mysql
           BBL_IAAS: aws
+          BBL_ENV_NAME: olaf-mysql
+          BBL_AWS_ACCESS_KEY_ID: ((capi-bbl-olaf-aws-access-key))
+          BBL_AWS_SECRET_ACCESS_KEY: ((capi-bbl-olaf-aws-secret-key))
+          BBL_AWS_REGION: eu-central-1
           BBL_LB_CERT: ((olaf_lb.certificate))
           BBL_LB_KEY: ((olaf_lb.private_key))
-          BBL_STATE_DIR: olaf-mysql/bbl-state
           LB_DOMAIN: &olaf-mysql-domain cf.olaf.app-runtime-interfaces.ci.cloudfoundry.org
         ensure:
           put: olaf-mysql-bbl-state
@@ -1215,15 +1158,12 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: olaf-mysql-bbl-state
-          - get: capi-ci
-          - get: capi-ci-private
       - task: manual-bbl-destroy-olaf-mysql
         file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
-          bbl-config: capi-ci-private
+          bbl-state: olaf-mysql-bbl-state
+          bbl-config: olaf-mysql-bbl-state
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           BBL_AWS_ACCESS_KEY_ID: ((capi-bbl-olaf-aws-access-key))
@@ -1258,11 +1198,8 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: scar-psql-bbl-state
           - get: capi-ci
-          - get: capi-ci-private
-          - get: cf-deployment
           - get: scar-psql-pool
             passed:
               - scar-psql-acquire-bbl-up-pool
@@ -1270,11 +1207,11 @@ jobs:
       - task: bbl-up-scar-psql
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
-          bbl-config: capi-ci-private
-        params: &update-bosh-xena-mysql-params
-          BBL_CONFIG_DIR: scar-psql/bbl-config
+          bbl-state: scar-psql-bbl-state
+          bbl-config: scar-psql-bbl-state
+        params:
           BBL_STATE_DIR: scar-psql/bbl-state
+          BBL_CONFIG_DIR: scar-psql/bbl-config
           BBL_IAAS: gcp
           BBL_ENV_NAME: scar-psql
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-scar-service-account))
@@ -1315,15 +1252,12 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: scar-psql-bbl-state
-          - get: capi-ci
-          - get: capi-ci-private
       - task: manual-bbl-destroy-scar-psql
         file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
-          bbl-config: capi-ci-private
+          bbl-state: scar-psql-bbl-state
+          bbl-config: scar-psql-bbl-state
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-scar-service-account))
@@ -1339,15 +1273,20 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: elsa-ha-bbl-state
-          - get: capi-ci
-          - get: capi-ci-private
+      - try:
+          task: delete-deployment
+          file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+          input_mapping:
+            bbl-state: elsa-ha-bbl-state
+          params:
+            BBL_STATE_DIR: elsa-ha/bbl-state
+            IGNORE_ERRORS: true
       - task: emergency-bbl-destroy-elsa-ha
         file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
-          bbl-config: capi-ci-private
+          bbl-state: elsa-ha-bbl-state
+          bbl-config: elsa-ha-bbl-state
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-elsa-ha-service-account))
@@ -1376,16 +1315,13 @@ jobs:
     serial: true
     plan:
       - in_parallel:
-          - get: cloud_controller_ng
-          - get: capi-release
-            resource: capi-release-develop
           - get: capi-release-tarball
             passed:
+              - elsa-ha-tests
+              - kiki-back-compat-migrations
               - asha-mysql-destroy-cf
               - olaf-mysql-destroy-cf
               - scar-psql-destroy-cf
-              - elsa-ha-tests
-              - kiki-back-compat-migrations
             trigger: true
       - put: capi-release-ci-passed
         params:
@@ -1398,13 +1334,6 @@ jobs:
             passed:
               - create-capi-release
             trigger: true
-          - get: cloud_controller_ng
-            passed:
-              - create-capi-release
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - create-capi-release
           - put: asha-mysql-pool
             params:
               acquire: true
@@ -1415,25 +1344,17 @@ jobs:
       - asha-mysql
     plan:
       - in_parallel:
-          - get: cloud_controller_ng
-            passed:
-              - asha-mysql-acquire-pool
-          - get: cf-deployment
-            resource: cf-deployment
-          - get: capi-ci
-          - get: capi-ci-private
-          - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - asha-mysql-acquire-pool
-          - get: capi-release-tarball
           - get: asha-mysql-pool
             passed:
               - asha-mysql-acquire-pool
             trigger: true
+          - get: cf-deployment-concourse-tasks
           - get: asha-mysql-bbl-state
+          - get: capi-ci
+          - get: capi-release-tarball
+          - get: cf-deployment
+          - get: runtime-ci
+          - get: asha-mysql-integration-configs
       - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
@@ -1444,11 +1365,11 @@ jobs:
       - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: asha-mysql-bbl-state
         params:
           BBL_STATE_DIR: asha-mysql/bbl-state
       - task: upload-capi-release-tarball
-        file: capi-ci/ci/bosh/upload-release.yml
+        file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
           release-tarball: capi-release-tarball
@@ -1470,9 +1391,9 @@ jobs:
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: asha-mysql-bbl-state
           ops-files: collected-ops-files
-          vars-files: capi-ci-private
+          vars-files: asha-mysql-bbl-state
         params:
           BBL_STATE_DIR: asha-mysql/bbl-state
           SYSTEM_DOMAIN: *asha-mysql-domain
@@ -1486,6 +1407,12 @@ jobs:
             base-ops-files/operations/scale-database-cluster.yml
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
             seed-uaa-asg.yml
+      - task: ensure-api-healthy
+        file: runtime-ci/tasks/ensure-api-healthy/task.yml
+        input_mapping:
+          cats-integration-config: asha-mysql-integration-configs
+        params:
+          CONFIG_FILE_PATH: asha-mysql/cats_integration_config.json
   - name: asha-mysql-tests
     serial: true
     serial_groups:
@@ -1493,9 +1420,7 @@ jobs:
     plan:
       - in_parallel:
           - get: capi-ci
-          - get: capi-ci-private
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: capi-release-tarball
           - get: asha-mysql-pool
             passed:
@@ -1506,7 +1431,6 @@ jobs:
           - get: cf-acceptance-tests
           - get: sync-integration-tests
           - get: capi-bara-tests
-          - get: cf-cli
       - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
@@ -1524,7 +1448,7 @@ jobs:
       - task: updated-baras-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: asha-mysql-bbl-state
           integration-configs: updated-integration-configs
         params:
           CATS_INTEGRATION_CONFIG_FILE: asha-mysql/baras_integration_config.json
@@ -1543,11 +1467,6 @@ jobs:
           SYSTEM_DOMAIN: *asha-mysql-domain
           BBL_STATE_DIR: asha-mysql/bbl-state
           ENABLED_FEATURE_FLAGS: diego_docker
-      - task: cleanup-acceptance-test-leftovers
-        file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
-        params:
-          CF_API_TARGET: &asha-mysql-api-url https://api.cf.asha.app-runtime-interfaces.ci.cloudfoundry.org
-          BBL_STATE_DIR: asha-mysql/bbl-state
       - in_parallel:
           - task: acceptance-tests
             attempts: 3
@@ -1569,14 +1488,14 @@ jobs:
               FLAKE_ATTEMPTS: 2
               CONFIG_FILE_PATH: asha-mysql/baras_integration_config.json
           - task: sync-integration-tests
-            file: sync-integration-tests/concourse/task_with_credhub.yml
             attempts: 3
+            file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
-              environment: capi-ci-private
+              environment: updated-integration-configs
             params:
               BOSH_DEPLOYMENT_NAME: cf
               BOSH_API_INSTANCE: api/0
-              CF_API_TARGET: *asha-mysql-api-url
+              CF_API_TARGET: https://api.cf.asha.app-runtime-interfaces.ci.cloudfoundry.org
               CF_SKIP_SSL_VALIDATION: true
               CF_APPS_DOMAIN: *asha-mysql-domain
               BBL_STATE_DIR: asha-mysql/bbl-state
@@ -1590,7 +1509,6 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: capi-release-tarball
           - get: asha-mysql-pool
             passed:
@@ -1615,13 +1533,6 @@ jobs:
             passed:
               - create-capi-release
             trigger: true
-          - get: cloud_controller_ng
-            passed:
-              - create-capi-release
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - create-capi-release
           - put: olaf-mysql-pool
             params:
               acquire: true
@@ -1632,25 +1543,17 @@ jobs:
       - olaf-mysql
     plan:
       - in_parallel:
-          - get: cloud_controller_ng
-            passed:
-              - olaf-mysql-acquire-pool
-          - get: cf-deployment
-            resource: cf-deployment
-          - get: capi-ci
-          - get: capi-ci-private
-          - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - olaf-mysql-acquire-pool
-          - get: capi-release-tarball
           - get: olaf-mysql-pool
             passed:
               - olaf-mysql-acquire-pool
             trigger: true
+          - get: cf-deployment-concourse-tasks
           - get: olaf-mysql-bbl-state
+          - get: capi-ci
+          - get: capi-release-tarball
+          - get: cf-deployment
+          - get: runtime-ci
+          - get: olaf-mysql-integration-configs
       - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
@@ -1661,12 +1564,12 @@ jobs:
       - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: olaf-mysql-bbl-state
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           INFRASTRUCTURE: aws
       - task: upload-capi-release-tarball
-        file: capi-ci/ci/bosh/upload-release.yml
+        file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
           release-tarball: capi-release-tarball
@@ -1688,9 +1591,9 @@ jobs:
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: olaf-mysql-bbl-state
           ops-files: collected-ops-files
-          vars-files: capi-ci-private
+          vars-files: olaf-mysql-bbl-state
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           SYSTEM_DOMAIN: *olaf-mysql-domain
@@ -1709,6 +1612,12 @@ jobs:
             seed-uaa-asg.yml
           VARS_FILES: |
             olaf-mysql/bbl-state/vars/director-vars-file.yml
+      - task: ensure-api-healthy
+        file: runtime-ci/tasks/ensure-api-healthy/task.yml
+        input_mapping:
+          cats-integration-config: olaf-mysql-integration-configs
+        params:
+          CONFIG_FILE_PATH: olaf-mysql/cats_integration_config.json
   - name: olaf-mysql-tests
     serial: true
     serial_groups:
@@ -1716,9 +1625,7 @@ jobs:
     plan:
       - in_parallel:
           - get: capi-ci
-          - get: capi-ci-private
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: capi-release-tarball
           - get: olaf-mysql-pool
             passed:
@@ -1729,7 +1636,6 @@ jobs:
           - get: cf-acceptance-tests
           - get: sync-integration-tests
           - get: capi-bara-tests
-          - get: cf-cli
       - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
@@ -1747,7 +1653,7 @@ jobs:
       - task: updated-baras-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: olaf-mysql-bbl-state
           integration-configs: updated-integration-configs
         params:
           CATS_INTEGRATION_CONFIG_FILE: olaf-mysql/baras_integration_config.json
@@ -1766,11 +1672,6 @@ jobs:
           SYSTEM_DOMAIN: *olaf-mysql-domain
           BBL_STATE_DIR: olaf-mysql/bbl-state
           ENABLED_FEATURE_FLAGS: diego_docker
-      - task: cleanup-acceptance-test-leftovers
-        file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
-        params:
-          CF_API_TARGET: &olaf-mysql-api-url https://api.cf.olaf.app-runtime-interfaces.ci.cloudfoundry.org
-          BBL_STATE_DIR: olaf-mysql/bbl-state
       - in_parallel:
           - task: acceptance-tests
             attempts: 3
@@ -1791,14 +1692,14 @@ jobs:
               FLAKE_ATTEMPTS: 2
               CONFIG_FILE_PATH: olaf-mysql/baras_integration_config.json
           - task: sync-integration-tests
-            file: sync-integration-tests/concourse/task_with_credhub.yml
             attempts: 3
+            file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
-              environment: capi-ci-private
+              environment: updated-integration-configs
             params:
               BOSH_DEPLOYMENT_NAME: cf
               BOSH_API_INSTANCE: api/0
-              CF_API_TARGET: *olaf-mysql-api-url
+              CF_API_TARGET: https://api.cf.olaf.app-runtime-interfaces.ci.cloudfoundry.org
               CF_SKIP_SSL_VALIDATION: true
               CF_APPS_DOMAIN: *olaf-mysql-domain
               BBL_STATE_DIR: olaf-mysql/bbl-state
@@ -1807,11 +1708,15 @@ jobs:
               FLAKE_ATTEMPTS: 2
       - task: extract-bbl-environment
         file: capi-ci/ci/bbl-tasks/extract_bbl_environment.yml
+        input_mapping:
+          capi-ci-private: olaf-mysql-bbl-state
         params:
           ENV_NAME: olaf-mysql
           BBL_STATE_DIR: olaf-mysql/bbl-state
       - task: run-blobstore-benchmarks
         file: capi-ci/ci/benchmarks/run-blobstore-benchmarks.yml
+        input_mapping:
+          capi-ci-private: olaf-mysql-bbl-state
         privileged: true
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
@@ -1822,7 +1727,6 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: capi-release-tarball
           - get: olaf-mysql-pool
             passed:
@@ -1847,13 +1751,6 @@ jobs:
             passed:
               - create-capi-release
             trigger: true
-          - get: cloud_controller_ng
-            passed:
-              - create-capi-release
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - create-capi-release
           - put: scar-psql-pool
             params:
               acquire: true
@@ -1864,25 +1761,17 @@ jobs:
       - scar-psql
     plan:
       - in_parallel:
-          - get: cloud_controller_ng
-            passed:
-              - scar-psql-acquire-pool
-          - get: cf-deployment
-            resource: cf-deployment
-          - get: capi-ci
-          - get: capi-ci-private
-          - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - scar-psql-acquire-pool
-          - get: capi-release-tarball
           - get: scar-psql-pool
             passed:
               - scar-psql-acquire-pool
             trigger: true
+          - get: cf-deployment-concourse-tasks
           - get: scar-psql-bbl-state
+          - get: capi-ci
+          - get: capi-release-tarball
+          - get: cf-deployment
+          - get: runtime-ci
+          - get: scar-psql-integration-configs
       - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
@@ -1893,11 +1782,11 @@ jobs:
       - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: scar-psql-bbl-state
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
       - task: upload-capi-release-tarball
-        file: capi-ci/ci/bosh/upload-release.yml
+        file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
           release-tarball: capi-release-tarball
@@ -1919,9 +1808,9 @@ jobs:
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: scar-psql-bbl-state
           ops-files: collected-ops-files
-          vars-files: capi-ci-private
+          vars-files: scar-psql-bbl-state
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
           SYSTEM_DOMAIN: *scar-psql-domain
@@ -1935,6 +1824,12 @@ jobs:
             seed-credhub-asg.yml
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
             seed-uaa-asg.yml
+      - task: ensure-api-healthy
+        file: runtime-ci/tasks/ensure-api-healthy/task.yml
+        input_mapping:
+          cats-integration-config: scar-psql-integration-configs
+        params:
+          CONFIG_FILE_PATH: scar-psql/cats_integration_config.json
   - name: scar-psql-tests
     serial: true
     serial_groups:
@@ -1942,9 +1837,7 @@ jobs:
     plan:
       - in_parallel:
           - get: capi-ci
-          - get: capi-ci-private
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: capi-release-tarball
           - get: scar-psql-pool
             passed:
@@ -1955,7 +1848,6 @@ jobs:
           - get: cf-acceptance-tests
           - get: sync-integration-tests
           - get: capi-bara-tests
-          - get: cf-cli
       - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
@@ -1973,7 +1865,7 @@ jobs:
       - task: updated-baras-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: scar-psql-bbl-state
           integration-configs: updated-integration-configs
         params:
           CATS_INTEGRATION_CONFIG_FILE: scar-psql/baras_integration_config.json
@@ -1992,17 +1884,12 @@ jobs:
           SYSTEM_DOMAIN: *scar-psql-domain
           BBL_STATE_DIR: scar-psql/bbl-state
           ENABLED_FEATURE_FLAGS: diego_docker
-      - task: cleanup-acceptance-test-leftovers
-        file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
-        params:
-          CF_API_TARGET: &scar-psql-api-url https://api.cf.scar.app-runtime-interfaces.ci.cloudfoundry.org
-          BBL_STATE_DIR: scar-psql/bbl-state
       - in_parallel:
           - task: acceptance-tests
+            attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
-              cf-cli: cf-cli
             params:
               NODES: 10
               CONFIG_FILE_PATH: scar-psql/cats_integration_config.json
@@ -2018,14 +1905,14 @@ jobs:
               FLAKE_ATTEMPTS: 2
               CONFIG_FILE_PATH: scar-psql/baras_integration_config.json
           - task: sync-integration-tests
-            file: sync-integration-tests/concourse/task_with_credhub.yml
             attempts: 3
+            file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
-              environment: capi-ci-private
+              environment: updated-integration-configs
             params:
               BOSH_DEPLOYMENT_NAME: cf
               BOSH_API_INSTANCE: api/0
-              CF_API_TARGET: *scar-psql-api-url
+              CF_API_TARGET: https://api.cf.scar.app-runtime-interfaces.ci.cloudfoundry.org
               CF_SKIP_SSL_VALIDATION: true
               CF_APPS_DOMAIN: *scar-psql-domain
               BBL_STATE_DIR: scar-psql/bbl-state
@@ -2039,7 +1926,6 @@ jobs:
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: capi-release-tarball
           - get: scar-psql-pool
             passed:
@@ -2064,13 +1950,6 @@ jobs:
             passed:
               - create-capi-release
             trigger: true
-          - get: cloud_controller_ng
-            passed:
-              - create-capi-release
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - create-capi-release
           - put: elsa-ha-pool
             params:
               acquire: true
@@ -2081,33 +1960,25 @@ jobs:
       - elsa-ha
     plan:
       - in_parallel:
-          - get: cloud_controller_ng
-            passed:
-              - elsa-ha-acquire-pool
-          - get: cf-deployment
-            resource: cf-deployment
-          - get: capi-ci
-          - get: capi-ci-private
-          - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - elsa-ha-acquire-pool
-          - get: capi-release-tarball
           - get: elsa-ha-pool
             passed:
               - elsa-ha-acquire-pool
             trigger: true
+          - get: cf-deployment-concourse-tasks
           - get: elsa-ha-bbl-state
+          - get: capi-ci
+          - get: capi-release-tarball
+          - get: cf-deployment
+          - get: runtime-ci
+          - get: elsa-ha-integration-configs
       - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: elsa-ha-bbl-state
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
       - task: upload-capi-release-tarball
-        file: capi-ci/ci/bosh/upload-release.yml
+        file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
           release-tarball: capi-release-tarball
@@ -2131,9 +2002,9 @@ jobs:
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: elsa-ha-bbl-state
           ops-files: collected-ops-files
-          vars-files: capi-ci-private
+          vars-files: elsa-ha-bbl-state
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
           SYSTEM_DOMAIN: *elsa-ha-domain
@@ -2141,10 +2012,10 @@ jobs:
             base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
             base-ops-files/operations/windows2019-cell.yml
             base-ops-files/operations/use-online-windows2019fs.yml
-            base-ops-files/operations/use-compiled-releases.yml
-            base-ops-files/operations/experimental/use-compiled-releases-windows.yml
             base-ops-files/operations/use-external-blobstore.yml
             base-ops-files/operations/use-gcs-blobstore-service-account.yml
+            base-ops-files/operations/use-compiled-releases.yml
+            base-ops-files/operations/experimental/use-compiled-releases-windows.yml
             use-latest-capi.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
@@ -2155,7 +2026,14 @@ jobs:
             seed-uaa-asg.yml
             disable-skip-cert-verify.yml
             disable-skip-cert-verify-iso-seg.yml
-          VARS_FILES: elsa-ha/gcs-storage-vars.yml
+          VARS_FILES: |
+            elsa-ha/gcs-storage-vars.yml
+      - task: ensure-api-healthy
+        file: runtime-ci/tasks/ensure-api-healthy/task.yml
+        input_mapping:
+          cats-integration-config: elsa-ha-integration-configs
+        params:
+          CONFIG_FILE_PATH: elsa-ha/cats_integration_config.json
   - name: elsa-ha-tests
     serial: true
     serial_groups:
@@ -2163,9 +2041,7 @@ jobs:
     plan:
       - in_parallel:
           - get: capi-ci
-          - get: capi-ci-private
           - get: cf-deployment-concourse-tasks
-            resource: cf-deployment-concourse-tasks
           - get: capi-release-tarball
           - get: elsa-ha-pool
             passed:
@@ -2176,7 +2052,6 @@ jobs:
           - get: cf-acceptance-tests
           - get: sync-integration-tests
           - get: capi-bara-tests
-          - get: cf-cli
       - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
@@ -2194,7 +2069,7 @@ jobs:
       - task: updated-baras-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
-          bbl-state: capi-ci-private
+          bbl-state: elsa-ha-bbl-state
           integration-configs: updated-integration-configs
         params:
           CATS_INTEGRATION_CONFIG_FILE: elsa-ha/baras_integration_config.json
@@ -2215,11 +2090,14 @@ jobs:
           ENABLED_FEATURE_FLAGS: diego_docker
       - task: cleanup-acceptance-test-leftovers
         file: capi-ci/ci/acceptance-test-utils/cats_cleanup.yml
+        input_mapping:
+          capi-ci-private: elsa-ha-bbl-state
         params:
           CF_API_TARGET: &elsa-ha-api-url https://api.cf.elsa.app-runtime-interfaces.ci.cloudfoundry.org
           BBL_STATE_DIR: elsa-ha/bbl-state
       - in_parallel:
           - task: acceptance-tests
+            attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
@@ -2238,10 +2116,10 @@ jobs:
               FLAKE_ATTEMPTS: 2
               CONFIG_FILE_PATH: elsa-ha/baras_integration_config.json
           - task: sync-integration-tests
-            file: sync-integration-tests/concourse/task_with_credhub.yml
             attempts: 3
+            file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
-              environment: capi-ci-private
+              environment: updated-integration-configs
             params:
               BOSH_DEPLOYMENT_NAME: cf
               BOSH_API_INSTANCE: api/0
@@ -2254,11 +2132,15 @@ jobs:
               FLAKE_ATTEMPTS: 2
       - task: extract-bbl-environment
         file: capi-ci/ci/bbl-tasks/extract_bbl_environment.yml
+        input_mapping:
+          capi-ci-private: elsa-ha-bbl-state
         params:
           ENV_NAME: elsa-ha
           BBL_STATE_DIR: elsa-ha/bbl-state
       - task: run-blobstore-benchmarks
         file: capi-ci/ci/benchmarks/run-blobstore-benchmarks.yml
+        input_mapping:
+          capi-ci-private: elsa-ha-bbl-state
         privileged: true
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state

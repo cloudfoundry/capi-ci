@@ -6,8 +6,8 @@ image_resource:
     repository: cloudfoundry/capi
     tag: ruby-units
 inputs:
-  - name: cloud_controller_ng
   - name: capi-ci
+  - name: cloud_controller_ng
 run:
   path: capi-ci/ci/test-unit/run_cc_unit_tests.sh
 params:

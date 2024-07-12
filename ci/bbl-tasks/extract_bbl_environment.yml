@@ -12,6 +12,6 @@ outputs:
 run:
   path: capi-ci/ci/bbl-tasks/extract_bbl_environment.sh
 params:
-  ENV_NAME: ""
+  ENV_NAME: ~
   DEPLOYMENT_NAME: cf
-  BBL_STATE_DIR: ""
+  BBL_STATE_DIR: ~

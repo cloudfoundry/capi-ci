@@ -5,18 +5,23 @@ set -e
 FINAL_RELEASE_VERSION=$(cat next-version/version)
 
 function setup_git_user() {
-  pushd capi-release
+  pushd capi-release > /dev/null
     git config user.name 'ari-wg-gitbot'
     git config user.email 'app-runtime-interfaces@cloudfoundry.org'
-  popd
+  popd > /dev/null
 }
 
 function set_private_yml() {
-  echo "${PRIVATE_YAML}" > ${PWD}/capi-release/config/private.yml
+  if [[ -z "${PRIVATE_YAML}" ]]; then
+    echo "Error: PRIVATE_YAML is not set."
+    exit 1
+  fi
+
+  echo "${PRIVATE_YAML}" > "${PWD}/capi-release/config/private.yml"
 }
 
 function create_release() {
-  pushd capi-release
+  pushd capi-release > /dev/null
     bosh -n create-release \
       --final \
       --sha2 \
@@ -25,7 +30,7 @@ function create_release() {
 
     git add -A
     git commit -m "Create final release ${FINAL_RELEASE_VERSION}"
-  popd
+  popd > /dev/null
 }
 
 function export_release() {

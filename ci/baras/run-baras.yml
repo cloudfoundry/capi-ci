@@ -9,8 +9,6 @@ inputs:
   - name: capi-bara-tests
   - name: cf-cli
   - name: integration-config
-  - name: capi-ci-private
-    optional: true
 run:
   path: capi-ci/ci/baras/run-baras.sh
 params:

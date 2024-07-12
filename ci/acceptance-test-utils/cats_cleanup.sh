@@ -8,11 +8,11 @@ set -eu
 
 CF_ADMIN_USERNAME=admin
 
-pushd "capi-ci-private/${BBL_STATE_DIR}"
+pushd "capi-ci-private/${BBL_STATE_DIR}" > /dev/null
   eval "$(bbl print-env)"
   export DIRECTOR_NAME="$(jq -e -r .bosh.directorName bbl-state.json)"
   unset BOSH_ALL_PROXY
-popd
+popd > /dev/null
 
 CF_ADMIN_PASSWORD="$(credhub get --name=/${DIRECTOR_NAME}/${CF_DEPLOYMENT_NAME}/cf_admin_password -j | jq .value -r)"
 

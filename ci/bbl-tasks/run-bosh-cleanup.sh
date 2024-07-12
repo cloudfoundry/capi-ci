@@ -4,9 +4,9 @@ set -eu
 
 function setup_bosh_env_vars() {
   echo "Setting env vars..."
-  pushd "bbl-state/${BBL_STATE_DIR}"
+  pushd "bbl-state/${BBL_STATE_DIR}" > /dev/null
     eval "$(bbl print-env)"
-  popd
+  popd > /dev/null
 }
 
 function bosh_clean_up() {

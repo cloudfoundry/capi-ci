@@ -10,11 +10,6 @@ set -eu -o pipefail
 : "${GCP_PROJECT_ID:?}"
 : "${IS_BOSH_LITE:=false}"
 
-# INPUTS
-script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
-bbl_state_dir="${workspace_dir}/bbl-state/${BBL_STATE_DIR}"
-
 tmp_dir="$(mktemp -d /tmp/create-dns-record.XXXXXXXX)"
 trap '{ rm -rf "${tmp_dir}"; }' EXIT
 
@@ -61,6 +56,6 @@ create_dns_record() {
   fi
 }
 
-pushd "${bbl_state_dir}" > /dev/null
+pushd "bbl-state/${BBL_STATE_DIR}" > /dev/null
   create_dns_record
 popd > /dev/null

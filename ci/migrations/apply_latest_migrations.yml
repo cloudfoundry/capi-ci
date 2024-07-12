@@ -3,16 +3,14 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: cloudfoundry/capi
-    tag: migration-compatibility
+    repository: cloudfoundry/cf-deployment-concourse-tasks
 inputs:
-  - name: cloud_controller_ng
   - name: capi-ci
-  - name: environment
   - name: capi-ci-private
+  - name: capi-release-tarball
 run:
   path: capi-ci/ci/migrations/apply_latest_migrations.sh
 params:
-  BOSH_API_INSTANCE:
-  BOSH_DEPLOYMENT_NAME:
-  BBL_STATE_DIR:
+  BBL_STATE_DIR: ~
+  BOSH_DEPLOYMENT_NAME: ~
+  BOSH_API_INSTANCE: ~

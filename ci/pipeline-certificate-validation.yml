@@ -1,35 +1,35 @@
 ---
 resources:
+  - name: daily
+    type: time
+    icon: clock-outline
+    source:
+      interval: 24h
   - name: capi-ci-private
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: runtime-ci
     type: git
     icon: git
     source:
-      branch: main
       uri: https://github.com/cloudfoundry/runtime-ci.git
-  - name: daily
-    type: time
-    icon: clock-outline
-    source:
-      interval: 24h
+      branch: main
 jobs:
   - name: validate-certs
     serial: true
     public: true
     plan:
       - in_parallel:
+          - get: daily
+            trigger: true
           - get: capi-ci-private
             trigger: true
           - get: runtime-ci
-            trigger: true
-          - get: daily
             trigger: true
       - task: validate-certs
         file: runtime-ci/tasks/check-certs/task.yml

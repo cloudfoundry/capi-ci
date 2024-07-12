@@ -8,7 +8,6 @@ image_resource:
 inputs:
   - name: next-version
   - name: capi-ci
-  - name: capi-ci-private
   - name: capi-release
 outputs:
   - name: finalized-release-git-repo

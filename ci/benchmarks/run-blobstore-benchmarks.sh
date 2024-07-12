@@ -2,14 +2,10 @@
 
 set -eu
 
-# ENV
 : "${BOSH_API_INSTANCE:="api/0"}"
 : "${BOSH_DEPLOYMENT_NAME:="cf"}"
 
-# INPUTS
-script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
-bbl_vars_file="${workspace_dir}/environment/metadata"
+bbl_vars_file=environment/metadata
 
 BOSH_ENVIRONMENT="$(jq -e -r .target "${bbl_vars_file}")"
 BOSH_CLIENT="$(jq -e -r .client "${bbl_vars_file}")"
@@ -34,9 +30,9 @@ tmp_dir="$( mktemp -d /tmp/capi-benchmarks.XXXXXXXXXX )"
 tunnel_port="8080"
 
 setup_bbl_environment() {
-  pushd "capi-ci-private/${BBL_STATE_DIR}"
+  pushd "capi-ci-private/${BBL_STATE_DIR}" > /dev/null
     eval "$(bbl print-env)"
-  popd
+  popd > /dev/null
 }
 
 write_ssh_key() {

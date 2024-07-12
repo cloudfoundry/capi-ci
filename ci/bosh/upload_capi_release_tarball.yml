@@ -6,6 +6,9 @@ image_resource:
     repository: cloudfoundry/cf-deployment-concourse-tasks
 inputs:
   - name: capi-ci
-  - name: capi-release
+  - name: bbl-state
+  - name: release-tarball
 run:
-  path: capi-ci/ci/test-unit/run_capi_release_commit_test.sh
+  path: capi-ci/ci/bosh/upload_capi_release_tarball.sh
+params:
+  BBL_STATE_DIR: ~

@@ -2,6 +2,6 @@
 
 set -e
 
-cd capi-release-main
+cd capi-release
 commit="$(git log -n 1 --pretty=format:'%s')"
 [[ $commit =~ 'Create final release '[0-9]+[.0-9]+$ ]]

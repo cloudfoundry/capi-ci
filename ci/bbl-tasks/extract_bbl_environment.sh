@@ -6,19 +6,11 @@ read_with_escaped_newlines() {
   perl -pe 's|\n|\\n|' "$1"
 }
 
-# ENV
 : ${ENV_NAME:?}
 : ${DEPLOYMENT_NAME:?}
 
-# INPUTS
-script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-workspace_dir="$( cd "${script_dir}/../../.." && pwd )"
-capi_ci_private="$( cd "${workspace_dir}/capi-ci-private" && pwd )"
-
-# OUTPUTS
-output_dir="$( cd "${workspace_dir}/environment/" && pwd )"
-output_name_file="${output_dir}/name"
-output_metadata_file="${output_dir}/metadata"
+output_name_file=environment/name
+output_metadata_file=environment/metadata
 
 echo "Creating name file..."
 echo "${ENV_NAME}" > "${output_name_file}"
@@ -26,9 +18,9 @@ echo "${ENV_NAME}" > "${output_name_file}"
 echo "Creating bbl vars file..."
 
 if [ -n "${BBL_STATE_DIR:-}" ]; then
-  pushd "${capi_ci_private}/${BBL_STATE_DIR}" > /dev/null
+  pushd "capi-ci-private/${BBL_STATE_DIR}" > /dev/null
 else
-  pushd "${capi_ci_private}/${ENV_NAME}" > /dev/null
+  pushd "capi-ci-private/${ENV_NAME}" > /dev/null
 fi
 
 eval "$(bbl print-env)"

@@ -6,10 +6,10 @@ image_resource:
     repository: cloudfoundry/capi
     tag: go-units
 inputs:
-  - name: capi-release
   - name: capi-ci
-  - name: diego-release
+  - name: capi-release
   - name: cc-uploader
   - name: tps
+  - name: diego-release
 run:
   path: capi-ci/ci/test-unit/run_bridge_unit_tests.sh

@@ -4,35 +4,35 @@ set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-pushd cloud_controller_ng
+pushd cloud_controller_ng > /dev/null
   SOURCE_MASTER_SHA=$(git rev-parse HEAD)
-popd
+popd > /dev/null
 
-pushd cc-uploader
+pushd cc-uploader > /dev/null
   CC_UPLOADER_SHA=$(git rev-parse HEAD)
-popd
+popd > /dev/null
 
-pushd tps
+pushd tps > /dev/null
   TPS_SHA=$(git rev-parse HEAD)
-popd
+popd > /dev/null
 
-pushd capi-release
-  pushd src/cloud_controller_ng
+pushd capi-release > /dev/null
+  pushd src/cloud_controller_ng > /dev/null
     git fetch
     git checkout $SOURCE_MASTER_SHA
-  popd
+  popd > /dev/null
 
-  pushd src/code.cloudfoundry.org
-    pushd cc-uploader
+  pushd src/code.cloudfoundry.org > /dev/null
+    pushd cc-uploader > /dev/null
       git fetch
       git checkout "${CC_UPLOADER_SHA}"
-    popd
+    popd > /dev/null
 
-    pushd tps
+    pushd tps > /dev/null
       git fetch
       git checkout "${TPS_SHA}"
-    popd
-  popd
+    popd > /dev/null
+  popd > /dev/null
 
   set +e
     git diff --exit-code
@@ -52,6 +52,6 @@ pushd capi-release
     "$SCRIPT_DIR/staged_shortlog.rb"
     "$SCRIPT_DIR/staged_shortlog.rb" | git commit -F -
   fi
-popd
+popd > /dev/null
 
 cp -r capi-release bumped/capi-release

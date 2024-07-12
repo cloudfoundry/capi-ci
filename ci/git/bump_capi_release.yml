@@ -5,9 +5,9 @@ image_resource:
   source:
     repository: cloudfoundry/cf-deployment-concourse-tasks
 inputs:
-  - name: cloud_controller_ng
-  - name: capi-release
   - name: capi-ci
+  - name: capi-release
+  - name: cloud_controller_ng
   - name: cc-uploader
   - name: tps
 outputs:
