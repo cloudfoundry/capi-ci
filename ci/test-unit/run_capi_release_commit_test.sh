@@ -3,5 +3,11 @@
 set -e
 
 cd capi-release
-commit="$(git log -n 1 --pretty=format:'%s')"
-[[ $commit =~ 'Create final release '[0-9]+[.0-9]+$ ]]
+COMMIT="$(git log -n 1 --pretty=format:'%s')"
+
+if [[ ! $COMMIT =~ 'Create final release '[0-9]+[.0-9]+$ ]]; then
+  echo "Error: Invalid commit '$COMMIT'"
+  exit 1
+fi
+
+echo "Success: Valid commit '$COMMIT'"

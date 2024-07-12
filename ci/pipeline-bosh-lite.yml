@@ -22,7 +22,7 @@ resources:
     type: git
     icon: git
     source:
-      branch: main
+      branch: fixes
       uri: https://github.com/cloudfoundry/capi-ci.git
   - name: bosh-deployment
     type: git
@@ -141,7 +141,6 @@ jobs:
                   vars_files:
                     - bosh-target/vars.yml
                   ops_files:
-                    - capi-ci/cf-deployment-operations/skip-cert-verify.yml
                     - capi-ci/cf-deployment-operations/use-latest-stemcell.yml
                     - cf-deployment/operations/bosh-lite.yml
                     - cf-deployment/operations/use-compiled-releases.yml

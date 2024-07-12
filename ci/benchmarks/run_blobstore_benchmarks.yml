@@ -8,7 +8,8 @@ inputs:
   - name: capi-ci
   - name: capi-ci-private
 run:
-  path: capi-ci/ci/acceptance-test-utils/cats_cleanup.sh
+  path: capi-ci/ci/benchmarks/run_blobstore_benchmarks.sh
 params:
-  CF_API_TARGET:
-  BBL_STATE_DIR:
+  BBL_STATE_DIR: ~
+  BOSH_DEPLOYMENT_NAME: ~
+  BOSH_API_INSTANCE: ~

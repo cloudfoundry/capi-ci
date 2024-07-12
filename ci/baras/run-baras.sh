@@ -21,7 +21,7 @@ CF_GOPATH=/go/src/github.com/cloudfoundry/
 
 echo "Moving capi-bara-tests onto the gopath..."
 mkdir -p $CF_GOPATH
-cp -R capi-bara-tests $CF_GOPATH
+cp -r capi-bara-tests $CF_GOPATH
 
 cd /go/src/github.com/cloudfoundry/capi-bara-tests
 
@@ -36,4 +36,4 @@ export CF_PLUGIN_HOME=$HOME
   --flake-attempts="${FLAKE_ATTEMPTS}" \
   -nodes="${NODES}" \
   -timeout=2h \
-  . stack
+  .

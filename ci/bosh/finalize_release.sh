@@ -25,7 +25,7 @@ function create_release() {
     bosh -n create-release \
       --final \
       --sha2 \
-      --tarball "../finalized-release-tarball/capi-${FINAL_RELEASE_VERSION}.tgz" \
+      --tarball "../final-release-tarball/capi-${FINAL_RELEASE_VERSION}.tgz" \
       --version "${FINAL_RELEASE_VERSION}"
 
     git add -A
@@ -33,15 +33,15 @@ function create_release() {
   popd > /dev/null
 }
 
-function export_release() {
-  cp -ar capi-release finalized-release-git-repo/
+function move_to_output_location() {
+  cp -r capi-release/. updated-capi-release
 }
 
 function main() {
   setup_git_user
   set_private_yml
   create_release
-  export_release
+  move_to_output_location
 }
 
 main

@@ -14,4 +14,4 @@ outputs:
 run:
   path: capi-ci/ci/docs/push_docs_v3.sh
 params:
-  VERSION:
+  VERSION: ~

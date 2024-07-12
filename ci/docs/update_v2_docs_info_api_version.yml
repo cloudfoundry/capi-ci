@@ -5,10 +5,10 @@ image_resource:
   source:
     repository: cloudfoundry/cf-deployment-concourse-tasks
 inputs:
-  - name: cloud_controller_ng
   - name: capi-ci
   - name: cc-api-v2-version
+  - name: cloud_controller_ng
 outputs:
-  - name: cloud_controller_ng_bumped_docs
+  - name: updated-cloud-controller-ng
 run:
   path: capi-ci/ci/docs/update_v2_docs_info_api_version.sh

@@ -1,0 +1,17 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: cloudfoundry/bbl-deployment
+inputs:
+  - name: capi-ci
+  - name: bbl-state
+run:
+  path: capi-ci/ci/bbl-tasks/create_dns_record.sh
+params:
+  BBL_STATE_DIR: ~
+  DNS_DOMAIN: ~
+  SHARED_DNS_ZONE_NAME: ~
+  GCP_DNS_SERVICE_ACCOUNT_KEY: ~
+  GCP_PROJECT_ID: ~

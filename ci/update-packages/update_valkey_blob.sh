@@ -51,4 +51,4 @@ else
   popd > /dev/null
 fi
 
-cp -r capi-release updated-capi-release
+cp -r capi-release/. updated-capi-release

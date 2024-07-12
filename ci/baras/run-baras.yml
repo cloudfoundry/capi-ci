@@ -7,7 +7,6 @@ image_resource:
 inputs:
   - name: capi-ci
   - name: capi-bara-tests
-  - name: cf-cli
   - name: integration-config
 run:
   path: capi-ci/ci/baras/run-baras.sh
@@ -16,7 +15,7 @@ params:
   # - Number of parallel ginkgo nodes.
   NODES: 12
   # - Optional
-  # - Number of times ginkgo will re-run a flaky test
+  # - Number of times ginkgo will re-run a flaky test.
   FLAKE_ATTEMPTS: 1
   # - Optional
   # - Path to the BARAs integration configuration file.
@@ -24,12 +23,12 @@ params:
   CONFIG_FILE_PATH: integration_config.json
   # Optional
   # This is the Google Cloud project name.
-  GOOGLE_PROJECT_NAME:
+  GOOGLE_PROJECT_NAME: ~
   # Optional
   # This is the service account that has access to the K8s cluster under
   # GOOGLE_PROJECT_NAME.
-  GOOGLE_SERVICE_ACCOUNT_EMAIL:
+  GOOGLE_SERVICE_ACCOUNT_EMAIL: ~
   # Optional
   # This is the path to a key-file associated with the Google service account
-  # and project.  It'll be passed as a `--key-file` to the `gcloud` command.
-  GOOGLE_KEY_FILE_PATH:
+  # and project. It'll be passed as a `--key-file` to the `gcloud` command.
+  GOOGLE_KEY_FILE_PATH: ~

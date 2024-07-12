@@ -76,14 +76,6 @@ resources:
       branch: main
       paths:
         - bosh-lite/Dockerfile
-  - name: capi-dockerfiles-migration-compatibility
-    type: git
-    icon: git
-    source:
-      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
-      branch: main
-      paths:
-        - capi-migration-compatibility/Dockerfile
   - name: docker-image-rc-docs
     type: docker-image
     icon: docker
@@ -122,14 +114,6 @@ resources:
     source:
       repository: cloudfoundry/capi
       tag: bosh-lite
-      username: ((dockerhub_user))
-      password: ((dockerhub_pass))
-  - name: docker-image-migration-compatibility
-    type: docker-image
-    icon: docker
-    source:
-      repository: cloudfoundry/capi
-      tag: migration-compatibility
       username: ((dockerhub_user))
       password: ((dockerhub_pass))
 jobs:
@@ -216,14 +200,3 @@ jobs:
       - put: docker-image-bosh-lite
         params:
           build: capi-dockerfiles-bosh-lite/bosh-lite
-  - name: migration-compatibility-docker
-    serial: true
-    plan:
-      - in_parallel:
-          - get: weekly
-            trigger: true
-          - get: capi-dockerfiles-migration-compatibility
-            trigger: true
-      - put: docker-image-migration-compatibility
-        params:
-          build: capi-dockerfiles-migration-compatibility/capi-migration-compatibility

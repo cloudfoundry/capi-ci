@@ -30,4 +30,4 @@ pushd capi-release > /dev/null
   fi
 popd > /dev/null
 
-cp -r capi-release updated-capi-release
+cp -r capi-release/. updated-capi-release

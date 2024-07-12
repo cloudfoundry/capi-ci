@@ -20,6 +20,8 @@ package_specs.each do |spec_path|
   end
 end
 
-puts "Unused blobs: #{unused_blobs.keys}" unless unused_blobs.empty?
+unless unused_blobs.empty?
+  puts "Unused blobs: #{unused_blobs.keys}"
 
-fail "Unused blobs exist" unless unused_blobs.empty?
+  fail "Unused blobs exist"
+end

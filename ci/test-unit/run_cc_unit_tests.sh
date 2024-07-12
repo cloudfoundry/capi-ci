@@ -11,7 +11,7 @@ start_db() {
   if [ "${DB}" = "mysql" ]; then
     service mysql stop
 
-    cp -R /var/lib/mysql/* /var/lib/ramdisk
+    cp -r /var/lib/mysql/* /var/lib/ramdisk
     chown -R mysql /var/lib/ramdisk
     chgrp -R mysql /var/lib/ramdisk
     chmod 700 /var/lib/ramdisk
@@ -25,7 +25,7 @@ start_db() {
     POSTGRES_CONF_FILE=$(su postgres -c "psql -c 'show config_file'" | grep -o "\S*postgresql.conf")
     service postgresql stop
 
-    cp -R $POSTGRES_DATA_DIR/* /var/lib/ramdisk
+    cp -r $POSTGRES_DATA_DIR/* /var/lib/ramdisk
     chown -R postgres /var/lib/ramdisk
     chgrp -R postgres /var/lib/ramdisk
     chmod 700 /var/lib/ramdisk

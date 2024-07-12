@@ -11,6 +11,6 @@ inputs:
   - name: cc-uploader
   - name: tps
 outputs:
-  - name: bumped
+  - name: updated-capi-release
 run:
   path: capi-ci/ci/git/bump_capi_release.sh

@@ -5,7 +5,7 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 pushd cloud_controller_ng > /dev/null
-  SOURCE_MASTER_SHA=$(git rev-parse HEAD)
+  CCNG_SHA=$(git rev-parse HEAD)
 popd > /dev/null
 
 pushd cc-uploader > /dev/null
@@ -19,7 +19,7 @@ popd > /dev/null
 pushd capi-release > /dev/null
   pushd src/cloud_controller_ng > /dev/null
     git fetch
-    git checkout $SOURCE_MASTER_SHA
+    git checkout "${CCNG_SHA}"
   popd > /dev/null
 
   pushd src/code.cloudfoundry.org > /dev/null
@@ -54,4 +54,4 @@ pushd capi-release > /dev/null
   fi
 popd > /dev/null
 
-cp -r capi-release bumped/capi-release
+cp -r capi-release/. updated-capi-release

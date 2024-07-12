@@ -13,4 +13,4 @@ pushd capi-release > /dev/null
   git merge --no-edit local-capi-release-main/main
 popd > /dev/null
 
-cp -a capi-release merged/capi-release
+cp -r capi-release/. updated-capi-release

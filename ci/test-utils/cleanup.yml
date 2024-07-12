@@ -6,9 +6,10 @@ image_resource:
     repository: cloudfoundry/cf-deployment-concourse-tasks
 inputs:
   - name: capi-ci
-  - name: capi-release-main
-  - name: capi-release
-outputs:
-  - name: updated-capi-release
+  - name: capi-ci-private
 run:
-  path: capi-ci/ci/git/merge_main_into_develop.sh
+  path: capi-ci/ci/test-utils/cleanup.sh
+params:
+  BBL_STATE_DIR: ~
+  CF_DEPLOYMENT_NAME: ~
+  CF_API_TARGET: ~

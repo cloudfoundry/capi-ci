@@ -6,12 +6,8 @@ image_resource:
     repository: cloudfoundry/cf-deployment-concourse-tasks
 inputs:
   - name: capi-ci
-  - name: capi-ci-private
-outputs:
-  - name: environment
+  - name: bbl-state
 run:
-  path: capi-ci/ci/bbl-tasks/extract_bbl_environment.sh
+  path: capi-ci/ci/bbl-tasks/run_bosh_cleanup.sh
 params:
-  ENV_NAME: ~
-  DEPLOYMENT_NAME: cf
   BBL_STATE_DIR: ~

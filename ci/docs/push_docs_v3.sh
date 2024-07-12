@@ -14,7 +14,7 @@ function build_docs() {
   "$SCRIPT_DIR/build_docs_v3.sh" "${VERSION}" "${DOCS_DIR}" "${GH_PAGES_DIR}"
 }
 
-function publish_docs() {
+function commit_docs() {
   pushd cc-api-gh-pages > /dev/null
     git config user.name 'ari-wg-gitbot'
     git config user.email 'app-runtime-interfaces@cloudfoundry.org'
@@ -28,9 +28,11 @@ function publish_docs() {
     else
       git commit -m "Bump v3 API docs version ${VERSION}"
     fi
-
-    cp -r . ../updated-gh-pages
   popd > /dev/null
+}
+
+function move_to_output_location() {
+  cp -r cc-api-gh-pages/. updated-gh-pages
 }
 
 function main() {
@@ -42,7 +44,8 @@ function main() {
   GH_PAGES_DIR="$( cd cc-api-gh-pages && pwd )"
 
   build_docs
-  publish_docs
+  commit_docs
+  move_to_output_location
 }
 
 main
