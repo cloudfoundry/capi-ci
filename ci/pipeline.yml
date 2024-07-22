@@ -68,7 +68,7 @@ groups:
       - asha-mysql-release-pool-manual
       - olaf-mysql-release-pool-manual
       - scar-psql-release-pool-manual
-      - manual-cf-bbl-destroy-kiki-mig
+      - manual-bbl-destroy-kiki-mig
       - manual-bbl-destroy-asha-mysql
       - manual-bbl-destroy-olaf-mysql
       - manual-bbl-destroy-scar-psql
