@@ -39,15 +39,15 @@ jobs:
           DAYS_LEFT_THRESHOLD: 16
           PATH_TO_VERIFY: relint-envs
           PATHS_TO_IGNORE:
-            - arya/certs/load-balancer
-            - ci-green/vars
-            - elsa/self-signed-certs/load-balancer
-            - gabrielle-postgres/certs/load-balancer
-            - kiki/certs/load-balancer
-            - leia-azure-storage/certs/load-balancer
-            - mulan/certs/load-balancer
-            - rey-gcs-storage/certs/load-balancer
-            - ripley/certs/load-balancer
-            - rose/certs
-            - rose/vars
-            - xena-mysql/certs/load-balancer
+            - TO_BE_DELETED/arya/certs/load-balancer
+            - TO_BE_DELETED/ci-green/vars
+            - TO_BE_DELETED/elsa/self-signed-certs/load-balancer
+            - TO_BE_DELETED/gabrielle-postgres/certs/load-balancer
+            - TO_BE_DELETED/kiki/certs/load-balancer
+            - TO_BE_DELETED/leia-azure-storage/certs/load-balancer
+            - TO_BE_DELETED/mulan/certs/load-balancer
+            - TO_BE_DELETED/rey-gcs-storage/certs/load-balancer
+            - TO_BE_DELETED/ripley/certs/load-balancer
+            - TO_BE_DELETED/rose/certs
+            - TO_BE_DELETED/rose/vars
+            - TO_BE_DELETED/xena-mysql/certs/load-balancer

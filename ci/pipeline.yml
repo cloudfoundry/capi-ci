@@ -745,14 +745,14 @@ jobs:
         input_mapping:
           bbl-state: kiki-mig-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
           IGNORE_ERRORS: true
       - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: kiki-mig-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
       - task: collect-ops-files
         file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
         input_mapping:
@@ -773,7 +773,7 @@ jobs:
           ops-files: collected-ops-files
           vars-files: kiki-mig-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
           SYSTEM_DOMAIN: &kiki-domain cf.kiki.app-runtime-interfaces.ci.cloudfoundry.org
           OPS_FILES: |
             base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
@@ -797,7 +797,7 @@ jobs:
         input_mapping:
           capi-ci-private: kiki-mig-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
   - name: asha-mysql-deploy-cf
     serial: true
     plan:
@@ -1173,7 +1173,7 @@ jobs:
           integration-configs: kiki-mig-integration-configs
         params:
           CATS_INTEGRATION_CONFIG_FILE: kiki-mig/cats_integration_config.json
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
           SYSTEM_DOMAIN: *kiki-domain
         ensure:
           put: kiki-mig-integration-configs
@@ -1186,7 +1186,7 @@ jobs:
           bbl-state: kiki-mig-bbl-state
         params:
           SYSTEM_DOMAIN: *kiki-domain
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
           ENABLED_FEATURE_FLAGS: diego_docker
       - in_parallel:
           - task: acceptance-tests
@@ -1209,7 +1209,7 @@ jobs:
               CF_API_TARGET: https://api.cf.kiki.app-runtime-interfaces.ci.cloudfoundry.org
               CF_SKIP_SSL_VALIDATION: true
               CF_APPS_DOMAIN: *kiki-domain
-              BBL_STATE_DIR: kiki-mig
+              BBL_STATE_DIR: kiki-mig/bbl-state
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
@@ -1516,7 +1516,7 @@ jobs:
         input_mapping:
           bbl-state: kiki-mig-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
           IGNORE_ERRORS: true
       - put: kiki-mig-pool
         params:
@@ -1893,7 +1893,6 @@ jobs:
           bbl-config: elsa-ha-bbl-state
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
-          BBL_CONFIG_DIR: elsa-ha/bbl-config
           BBL_ENV_NAME: elsa-ha
           BBL_IAAS: gcp
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-elsa-ha-service-account))
@@ -1944,7 +1943,7 @@ jobs:
           bbl-state: kiki-mig-bbl-state
           bbl-config: kiki-mig-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
           BBL_ENV_NAME: kiki-mig
           BBL_IAAS: gcp
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-kiki-mig-service-account))
@@ -1964,7 +1963,7 @@ jobs:
         input_mapping:
           bbl-state: updated-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
           DNS_DOMAIN: *kiki-domain
           SHARED_DNS_ZONE_NAME: app-runtime-interfaces
           GCP_DNS_SERVICE_ACCOUNT_KEY: ((capi-bbl-dns-service-account))
@@ -1974,7 +1973,7 @@ jobs:
         input_mapping:
           bbl-state: updated-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
       - put: kiki-mig-pool
         params:
           release: kiki-mig-pool
@@ -1996,7 +1995,6 @@ jobs:
           bbl-config: asha-mysql-bbl-state
         params:
           BBL_STATE_DIR: asha-mysql/bbl-state
-          BBL_CONFIG_DIR: asha-mysql/bbl-config
           BBL_ENV_NAME: asha-mysql
           BBL_IAAS: gcp
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-asha-service-account))
@@ -2047,7 +2045,6 @@ jobs:
           bbl-config: olaf-mysql-bbl-state
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
-          BBL_CONFIG_DIR: olaf-mysql/bbl-config
           BBL_ENV_NAME: olaf-mysql
           BBL_IAAS: aws
           BBL_AWS_ACCESS_KEY_ID: ((capi-bbl-olaf-aws-access-key))
@@ -2099,7 +2096,6 @@ jobs:
           bbl-config: scar-psql-bbl-state
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
-          BBL_CONFIG_DIR: scar-psql/bbl-config
           BBL_ENV_NAME: scar-psql
           BBL_IAAS: gcp
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-scar-service-account))
@@ -2209,20 +2205,12 @@ jobs:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
           - get: kiki-mig-bbl-state
-      - try:
-          task: delete-deployment
-          file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-          input_mapping:
-            bbl-state: kiki-mig-bbl-state
-          params:
-            BBL_STATE_DIR: kiki-mig
-            IGNORE_ERRORS: true
       - task: manual-bbl-destroy-kiki-mig
         file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
         input_mapping:
           bbl-state: kiki-mig-bbl-state
         params:
-          BBL_STATE_DIR: kiki-mig
+          BBL_STATE_DIR: kiki-mig/bbl-state
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-kiki-mig-service-account))
         ensure:
           put: kiki-mig-bbl-state

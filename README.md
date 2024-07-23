@@ -67,9 +67,14 @@ This pipeline is responsible for testing, building, and releasing capi-release.
 This is where the majority of testing for capi-release components live.
 
 - Runs unit tests for Cloud Controller and bridge components
-- Builds capi-release release candidates and deploys to Elsa, Kiki, Asha, and Scar
+- Builds capi-release release candidates and deploys to Elsa, Kiki, Asha, Olaf, and Scar
 - Runs appropriate integration tests for each environment
 - Bumps the `ci-passed` branch of capi-release
+- Updates release candidate in v3 docs every time `ci-passed` branch is updated.
+
+#### bump-dependencies
+
+Automatically bumps golang version for capi-release components every time a new [golang-release](https://github.com/bosh-packages/golang-release) is available. Also bumps Redis.
 
 #### ship-it
 
@@ -79,10 +84,6 @@ Jobs responsible for cutting a capi-release.
 - Update API docs
 - Release capi-release
 
-#### dependencies-docs
-
-Update release candidate in v3 docs every time `ci-passed` branch is updated.
-
 #### bbl-up
 
 Updates the bosh deployments for all the pipeline environments (using `bbl up`).
@@ -90,10 +91,6 @@ Updates the bosh deployments for all the pipeline environments (using `bbl up`).
 #### bbl-destroy
 
 Theoretically useful for destroying broken bosh deployments for all the pipeline environments. Often doesn't work because the directors are in such bad state. There are also jobs to manually release pool resources for the following environments: Elsa, Asha, and Scar.
-
-#### bump-dependencies
-
-Automatically bumps golang version for capi-release components every time a new [golang-release](https://github.com/bosh-packages/golang-release) is available. Also bumps Redis.
 
 ### bosh-lites
 
