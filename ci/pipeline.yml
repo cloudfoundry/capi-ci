@@ -12,7 +12,7 @@
 ##
 
 groups:
-  - name: capi-release # ok
+  - name: capi-release
     jobs:
       - verify-capi-release-commits
       - capi-release-template-tests
@@ -20,29 +20,32 @@ groups:
       - bridge-unit-tests
       - bump-capi-release
       - create-release-candidate
-      - kiki-back-compat-migrations
       - elsa-ha-acquire-pool
+      - kiki-mig-acquire-pool
       - asha-mysql-acquire-pool
       - olaf-mysql-acquire-pool
       - scar-psql-acquire-pool
       - elsa-ha-deploy-cf
+      - kiki-mig-deploy-cf
       - asha-mysql-deploy-cf
       - olaf-mysql-deploy-cf
       - scar-psql-deploy-cf
       - elsa-ha-tests
+      - kiki-mig-tests
       - asha-mysql-tests
       - olaf-mysql-tests
       - scar-psql-tests
+      - kiki-mig-destroy-cf
       - asha-mysql-destroy-cf
       - olaf-mysql-destroy-cf
       - scar-psql-destroy-cf
       - bump-ci-passed
       - rc-docs-v3
-  - name: bump-dependencies # ok
+  - name: bump-dependencies
     jobs:
       - bump-golang-package
       - bump-valkey-blob
-  - name: ship-it # ok
+  - name: ship-it
     jobs:
       - ship-it
       - push-github-release
@@ -51,28 +54,30 @@ groups:
       - bump-cc-v3-api
       - bump-cc-v2-api
       - update-api-info-v2-docs
-  - name: bbl-up # ok
+  - name: bbl-up
     jobs:
       - elsa-ha-acquire-bbl-up-pool
+      - kiki-mig-acquire-bbl-up-pool
       - asha-mysql-acquire-bbl-up-pool
       - olaf-mysql-acquire-bbl-up-pool
       - scar-psql-acquire-bbl-up-pool
-      - bbl-up-kiki-mig
       - bbl-up-elsa-ha
+      - bbl-up-kiki-mig
       - bbl-up-asha-mysql
       - bbl-up-olaf-mysql
       - bbl-up-scar-psql
-  - name: bbl-destroy # ok
+  - name: bbl-destroy
     jobs:
       - elsa-ha-release-pool-manual
+      - kiki-mig-release-pool-manual
       - asha-mysql-release-pool-manual
       - olaf-mysql-release-pool-manual
       - scar-psql-release-pool-manual
+      - emergency-bbl-destroy-elsa-ha
       - manual-bbl-destroy-kiki-mig
       - manual-bbl-destroy-asha-mysql
       - manual-bbl-destroy-olaf-mysql
       - manual-bbl-destroy-scar-psql
-      - emergency-bbl-destroy-elsa-ha
 resource_types:
   - name: gcs-resource
     type: registry-image
@@ -292,23 +297,6 @@ resources:
       branch: master
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
-  # Kiki resources
-  - name: kiki-mig-bbl-state
-    type: git
-    icon: git
-    source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
-      branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: kiki-integration-configs
-    type: git
-    icon: git
-    source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
-      branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   # Elsa resources
   - name: elsa-ha-bbl-state
     type: git
@@ -333,6 +321,32 @@ resources:
       uri: https://github.com/cloudfoundry/capi-ci-private.git
       branch: ari-bbl-env-pool
       pool: elsa-ha
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  # Kiki resources
+  - name: kiki-mig-bbl-state
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: kiki-mig-integration-configs
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: kiki-mig-pool
+    type: pool
+    icon: cloud-lock-outline
+    source:
+      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: ari-bbl-env-pool
+      pool: kiki-mig
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   # Asha resources
@@ -414,7 +428,7 @@ resources:
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
 jobs:
-  - name: verify-capi-release-commits # ok
+  - name: verify-capi-release-commits
     plan:
       - in_parallel:
           - get: capi-release
@@ -425,7 +439,7 @@ jobs:
           - get: capi-ci
       - task: run-capi-release-commit-test
         file: capi-ci/ci/test-unit/run_capi_release_commit_test.yml
-  - name: capi-release-template-tests # ok
+  - name: capi-release-template-tests
     plan:
       - in_parallel:
           - get: capi-release
@@ -437,7 +451,7 @@ jobs:
       - task: run-capi-release-config-template-tests
         attempts: 3
         file: capi-ci/ci/test-unit/run_capi_release_config_template_tests.yml
-  - name: cc-unit-tests # ok
+  - name: cc-unit-tests
     plan:
       - in_parallel:
           - get: cloud_controller_ng
@@ -458,7 +472,7 @@ jobs:
             params:
               DB: postgres
               RUN_IN_PARALLEL: true
-  - name: bridge-unit-tests # ok
+  - name: bridge-unit-tests
     plan:
       - in_parallel:
           - get: capi-release
@@ -479,7 +493,7 @@ jobs:
       - task: run-bridge-unit-tests
         attempts: 3
         file: capi-ci/ci/test-unit/run_bridge_unit_tests.yml
-  - name: bump-capi-release # ok
+  - name: bump-capi-release
     serial: true
     plan:
       - in_parallel:
@@ -508,7 +522,7 @@ jobs:
         params:
           repository: updated-capi-release
           rebase: true
-  - name: create-release-candidate # ok
+  - name: create-release-candidate
     serial: true
     serial_groups:
       - version
@@ -533,136 +547,7 @@ jobs:
       - put: capi-release-tarball
         params:
           file: created-capi-release/capi-*.tgz
-  - name: kiki-back-compat-migrations # ok
-    serial: true
-    serial_groups:
-      - kiki-mig
-    plan:
-      - in_parallel:
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - create-release-candidate
-            trigger: true
-            params:
-              submodules: none
-          - get: capi-release-tarball
-            passed:
-              - create-release-candidate
-          - get: cf-deployment-concourse-tasks
-          - get: kiki-mig-bbl-state
-          - get: cf-deployment
-          - get: runtime-ci
-          - get: kiki-integration-configs
-          - get: capi-ci
-          - get: cf-acceptance-tests
-          - get: sync-integration-tests
-      - task: delete-deployment # ok
-        file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig
-          IGNORE_ERRORS: true
-      - task: stemcell-upload # ok
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig
-      - task: collect-ops-files # ok
-        file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-        input_mapping:
-          base-ops-files: cf-deployment
-          new-ops-files: capi-ci
-        params:
-          NEW_OPS_FILES: |
-            cf-deployment-operations/scale-up-cells.yml
-            cf-deployment-operations/scale-generic-worker-processes.yml
-            cf-deployment-operations/disable-uaa-get-requests.yml
-            cf-deployment-operations/seed-credhub-asg.yml
-            cf-deployment-operations/seed-uaa-asg.yml
-            cf-deployment-operations/log-all-sequel-activity.yml
-      - task: deploy # ok
-        file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-          ops-files: collected-ops-files
-          vars-files: kiki-mig-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig
-          SYSTEM_DOMAIN: &kiki-domain cf.kiki.app-runtime-interfaces.ci.cloudfoundry.org
-          OPS_FILES: |
-            base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
-            base-ops-files/operations/use-compiled-releases.yml
-            base-ops-files/operations/use-postgres.yml
-            scale-up-cells.yml
-            scale-generic-worker-processes.yml
-            disable-uaa-get-requests.yml
-            seed-credhub-asg.yml
-            base-ops-files/operations/test/speed-up-dynamic-asgs.yml
-            seed-uaa-asg.yml
-            log-all-sequel-activity.yml
-      - task: ensure-api-healthy # ok
-        file: runtime-ci/tasks/ensure-api-healthy/task.yml
-        input_mapping:
-          cats-integration-config: kiki-integration-configs
-        params:
-          CONFIG_FILE_PATH: kiki/cats_integration_config.json
-      - task: apply-latest-migrations # ok
-        file: capi-ci/ci/migrations/apply_latest_migrations.yml
-        input_mapping:
-          capi-ci-private: kiki-mig-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig
-      - task: updated-integration-configs # ok
-        file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-          integration-configs: kiki-integration-configs
-        params:
-          CATS_INTEGRATION_CONFIG_FILE: kiki-mig/cats_integration_config.json
-          BBL_STATE_DIR: kiki-mig
-          SYSTEM_DOMAIN: *kiki-domain
-        ensure:
-          put: kiki-integration-configs
-          params:
-            repository: updated-integration-configs
-            rebase: true
-      - task: enable-feature-flags # ok
-        file: cf-deployment-concourse-tasks/set-feature-flags/task.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-        params:
-          SYSTEM_DOMAIN: *kiki-domain
-          BBL_STATE_DIR: kiki-mig
-          ENABLED_FEATURE_FLAGS: diego_docker
-      - in_parallel:
-          - task: acceptance-tests # ok
-            attempts: 3
-            file: cf-deployment-concourse-tasks/run-cats/task.yml
-            input_mapping:
-              integration-config: updated-integration-configs
-            params:
-              NODES: 10
-              CONFIG_FILE_PATH: kiki-mig/cats_integration_config.json
-              CAPTURE_LOGS: true
-          - task: sync-integration-tests # ok
-            attempts: 3
-            file: sync-integration-tests/concourse/task_with_credhub.yml
-            input_mapping:
-              environment: updated-integration-configs
-            params:
-              BOSH_DEPLOYMENT_NAME: cf
-              BOSH_API_INSTANCE: api/0
-              CF_API_TARGET: https://api.cf.kiki.app-runtime-interfaces.ci.cloudfoundry.org
-              CF_SKIP_SSL_VALIDATION: true
-              CF_APPS_DOMAIN: *kiki-domain
-              BBL_STATE_DIR: kiki-mig
-              USE_CREDHUB: true
-              RUN_REVISIONS_TESTS: true
-              FLAKE_ATTEMPTS: 2
-  - name: elsa-ha-acquire-pool # ok
+  - name: elsa-ha-acquire-pool
     serial: true
     plan:
       - in_parallel:
@@ -680,7 +565,25 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: asha-mysql-acquire-pool # ok
+  - name: kiki-mig-acquire-pool
+    serial: true
+    plan:
+      - in_parallel:
+          - get: capi-release
+            resource: capi-release-develop
+            passed:
+              - create-release-candidate
+            trigger: true
+            params:
+              submodules: none
+          - get: capi-release-tarball
+            passed:
+              - create-release-candidate
+          - put: kiki-mig-pool
+            params:
+              acquire: true
+        timeout: 4h
+  - name: asha-mysql-acquire-pool
     serial: true
     plan:
       - in_parallel:
@@ -698,7 +601,7 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: olaf-mysql-acquire-pool # ok
+  - name: olaf-mysql-acquire-pool
     serial: true
     plan:
       - in_parallel:
@@ -716,7 +619,7 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: scar-psql-acquire-pool # ok
+  - name: scar-psql-acquire-pool
     serial: true
     plan:
       - in_parallel:
@@ -734,7 +637,7 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: elsa-ha-deploy-cf # ok
+  - name: elsa-ha-deploy-cf
     serial: true
     plan:
       - in_parallel:
@@ -754,20 +657,20 @@ jobs:
           - get: capi-ci
           - get: runtime-ci
           - get: elsa-ha-integration-configs
-      - task: stemcell-upload # ok
+      - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
-      - task: upload-capi-release-tarball # ok
+      - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
           release-tarball: capi-release-tarball
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
-      - task: collect-ops-files # ok
+      - task: collect-ops-files
         file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
         input_mapping:
           base-ops-files: cf-deployment
@@ -782,7 +685,7 @@ jobs:
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/disable-skip-cert-verify.yml
             cf-deployment-operations/disable-skip-cert-verify-iso-seg.yml
-      - task: deploy # ok
+      - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
@@ -811,13 +714,91 @@ jobs:
             disable-skip-cert-verify-iso-seg.yml
           VARS_FILES: |
             elsa-ha/gcs-storage-vars.yml
-      - task: ensure-api-healthy # ok
+      - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
           cats-integration-config: elsa-ha-integration-configs
         params:
           CONFIG_FILE_PATH: elsa-ha/cats_integration_config.json
-  - name: asha-mysql-deploy-cf # ok
+  - name: kiki-mig-deploy-cf
+    serial: true
+    plan:
+      - in_parallel:
+          - get: capi-release
+            resource: capi-release-develop
+            passed:
+              - kiki-mig-acquire-pool
+            trigger: true
+            params:
+              submodules: none
+          - get: capi-release-tarball
+            passed:
+              - kiki-mig-acquire-pool
+          - get: cf-deployment-concourse-tasks
+          - get: kiki-mig-bbl-state
+          - get: cf-deployment
+          - get: capi-ci
+          - get: runtime-ci
+          - get: kiki-mig-integration-configs
+      - task: delete-deployment
+        file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+          IGNORE_ERRORS: true
+      - task: stemcell-upload
+        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+      - task: collect-ops-files
+        file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
+        input_mapping:
+          base-ops-files: cf-deployment
+          new-ops-files: capi-ci
+        params:
+          NEW_OPS_FILES: |
+            cf-deployment-operations/scale-up-cells.yml
+            cf-deployment-operations/scale-generic-worker-processes.yml
+            cf-deployment-operations/disable-uaa-get-requests.yml
+            cf-deployment-operations/seed-credhub-asg.yml
+            cf-deployment-operations/seed-uaa-asg.yml
+            cf-deployment-operations/log-all-sequel-activity.yml
+      - task: deploy
+        file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+          ops-files: collected-ops-files
+          vars-files: kiki-mig-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+          SYSTEM_DOMAIN: &kiki-domain cf.kiki.app-runtime-interfaces.ci.cloudfoundry.org
+          OPS_FILES: |
+            base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
+            base-ops-files/operations/use-compiled-releases.yml
+            base-ops-files/operations/use-postgres.yml
+            scale-up-cells.yml
+            scale-generic-worker-processes.yml
+            disable-uaa-get-requests.yml
+            seed-credhub-asg.yml
+            base-ops-files/operations/test/speed-up-dynamic-asgs.yml
+            seed-uaa-asg.yml
+            log-all-sequel-activity.yml
+      - task: ensure-api-healthy
+        file: runtime-ci/tasks/ensure-api-healthy/task.yml
+        input_mapping:
+          cats-integration-config: kiki-mig-integration-configs
+        params:
+          CONFIG_FILE_PATH: kiki/cats_integration_config.json
+      - task: apply-latest-migrations
+        file: capi-ci/ci/migrations/apply_latest_migrations.yml
+        input_mapping:
+          capi-ci-private: kiki-mig-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+  - name: asha-mysql-deploy-cf
     serial: true
     plan:
       - in_parallel:
@@ -837,27 +818,27 @@ jobs:
           - get: capi-ci
           - get: runtime-ci
           - get: asha-mysql-integration-configs
-      - task: delete-deployment # ok
+      - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
         params:
           BBL_STATE_DIR: asha-mysql/bbl-state
           IGNORE_ERRORS: true
-      - task: stemcell-upload # ok
+      - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
         params:
           BBL_STATE_DIR: asha-mysql/bbl-state
-      - task: upload-capi-release-tarball # ok
+      - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
           release-tarball: capi-release-tarball
         params:
           BBL_STATE_DIR: asha-mysql/bbl-state
-      - task: collect-ops-files # ok
+      - task: collect-ops-files
         file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
         input_mapping:
           base-ops-files: cf-deployment
@@ -870,7 +851,7 @@ jobs:
             cf-deployment-operations/disable-uaa-get-requests.yml
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
-      - task: deploy # ok
+      - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
@@ -889,13 +870,13 @@ jobs:
             base-ops-files/operations/scale-database-cluster.yml
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
             seed-uaa-asg.yml
-      - task: ensure-api-healthy # ok
+      - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
           cats-integration-config: asha-mysql-integration-configs
         params:
           CONFIG_FILE_PATH: asha-mysql/cats_integration_config.json
-  - name: olaf-mysql-deploy-cf # ok
+  - name: olaf-mysql-deploy-cf
     serial: true
     plan:
       - in_parallel:
@@ -915,28 +896,28 @@ jobs:
           - get: capi-ci
           - get: runtime-ci
           - get: olaf-mysql-integration-configs
-      - task: delete-deployment # ok
+      - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           IGNORE_ERRORS: true
-      - task: stemcell-upload # ok
+      - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           INFRASTRUCTURE: aws
-      - task: upload-capi-release-tarball # ok
+      - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
           release-tarball: capi-release-tarball
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
-      - task: collect-ops-files # ok
+      - task: collect-ops-files
         file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
         input_mapping:
           base-ops-files: cf-deployment
@@ -949,7 +930,7 @@ jobs:
             cf-deployment-operations/disable-uaa-get-requests.yml
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
-      - task: deploy # ok
+      - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
@@ -973,13 +954,13 @@ jobs:
             seed-uaa-asg.yml
           VARS_FILES: |
             olaf-mysql/bbl-state/vars/director-vars-file.yml
-      - task: ensure-api-healthy # ok
+      - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
           cats-integration-config: olaf-mysql-integration-configs
         params:
           CONFIG_FILE_PATH: olaf-mysql/cats_integration_config.json
-  - name: scar-psql-deploy-cf # ok
+  - name: scar-psql-deploy-cf
     serial: true
     plan:
       - in_parallel:
@@ -999,27 +980,27 @@ jobs:
           - get: capi-ci
           - get: runtime-ci
           - get: scar-psql-integration-configs
-      - task: delete-deployment # ok
+      - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
           IGNORE_ERRORS: true
-      - task: stemcell-upload # ok
+      - task: stemcell-upload
         file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
-      - task: upload-capi-release-tarball # ok
+      - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
           release-tarball: capi-release-tarball
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
-      - task: collect-ops-files # ok
+      - task: collect-ops-files
         file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
         input_mapping:
           base-ops-files: cf-deployment
@@ -1032,7 +1013,7 @@ jobs:
             cf-deployment-operations/disable-uaa-get-requests.yml
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
-      - task: deploy # ok
+      - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
@@ -1051,13 +1032,13 @@ jobs:
             seed-credhub-asg.yml
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
             seed-uaa-asg.yml
-      - task: ensure-api-healthy # ok
+      - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
           cats-integration-config: scar-psql-integration-configs
         params:
           CONFIG_FILE_PATH: scar-psql/cats_integration_config.json
-  - name: elsa-ha-tests # ok
+  - name: elsa-ha-tests
     serial: true
     plan:
       - in_parallel:
@@ -1079,7 +1060,7 @@ jobs:
           - get: capi-bara-tests
           - get: sync-integration-tests
           - get: elsa-ha-pool
-      - task: updated-integration-configs # ok
+      - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
@@ -1093,7 +1074,7 @@ jobs:
           params:
             repository: updated-integration-configs
             rebase: true
-      - task: updated-baras-integration-configs # ok
+      - task: updated-baras-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
@@ -1107,7 +1088,7 @@ jobs:
           params:
             repository: updated-integration-configs
             rebase: true
-      - task: enable-feature-flags # ok
+      - task: enable-feature-flags
         file: cf-deployment-concourse-tasks/set-feature-flags/task.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
@@ -1115,7 +1096,7 @@ jobs:
           SYSTEM_DOMAIN: *elsa-ha-domain
           BBL_STATE_DIR: elsa-ha/bbl-state
           ENABLED_FEATURE_FLAGS: diego_docker
-      - task: cleanup-test-leftovers # ok
+      - task: cleanup-test-leftovers
         file: capi-ci/ci/test-utils/cleanup.yml
         input_mapping:
           capi-ci-private: elsa-ha-bbl-state
@@ -1123,7 +1104,7 @@ jobs:
           BBL_STATE_DIR: elsa-ha/bbl-state
           CF_API_TARGET: &elsa-ha-api-url https://api.cf.elsa.app-runtime-interfaces.ci.cloudfoundry.org
       - in_parallel:
-          - task: acceptance-tests # ok
+          - task: acceptance-tests
             attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
@@ -1133,7 +1114,7 @@ jobs:
               CONFIG_FILE_PATH: elsa-ha/cats_integration_config.json
               CAPTURE_LOGS: true
               SKIP_REGEXP: "shows logs and metrics"
-          - task: capi-bara-tests # ok
+          - task: capi-bara-tests
             attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
             input_mapping:
@@ -1142,7 +1123,7 @@ jobs:
               NODES: 6
               FLAKE_ATTEMPTS: 2
               CONFIG_FILE_PATH: elsa-ha/baras_integration_config.json
-          - task: sync-integration-tests # ok
+          - task: sync-integration-tests
             attempts: 3
             file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
@@ -1157,7 +1138,7 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
-      - task: run-blobstore-benchmarks # ok
+      - task: run-blobstore-benchmarks
         file: capi-ci/ci/benchmarks/run_blobstore_benchmarks.yml
         input_mapping:
           capi-ci-private: elsa-ha-bbl-state
@@ -1166,7 +1147,73 @@ jobs:
       - put: elsa-ha-pool
         params:
           release: elsa-ha-pool
-  - name: asha-mysql-tests # ok
+  - name: kiki-mig-tests
+    serial: true
+    plan:
+      - in_parallel:
+          - get: capi-release
+            resource: capi-release-develop
+            passed:
+              - kiki-mig-deploy-cf
+            trigger: true
+            params:
+              submodules: none
+          - get: capi-release-tarball
+            passed:
+              - kiki-mig-deploy-cf
+          - get: cf-deployment-concourse-tasks
+          - get: kiki-mig-integration-configs
+          - get: kiki-mig-bbl-state
+          - get: cf-acceptance-tests
+          - get: sync-integration-tests
+      - task: updated-integration-configs
+        file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+          integration-configs: kiki-mig-integration-configs
+        params:
+          CATS_INTEGRATION_CONFIG_FILE: kiki-mig/cats_integration_config.json
+          BBL_STATE_DIR: kiki-mig
+          SYSTEM_DOMAIN: *kiki-domain
+        ensure:
+          put: kiki-mig-integration-configs
+          params:
+            repository: updated-integration-configs
+            rebase: true
+      - task: enable-feature-flags
+        file: cf-deployment-concourse-tasks/set-feature-flags/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+        params:
+          SYSTEM_DOMAIN: *kiki-domain
+          BBL_STATE_DIR: kiki-mig
+          ENABLED_FEATURE_FLAGS: diego_docker
+      - in_parallel:
+          - task: acceptance-tests
+            attempts: 3
+            file: cf-deployment-concourse-tasks/run-cats/task.yml
+            input_mapping:
+              integration-config: updated-integration-configs
+            params:
+              NODES: 10
+              CONFIG_FILE_PATH: kiki-mig/cats_integration_config.json
+              CAPTURE_LOGS: true
+          - task: sync-integration-tests
+            attempts: 3
+            file: sync-integration-tests/concourse/task_with_credhub.yml
+            input_mapping:
+              environment: updated-integration-configs
+            params:
+              BOSH_DEPLOYMENT_NAME: cf
+              BOSH_API_INSTANCE: api/0
+              CF_API_TARGET: https://api.cf.kiki.app-runtime-interfaces.ci.cloudfoundry.org
+              CF_SKIP_SSL_VALIDATION: true
+              CF_APPS_DOMAIN: *kiki-domain
+              BBL_STATE_DIR: kiki-mig
+              USE_CREDHUB: true
+              RUN_REVISIONS_TESTS: true
+              FLAKE_ATTEMPTS: 2
+  - name: asha-mysql-tests
     serial: true
     plan:
       - in_parallel:
@@ -1187,7 +1234,7 @@ jobs:
           - get: capi-ci
           - get: capi-bara-tests
           - get: sync-integration-tests
-      - task: updated-integration-configs # ok
+      - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
@@ -1201,7 +1248,7 @@ jobs:
           params:
             repository: updated-integration-configs
             rebase: true
-      - task: updated-baras-integration-configs # ok
+      - task: updated-baras-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
@@ -1215,7 +1262,7 @@ jobs:
           params:
             repository: updated-integration-configs
             rebase: true
-      - task: enable-feature-flags # ok
+      - task: enable-feature-flags
         file: cf-deployment-concourse-tasks/set-feature-flags/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
@@ -1224,7 +1271,7 @@ jobs:
           BBL_STATE_DIR: asha-mysql/bbl-state
           ENABLED_FEATURE_FLAGS: diego_docker
       - in_parallel:
-          - task: acceptance-tests # ok
+          - task: acceptance-tests
             attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
@@ -1234,7 +1281,7 @@ jobs:
               CONFIG_FILE_PATH: asha-mysql/cats_integration_config.json
               CAPTURE_LOGS: true
               SKIP_REGEXP: "shows logs and metrics"
-          - task: capi-bara-tests # ok
+          - task: capi-bara-tests
             attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
             input_mapping:
@@ -1243,7 +1290,7 @@ jobs:
               NODES: 6
               FLAKE_ATTEMPTS: 2
               CONFIG_FILE_PATH: asha-mysql/baras_integration_config.json
-          - task: sync-integration-tests # ok
+          - task: sync-integration-tests
             attempts: 3
             file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
@@ -1258,7 +1305,7 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
-  - name: olaf-mysql-tests # ok
+  - name: olaf-mysql-tests
     serial: true
     plan:
       - in_parallel:
@@ -1279,7 +1326,7 @@ jobs:
           - get: capi-ci
           - get: capi-bara-tests
           - get: sync-integration-tests
-      - task: updated-integration-configs # ok
+      - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
@@ -1293,7 +1340,7 @@ jobs:
           params:
             repository: updated-integration-configs
             rebase: true
-      - task: updated-baras-integration-configs # ok
+      - task: updated-baras-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
@@ -1307,7 +1354,7 @@ jobs:
           params:
             repository: updated-integration-configs
             rebase: true
-      - task: enable-feature-flags # ok
+      - task: enable-feature-flags
         file: cf-deployment-concourse-tasks/set-feature-flags/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
@@ -1316,7 +1363,7 @@ jobs:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           ENABLED_FEATURE_FLAGS: diego_docker
       - in_parallel:
-          - task: acceptance-tests # ok
+          - task: acceptance-tests
             attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
@@ -1325,7 +1372,7 @@ jobs:
               NODES: 10
               CONFIG_FILE_PATH: olaf-mysql/cats_integration_config.json
               CAPTURE_LOGS: true
-          - task: capi-bara-tests # ok
+          - task: capi-bara-tests
             attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
             input_mapping:
@@ -1334,7 +1381,7 @@ jobs:
               NODES: 6
               FLAKE_ATTEMPTS: 2
               CONFIG_FILE_PATH: olaf-mysql/baras_integration_config.json
-          - task: sync-integration-tests # ok
+          - task: sync-integration-tests
             attempts: 3
             file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
@@ -1349,13 +1396,13 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
-      - task: run-blobstore-benchmarks # ok
+      - task: run-blobstore-benchmarks
         file: capi-ci/ci/benchmarks/run_blobstore_benchmarks.yml
         input_mapping:
           capi-ci-private: olaf-mysql-bbl-state
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
-  - name: scar-psql-tests # ok
+  - name: scar-psql-tests
     serial: true
     plan:
       - in_parallel:
@@ -1376,7 +1423,7 @@ jobs:
           - get: capi-ci
           - get: capi-bara-tests
           - get: sync-integration-tests
-      - task: updated-integration-configs # ok
+      - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
@@ -1390,7 +1437,7 @@ jobs:
           params:
             repository: updated-integration-configs
             rebase: true
-      - task: updated-baras-integration-configs # ok
+      - task: updated-baras-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
@@ -1404,7 +1451,7 @@ jobs:
           params:
             repository: updated-integration-configs
             rebase: true
-      - task: enable-feature-flags # ok
+      - task: enable-feature-flags
         file: cf-deployment-concourse-tasks/set-feature-flags/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
@@ -1413,7 +1460,7 @@ jobs:
           BBL_STATE_DIR: scar-psql/bbl-state
           ENABLED_FEATURE_FLAGS: diego_docker
       - in_parallel:
-          - task: acceptance-tests # ok
+          - task: acceptance-tests
             attempts: 3
             file: cf-deployment-concourse-tasks/run-cats/task.yml
             input_mapping:
@@ -1423,7 +1470,7 @@ jobs:
               CONFIG_FILE_PATH: scar-psql/cats_integration_config.json
               CAPTURE_LOGS: true
               SKIP_REGEXP: "shows logs and metrics"
-          - task: capi-bara-tests # ok
+          - task: capi-bara-tests
             attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
             input_mapping:
@@ -1432,7 +1479,7 @@ jobs:
               NODES: 6
               FLAKE_ATTEMPTS: 2
               CONFIG_FILE_PATH: scar-psql/baras_integration_config.json
-          - task: sync-integration-tests # ok
+          - task: sync-integration-tests
             attempts: 3
             file: sync-integration-tests/concourse/task_with_credhub.yml
             input_mapping:
@@ -1447,7 +1494,34 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
-  - name: asha-mysql-destroy-cf # ok
+  - name: kiki-mig-destroy-cf
+    serial: true
+    plan:
+      - in_parallel:
+          - get: capi-release
+            resource: capi-release-develop
+            passed:
+              - kiki-mig-tests
+            trigger: true
+            params:
+              submodules: none
+          - get: capi-release-tarball
+            passed:
+              - kiki-mig-tests
+          - get: cf-deployment-concourse-tasks
+          - get: kiki-mig-bbl-state
+          - get: kiki-mig-pool
+      - task: delete-deployment
+        file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+          IGNORE_ERRORS: true
+      - put: kiki-mig-pool
+        params:
+          release: kiki-mig-pool
+  - name: asha-mysql-destroy-cf
     serial: true
     plan:
       - in_parallel:
@@ -1464,7 +1538,7 @@ jobs:
           - get: cf-deployment-concourse-tasks
           - get: asha-mysql-bbl-state
           - get: asha-mysql-pool
-      - task: delete-deployment # ok
+      - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
@@ -1474,7 +1548,7 @@ jobs:
       - put: asha-mysql-pool
         params:
           release: asha-mysql-pool
-  - name: olaf-mysql-destroy-cf # ok
+  - name: olaf-mysql-destroy-cf
     serial: true
     plan:
       - in_parallel:
@@ -1491,7 +1565,7 @@ jobs:
           - get: cf-deployment-concourse-tasks
           - get: olaf-mysql-bbl-state
           - get: olaf-mysql-pool
-      - task: delete-deployment # ok
+      - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
@@ -1501,7 +1575,7 @@ jobs:
       - put: olaf-mysql-pool
         params:
           release: olaf-mysql-pool
-  - name: scar-psql-destroy-cf # ok
+  - name: scar-psql-destroy-cf
     serial: true
     plan:
       - in_parallel:
@@ -1518,7 +1592,7 @@ jobs:
           - get: cf-deployment-concourse-tasks
           - get: scar-psql-bbl-state
           - get: scar-psql-pool
-      - task: delete-deployment # ok
+      - task: delete-deployment
         file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
@@ -1528,15 +1602,15 @@ jobs:
       - put: scar-psql-pool
         params:
           release: scar-psql-pool
-  - name: bump-ci-passed # ok
+  - name: bump-ci-passed
     serial: true
     plan:
       - in_parallel:
           - get: capi-release
             resource: capi-release-develop
             passed:
-              - kiki-back-compat-migrations
               - elsa-ha-tests
+              - kiki-mig-destroy-cf
               - asha-mysql-destroy-cf
               - olaf-mysql-destroy-cf
               - scar-psql-destroy-cf
@@ -1547,7 +1621,7 @@ jobs:
         params:
           repository: capi-release
           rebase: true
-  - name: rc-docs-v3 # ok
+  - name: rc-docs-v3
     serial: true
     plan:
       - in_parallel:
@@ -1561,7 +1635,7 @@ jobs:
                 - src/cloud_controller_ng
           - get: capi-ci
           - get: cc-api-gh-pages
-      - task: push-rc-docs-v3 # ok
+      - task: push-rc-docs-v3
         file: capi-ci/ci/docs/push_docs_v3.yml
         params:
           VERSION: release-candidate
@@ -1569,7 +1643,7 @@ jobs:
         params:
           repository: updated-gh-pages
           rebase: true
-  - name: bump-golang-package # ok
+  - name: bump-golang-package
     serial: true
     plan:
       - in_parallel:
@@ -1589,7 +1663,7 @@ jobs:
         params:
           repository: updated-capi-release
           rebase: true
-  - name: bump-valkey-blob # ok
+  - name: bump-valkey-blob
     serial: true
     plan:
       - in_parallel:
@@ -1610,7 +1684,7 @@ jobs:
         params:
           repository: updated-capi-release
           rebase: true
-  - name: ship-it # ok
+  - name: ship-it
     serial: true
     serial_groups:
       - version
@@ -1642,7 +1716,7 @@ jobs:
       - put: next-version
         params:
           bump: minor
-  - name: push-github-release # ok
+  - name: push-github-release
     serial: true
     plan:
       - in_parallel:
@@ -1668,7 +1742,7 @@ jobs:
           tag: generated-release/version
           globs:
             - generated-release/*.tgz
-  - name: publish-docs-v3 # ok
+  - name: publish-docs-v3
     serial: true
     plan:
       - in_parallel:
@@ -1682,13 +1756,13 @@ jobs:
                 - src/cloud_controller_ng
           - get: capi-ci
           - get: cc-api-gh-pages
-      - task: push-docs-v3 # ok
+      - task: push-docs-v3
         file: capi-ci/ci/docs/push_docs_v3.yml
       - put: cc-api-gh-pages
         params:
           repository: updated-gh-pages
           rebase: true
-  - name: merge-capi-release-main # ok
+  - name: merge-capi-release-main
     serial: true
     plan:
       - in_parallel:
@@ -1705,7 +1779,7 @@ jobs:
         params:
           repository: updated-capi-release
           rebase: true
-  - name: bump-cc-v3-api # ok
+  - name: bump-cc-v3-api
     serial: true
     plan:
       - in_parallel:
@@ -1720,7 +1794,7 @@ jobs:
       - put: cc-api-v3-version
         params:
           bump: minor
-  - name: bump-cc-v2-api # ok
+  - name: bump-cc-v2-api
     serial: true
     plan:
       - in_parallel:
@@ -1735,7 +1809,7 @@ jobs:
       - put: cc-api-v2-version
         params:
           bump: minor
-  - name: update-api-info-v2-docs # ok
+  - name: update-api-info-v2-docs
     serial: true
     plan:
       - in_parallel:
@@ -1751,7 +1825,7 @@ jobs:
         params:
           repository: updated-cloud-controller-ng
           rebase: true
-  - name: elsa-ha-acquire-bbl-up-pool # ok
+  - name: elsa-ha-acquire-bbl-up-pool
     serial: true
     plan:
       - in_parallel:
@@ -1761,7 +1835,17 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: asha-mysql-acquire-bbl-up-pool # ok
+  - name: kiki-mig-acquire-bbl-up-pool
+    serial: true
+    plan:
+      - in_parallel:
+          - get: nightly
+            trigger: true
+          - put: kiki-mig-pool
+            params:
+              acquire: true
+        timeout: 4h
+  - name: asha-mysql-acquire-bbl-up-pool
     serial: true
     plan:
       - in_parallel:
@@ -1771,7 +1855,7 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: olaf-mysql-acquire-bbl-up-pool # ok
+  - name: olaf-mysql-acquire-bbl-up-pool
     serial: true
     plan:
       - in_parallel:
@@ -1781,7 +1865,7 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: scar-psql-acquire-bbl-up-pool # ok
+  - name: scar-psql-acquire-bbl-up-pool
     serial: true
     plan:
       - in_parallel:
@@ -1791,55 +1875,7 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: bbl-up-kiki-mig # ok
-    serial: true
-    serial_groups:
-      - kiki-mig
-    plan:
-      - in_parallel:
-          - get: nightly
-            trigger: true
-          - get: cf-deployment-concourse-tasks
-          - get: kiki-mig-bbl-state
-          - get: capi-ci
-      - task: bbl-up-kiki-mig # ok
-        file: cf-deployment-concourse-tasks/bbl-up/task.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-          bbl-config: kiki-mig-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig
-          BBL_ENV_NAME: kiki-mig
-          BBL_IAAS: gcp
-          BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-kiki-mig-service-account))
-          BBL_GCP_REGION: us-east4
-          BBL_LB_CERT: ((kiki_lb.certificate))
-          BBL_LB_KEY: ((kiki_lb.private_key))
-          LB_DOMAIN: *kiki-domain
-          TRUSTED_CA: ((relint_ca.certificate))
-        ensure:
-          put: kiki-mig-bbl-state
-          params:
-            repository: updated-bbl-state
-            rebase: true
-      - task: create-dns-record
-        attempts: 3
-        file: capi-ci/ci/bbl-tasks/create_dns_record.yml
-        input_mapping:
-          bbl-state: updated-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig
-          DNS_DOMAIN: *kiki-domain
-          SHARED_DNS_ZONE_NAME: app-runtime-interfaces
-          GCP_DNS_SERVICE_ACCOUNT_KEY: ((capi-bbl-dns-service-account))
-          GCP_PROJECT_ID: app-runtime-interfaces-wg
-      - task: run-bosh-cleanup
-        file: capi-ci/ci/bbl-tasks/run_bosh_cleanup.yml
-        input_mapping:
-          bbl-state: updated-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig
-  - name: bbl-up-elsa-ha # ok
+  - name: bbl-up-elsa-ha
     serial: true
     plan:
       - in_parallel:
@@ -1850,7 +1886,7 @@ jobs:
           - get: cf-deployment-concourse-tasks
           - get: elsa-ha-bbl-state
           - get: capi-ci
-      - task: bbl-up-elsa-ha # ok
+      - task: bbl-up-elsa-ha
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
@@ -1891,7 +1927,58 @@ jobs:
       - put: elsa-ha-pool
         params:
           release: elsa-ha-pool
-  - name: bbl-up-asha-mysql # ok
+  - name: bbl-up-kiki-mig
+    serial: true
+    plan:
+      - in_parallel:
+          - get: kiki-mig-pool
+            passed:
+              - kiki-mig-acquire-bbl-up-pool
+            trigger: true
+          - get: cf-deployment-concourse-tasks
+          - get: kiki-mig-bbl-state
+          - get: capi-ci
+      - task: bbl-up-kiki-mig
+        file: cf-deployment-concourse-tasks/bbl-up/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+          bbl-config: kiki-mig-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+          BBL_ENV_NAME: kiki-mig
+          BBL_IAAS: gcp
+          BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-kiki-mig-service-account))
+          BBL_GCP_REGION: us-east4
+          BBL_LB_CERT: ((kiki_lb.certificate))
+          BBL_LB_KEY: ((kiki_lb.private_key))
+          LB_DOMAIN: *kiki-domain
+          TRUSTED_CA: ((relint_ca.certificate))
+        ensure:
+          put: kiki-mig-bbl-state
+          params:
+            repository: updated-bbl-state
+            rebase: true
+      - task: create-dns-record
+        attempts: 3
+        file: capi-ci/ci/bbl-tasks/create_dns_record.yml
+        input_mapping:
+          bbl-state: updated-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+          DNS_DOMAIN: *kiki-domain
+          SHARED_DNS_ZONE_NAME: app-runtime-interfaces
+          GCP_DNS_SERVICE_ACCOUNT_KEY: ((capi-bbl-dns-service-account))
+          GCP_PROJECT_ID: app-runtime-interfaces-wg
+      - task: run-bosh-cleanup
+        file: capi-ci/ci/bbl-tasks/run_bosh_cleanup.yml
+        input_mapping:
+          bbl-state: updated-bbl-state
+        params:
+          BBL_STATE_DIR: kiki-mig
+      - put: kiki-mig-pool
+        params:
+          release: kiki-mig-pool
+  - name: bbl-up-asha-mysql
     serial: true
     plan:
       - in_parallel:
@@ -1902,7 +1989,7 @@ jobs:
           - get: cf-deployment-concourse-tasks
           - get: asha-mysql-bbl-state
           - get: capi-ci
-      - task: bbl-up-asha-mysql # ok
+      - task: bbl-up-asha-mysql
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
@@ -1942,7 +2029,7 @@ jobs:
       - put: asha-mysql-pool
         params:
           release: asha-mysql-pool
-  - name: bbl-up-olaf-mysql # ok
+  - name: bbl-up-olaf-mysql
     serial: true
     plan:
       - in_parallel:
@@ -1953,7 +2040,7 @@ jobs:
           - get: cf-deployment-concourse-tasks
           - get: olaf-mysql-bbl-state
           - get: capi-ci
-      - task: bbl-up-olaf-mysql # ok
+      - task: bbl-up-olaf-mysql
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
@@ -1994,7 +2081,7 @@ jobs:
       - put: olaf-mysql-pool
         params:
           release: olaf-mysql-pool
-  - name: bbl-up-scar-psql # ok
+  - name: bbl-up-scar-psql
     serial: true
     plan:
       - in_parallel:
@@ -2005,7 +2092,7 @@ jobs:
           - get: cf-deployment-concourse-tasks
           - get: scar-psql-bbl-state
           - get: capi-ci
-      - task: bbl-up-scar-psql # ok
+      - task: bbl-up-scar-psql
         file: cf-deployment-concourse-tasks/bbl-up/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
@@ -2045,7 +2132,7 @@ jobs:
       - put: scar-psql-pool
         params:
           release: scar-psql-pool
-  - name: elsa-ha-release-pool-manual # ok
+  - name: elsa-ha-release-pool-manual
     serial: true
     plan:
       - get: elsa-ha-pool
@@ -2054,7 +2141,16 @@ jobs:
         put: elsa-ha-pool
         params:
           release: elsa-ha-pool
-  - name: asha-mysql-release-pool-manual # ok
+  - name: kiki-mig-release-pool-manual
+    serial: true
+    plan:
+      - get: kiki-mig-pool
+    ensure:
+      try:
+        put: kiki-mig-pool
+        params:
+          release: kiki-mig-pool
+  - name: asha-mysql-release-pool-manual
     serial: true
     plan:
       - get: asha-mysql-pool
@@ -2063,7 +2159,7 @@ jobs:
         put: asha-mysql-pool
         params:
           release: asha-mysql-pool
-  - name: olaf-mysql-release-pool-manual # ok
+  - name: olaf-mysql-release-pool-manual
     serial: true
     plan:
       - get: olaf-mysql-pool
@@ -2072,7 +2168,7 @@ jobs:
         put: olaf-mysql-pool
         params:
           release: olaf-mysql-pool
-  - name: scar-psql-release-pool-manual # ok
+  - name: scar-psql-release-pool-manual
     serial: true
     plan:
       - get: scar-psql-pool
@@ -2081,15 +2177,39 @@ jobs:
         put: scar-psql-pool
         params:
           release: scar-psql-pool
-  - name: manual-bbl-destroy-kiki-mig # ok
+  - name: emergency-bbl-destroy-elsa-ha
     serial: true
-    serial_groups:
-      - kiki-mig
+    plan:
+      - in_parallel:
+          - get: cf-deployment-concourse-tasks
+          - get: elsa-ha-bbl-state
+      - try:
+          task: delete-deployment
+          file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+          input_mapping:
+            bbl-state: elsa-ha-bbl-state
+          params:
+            BBL_STATE_DIR: elsa-ha/bbl-state
+            IGNORE_ERRORS: true
+      - task: emergency-bbl-destroy-elsa-ha
+        file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+          BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-elsa-ha-service-account))
+        ensure:
+          put: elsa-ha-bbl-state
+          params:
+            repository: updated-bbl-state
+            rebase: true
+  - name: manual-bbl-destroy-kiki-mig
+    serial: true
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
           - get: kiki-mig-bbl-state
-      - try: # ok
+      - try:
           task: delete-deployment
           file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
           input_mapping:
@@ -2109,7 +2229,7 @@ jobs:
           params:
             repository: updated-bbl-state
             rebase: true
-  - name: manual-bbl-destroy-asha-mysql # ok
+  - name: manual-bbl-destroy-asha-mysql
     serial: true
     plan:
       - in_parallel:
@@ -2127,7 +2247,7 @@ jobs:
           params:
             repository: updated-bbl-state
             rebase: true
-  - name: manual-bbl-destroy-olaf-mysql # ok
+  - name: manual-bbl-destroy-olaf-mysql
     serial: true
     plan:
       - in_parallel:
@@ -2146,7 +2266,7 @@ jobs:
           params:
             repository: updated-bbl-state
             rebase: true
-  - name: manual-bbl-destroy-scar-psql # ok
+  - name: manual-bbl-destroy-scar-psql
     serial: true
     plan:
       - in_parallel:
@@ -2161,32 +2281,6 @@ jobs:
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-scar-service-account))
         ensure:
           put: scar-psql-bbl-state
-          params:
-            repository: updated-bbl-state
-            rebase: true
-  - name: emergency-bbl-destroy-elsa-ha # ok
-    serial: true
-    plan:
-      - in_parallel:
-          - get: cf-deployment-concourse-tasks
-          - get: elsa-ha-bbl-state
-      - try: # ok
-          task: delete-deployment
-          file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-          input_mapping:
-            bbl-state: elsa-ha-bbl-state
-          params:
-            BBL_STATE_DIR: elsa-ha/bbl-state
-            IGNORE_ERRORS: true
-      - task: emergency-bbl-destroy-elsa-ha
-        file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
-        input_mapping:
-          bbl-state: elsa-ha-bbl-state
-        params:
-          BBL_STATE_DIR: elsa-ha/bbl-state
-          BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-elsa-ha-service-account))
-        ensure:
-          put: elsa-ha-bbl-state
           params:
             repository: updated-bbl-state
             rebase: true
