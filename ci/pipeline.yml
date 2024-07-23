@@ -791,7 +791,7 @@ jobs:
         input_mapping:
           cats-integration-config: kiki-mig-integration-configs
         params:
-          CONFIG_FILE_PATH: kiki/cats_integration_config.json
+          CONFIG_FILE_PATH: kiki-mig/cats_integration_config.json
       - task: apply-latest-migrations
         file: capi-ci/ci/migrations/apply_latest_migrations.yml
         input_mapping:
