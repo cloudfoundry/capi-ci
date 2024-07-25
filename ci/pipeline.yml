@@ -1168,6 +1168,8 @@ jobs:
           - get: kiki-mig-integration-configs
           - get: kiki-mig-bbl-state
           - get: cf-acceptance-tests
+          - get: capi-ci
+          - get: capi-bara-tests
           - get: sync-integration-tests
       - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
@@ -1176,6 +1178,20 @@ jobs:
           integration-configs: kiki-mig-integration-configs
         params:
           CATS_INTEGRATION_CONFIG_FILE: kiki-mig/cats_integration_config.json
+          BBL_STATE_DIR: kiki-mig/bbl-state
+          SYSTEM_DOMAIN: *kiki-domain
+        ensure:
+          put: kiki-mig-integration-configs
+          params:
+            repository: updated-integration-configs
+            rebase: true
+      - task: updated-baras-integration-configs
+        file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
+        input_mapping:
+          bbl-state: kiki-mig-bbl-state
+          integration-configs: updated-integration-configs
+        params:
+          CATS_INTEGRATION_CONFIG_FILE: kiki-mig/baras_integration_config.json
           BBL_STATE_DIR: kiki-mig/bbl-state
           SYSTEM_DOMAIN: *kiki-domain
         ensure:
@@ -1202,6 +1218,15 @@ jobs:
               CONFIG_FILE_PATH: kiki-mig/cats_integration_config.json
               CAPTURE_LOGS: true
               SKIP_REGEXP: "shows logs and metrics"
+          - task: capi-bara-tests
+            attempts: 3
+            file: capi-ci/ci/baras/run-baras.yml
+            input_mapping:
+              integration-config: updated-integration-configs
+            params:
+              NODES: 6
+              FLAKE_ATTEMPTS: 2
+              CONFIG_FILE_PATH: kiki-mig/baras_integration_config.json
           - task: sync-integration-tests
             attempts: 3
             file: sync-integration-tests/concourse/task_with_credhub.yml
@@ -1955,7 +1980,6 @@ jobs:
           BBL_LB_CERT: ((kiki_lb.certificate))
           BBL_LB_KEY: ((kiki_lb.private_key))
           LB_DOMAIN: *kiki-domain
-          TRUSTED_CA: ((relint_ca.certificate))
         ensure:
           put: kiki-mig-bbl-state
           params:
