@@ -15,13 +15,6 @@ resources:
       user: cloudfoundry
       repository: bosh-cli
       access_token: ((ari-wg-gitbot-token))
-  - name: bbl-github-release
-    type: github-release
-    icon: github
-    source:
-      user: cloudfoundry
-      repository: bosh-bootloader
-      access_token: ((ari-wg-gitbot-token))
   - name: capi-ci
     type: git
     icon: git
@@ -127,20 +120,6 @@ jobs:
           - get: capi-dockerfiles
       - task: update-dockerfile-bosh-cli-version
         file: capi-ci/ci/dockerfiles/bump_bosh_cli_version.yml
-      - put: capi-dockerfiles
-        params:
-          repository: capi-dockerfiles-updated
-          rebase: true
-  - name: bump-bbl-version
-    serial: true
-    plan:
-      - in_parallel:
-          - get: bbl-github-release
-            trigger: true
-          - get: capi-ci
-          - get: capi-dockerfiles
-      - task: update-dockerfile-bbl-version
-        file: capi-ci/ci/dockerfiles/bump_bbl_version.yml
       - put: capi-dockerfiles
         params:
           repository: capi-dockerfiles-updated
