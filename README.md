@@ -79,7 +79,7 @@ This is where the majority of testing for capi-release components live.
 
 #### bump-dependencies
 
-Automatically bumps golang version for capi-release components every time a new [golang-release](https://github.com/bosh-packages/golang-release) is available. Also bumps Redis.
+Automatically bumps golang version for capi-release components every time a new [golang-release](https://github.com/bosh-packages/golang-release) is available. Also bumps Valkey and nginx.
 
 #### ship-it
 

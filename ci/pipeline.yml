@@ -44,6 +44,7 @@ groups:
   - name: bump-dependencies
     jobs:
       - bump-golang-package
+      - bump-nginx-blob
       - bump-valkey-blob
   - name: ship-it
     jobs:
@@ -225,6 +226,13 @@ resources:
       tag_filter: v*
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+  - name: nginx-release
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/nginx/nginx
+      branch: master
+      tag_filter: release-*
   - name: valkey-release
     type: github-release
     icon: github
@@ -1689,6 +1697,25 @@ jobs:
         file: capi-ci/ci/update-packages/update_golang_package.yml
         params:
           GO_VERSION: 1
+          PRIVATE_YAML: ((capi_release_private_yaml))
+      - put: capi-release-develop
+        params:
+          repository: updated-capi-release
+          rebase: true
+  - name: bump-nginx-blob
+    serial: true
+    plan:
+      - in_parallel:
+          - get: nginx-release
+            trigger: true
+          - get: capi-ci
+          - get: capi-release
+            resource: capi-release-develop
+            params:
+              submodules: none
+      - task: update-nginx-blob
+        file: capi-ci/ci/update-packages/update_nginx_blob.yml
+        params:
           PRIVATE_YAML: ((capi_release_private_yaml))
       - put: capi-release-develop
         params:
