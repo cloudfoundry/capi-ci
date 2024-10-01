@@ -232,7 +232,7 @@ resources:
     source:
       uri: https://github.com/nginx/nginx
       branch: master
-      tag_filter: release-*
+      tag_filter: release-1\.27\..*
   - name: valkey-release
     type: github-release
     icon: github
