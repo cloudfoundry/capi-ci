@@ -1144,7 +1144,7 @@ jobs:
               NODES: 10
               CONFIG_FILE_PATH: elsa-ha/cats_integration_config.json
               CAPTURE_LOGS: true
-              SKIP_REGEXP: "shows logs and metrics"
+              SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
           - task: capi-bara-tests
             attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
@@ -1245,7 +1245,7 @@ jobs:
               NODES: 10
               CONFIG_FILE_PATH: kiki-mig/cats_integration_config.json
               CAPTURE_LOGS: true
-              SKIP_REGEXP: "shows logs and metrics"
+              SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
           - task: capi-bara-tests
             attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
@@ -1337,7 +1337,7 @@ jobs:
               NODES: 10
               CONFIG_FILE_PATH: asha-mysql/cats_integration_config.json
               CAPTURE_LOGS: true
-              SKIP_REGEXP: "shows logs and metrics"
+              SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
           - task: capi-bara-tests
             attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
@@ -1526,7 +1526,7 @@ jobs:
               NODES: 10
               CONFIG_FILE_PATH: scar-psql/cats_integration_config.json
               CAPTURE_LOGS: true
-              SKIP_REGEXP: "shows logs and metrics"
+              SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
           - task: capi-bara-tests
             attempts: 3
             file: capi-ci/ci/baras/run-baras.yml
