@@ -1,0 +1,166 @@
+---
+resources:
+  - name: sundays
+    type: time
+    icon: clock-outline
+    source:
+      days: [Sunday]
+  - name: capi-ci
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-ci.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: elsa-ha-bbl-state
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: elsa-ha-pool
+    type: pool
+    icon: cloud-lock-outline
+    source:
+      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: ari-bbl-env-pool
+      pool: elsa-ha
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+
+jobs:
+  - name: elsa-ha-acquire-pool
+    serial: true
+    serial_groups:
+      - elsa-certificate-rotation
+    plan:
+      - in_parallel:
+          - get: sundays
+            trigger: true
+          - put: elsa-ha-pool
+            params:
+              acquire: true
+        timeout: 4h
+
+  - name: elsa-rotate-step-1
+    serial: true
+    serial_groups:
+      - elsa-certificate-rotation
+    plan:
+      - in_parallel:
+          - get: elsa-ha-pool
+            trigger: true
+            passed:
+              - elsa-ha-acquire-pool
+          - get: capi-ci
+          - get: elsa-ha-bbl-state
+      - task: rotate-step-1
+        file: capi-ci/ci/rotate-certs/rotate_steps.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+          STEP: step_1
+
+  - name: elsa-redeploy-step-1
+    serial: true
+    serial_groups:
+      - elsa-certificate-rotation
+    plan:
+      - in_parallel:
+          - get: elsa-ha-pool
+            trigger: true
+            passed:
+              - elsa-rotate-step-1
+          - get: capi-ci
+          - get: elsa-ha-bbl-state
+      - task: bosh-deploy-cf
+        file: capi-ci/ci/rotate-certs/bosh_redeploy.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+
+  - name: elsa-rotate-step-2
+    serial: true
+    serial_groups:
+      - elsa-certificate-rotation
+    plan:
+      - in_parallel:
+          - get: elsa-ha-pool
+            trigger: true
+            passed:
+              - elsa-redeploy-step-1
+          - get: capi-ci
+          - get: elsa-ha-bbl-state
+      - task: rotate-step-2
+        file: capi-ci/ci/rotate-certs/rotate_steps.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+          STEP: step_2
+
+  - name: elsa-redeploy-step-2
+    serial: true
+    serial_groups:
+      - elsa-certificate-rotation
+    plan:
+      - in_parallel:
+          - get: elsa-ha-pool
+            trigger: true
+            passed:
+              - elsa-rotate-step-2
+          - get: capi-ci
+          - get: elsa-ha-bbl-state
+      - task: bosh-deploy-cf
+        file: capi-ci/ci/rotate-certs/bosh_redeploy.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+
+  - name: elsa-rotate-step-3
+    serial: true
+    serial_groups:
+      - elsa-certificate-rotation
+    plan:
+      - in_parallel:
+          - get: elsa-ha-pool
+            trigger: true
+            passed:
+              - elsa-redeploy-step-2
+          - get: capi-ci
+          - get: elsa-ha-bbl-state
+      - task: rotate-step-3
+        file: capi-ci/ci/rotate-certs/rotate_steps.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+          STEP: step_3
+
+  - name: elsa-redeploy-step-3
+    serial: true
+    serial_groups:
+      - elsa-certificate-rotation
+    plan:
+      - in_parallel:
+          - get: elsa-ha-pool
+            trigger: true
+            passed:
+              - elsa-rotate-step-3
+          - get: capi-ci
+          - get: elsa-ha-bbl-state
+      - task: bosh-deploy-cf
+        file: capi-ci/ci/rotate-certs/bosh_redeploy.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+      - put: elsa-ha-pool
+        params:
+          release: elsa-ha-pool

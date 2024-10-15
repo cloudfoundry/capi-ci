@@ -1,0 +1,15 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: cloudfoundry/cf-deployment-concourse-tasks
+inputs:
+  - name: capi-ci
+  - name: bbl-state
+run:
+  path: capi-ci/ci/rotate-certs/rotate_steps.sh
+params:
+  BBL_STATE_DIR: ~
+  CA_CERTS: application_ca,cf_app_sd_ca,credhub_ca,log_cache_ca,loggregator_ca,metric_scraper_ca,nats_ca,nats_internal_ca,network_policy_ca,router_ca,routing_api_ca,service_cf_internal_ca,silk_ca,uaa_ca
+  STEP: ~
