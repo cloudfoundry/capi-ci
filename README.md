@@ -79,9 +79,7 @@ This is where the majority of testing for capi-release components live.
 
 #### bump-dependencies
 
-- Automatically bumps golang version for capi-release components every time a new [golang-release](https://github.com/bosh-packages/golang-release) is available.
-- Also bumps Valkey and nginx.
-- When the [BBS protobuf files](https://github.com/cloudfoundry/bbs/tree/main/models) are updated, the Ruby stubs will be regenerated and committed to the [bbs-protos](https://github.com/cloudfoundry/cloud_controller_ng/tree/bbs-protos) branch in cloud_controller_ng.
+Automatically bumps golang version for capi-release components every time a new [golang-release](https://github.com/bosh-packages/golang-release) is available. Also bumps Valkey and nginx.
 
 #### ship-it
 

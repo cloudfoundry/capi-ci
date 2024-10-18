@@ -46,7 +46,6 @@ groups:
       - bump-golang-package
       - bump-nginx-blob
       - bump-valkey-blob
-      - bump-bbs-protos
   - name: ship-it
     jobs:
       - ship-it
@@ -109,14 +108,6 @@ resources:
     source:
       uri: https://github.com/cloudfoundry/cloud_controller_ng.git
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: cc-api-bbs-protos
-    type: git
-    icon: git
-    source:
-      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
-      branch: bbs-protos
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
   - name: cc-api-gh-pages
@@ -252,14 +243,6 @@ resources:
       repository: valkey
       semver_constraint: 7.2.x
       access_token: ((ari-wg-gitbot-token))
-  - name: bbs-models
-    type: git
-    icon: git
-    source:
-      uri: https://github.com/cloudfoundry/bbs.git
-      branch: main
-      paths:
-        - models/*.proto
   - name: capi-ci
     type: git
     icon: git
@@ -1761,20 +1744,6 @@ jobs:
         params:
           repository: updated-capi-release
           rebase: true
-  - name: bump-bbs-protos
-    serial: true
-    plan:
-      - in_parallel:
-          - get: bbs-models
-            trigger: true
-          - get: capi-ci
-          - get: cloud_controller_ng
-      - task: update-bbs-protos
-        file: capi-ci/ci/update-protobufs/update_bbs_protos.yml
-      - put: cc-api-bbs-protos
-        params:
-          repository: updated-bbs-protos
-          force: true
   - name: ship-it
     serial: true
     serial_groups:
