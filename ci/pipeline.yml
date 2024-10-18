@@ -50,6 +50,7 @@ groups:
   - name: ship-it
     jobs:
       - ship-it
+      - generate-release-notes
       - push-github-release
       - publish-docs-v3
       - merge-capi-release-main
@@ -1806,6 +1807,24 @@ jobs:
       - put: next-version
         params:
           bump: minor
+  - name: generate-release-notes
+    serial: true
+    plan:
+      - in_parallel:
+          - get: capi-release
+            resource: capi-release-main
+            passed:
+              - ship-it
+            trigger: true
+          - get: capi-final-releases
+            passed:
+              - ship-it
+          - get: capi-ci
+          - get: github-published-release
+            params:
+              globs: []
+      - task: generate-release-notes
+        file: capi-ci/ci/git/generate_release_notes.yml
   - name: push-github-release
     serial: true
     plan:

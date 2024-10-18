@@ -27,7 +27,8 @@ subprojects.each do |subproject, diff|
   commits = []
 
   Dir.chdir(diff[:loc]) do
-    `git log #{diff[:shas]} --pretty=format:'%an@@@%ae@@@%s@@@%b@@@@@@' | grep -v 'gpg'`.force_encoding('UTF-8').split("@@@@@@\n").each do |log|
+    `git log #{diff[:shas]} --pretty=format:'%an@@@%ae@@@%s@@@%b@@@@@@' | grep -v 'gpg'`.force_encoding('UTF-8')
+                                                                                        .split("@@@@@@\n").each do |log|
       author_name, author_email, message, body = log.split('@@@', 4)
       authors = {}
       authors[author_email] = author_name
@@ -35,8 +36,9 @@ subprojects.each do |subproject, diff|
         authors[matches[:email]] = matches[:name]
       end
 
-      # Skip commits where the only author is the ari-wg-gitbot.
-      if authors.count == 1 && (author_email == 'app-runtime-interfaces@cloudfoundry.org' || author_name == 'ari-wg-gitbot')
+      # Skip API version bumps by the ari-wg-gitbot.
+      if message.match?(/(bump to)|(Bump v2 API docs version)/) && authors.count == 1 &&
+         (author_email == 'app-runtime-interfaces@cloudfoundry.org' || author_name == 'ari-wg-gitbot')
         next
       end
 
