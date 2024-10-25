@@ -4,7 +4,8 @@
 def print(commit, subproject)
   # If the commit message ends with a PR number, add a newline and the PR link.
   message = commit[:message].gsub(/\s*\(#(\d+)\)$/) do
-    "\n    PR: cloudfoundry/#{subproject.sub(%r{.*/}, '')}##{Regexp.last_match(1)}"
+    pr_number = Regexp.last_match(1)
+    "\n    PR: cloudfoundry/#{subproject.sub(%r{.*/}, '')}##{pr_number}"
   end
   puts "\n- #{message}"
   commit[:authors].each do |email, name|
