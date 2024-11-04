@@ -8,6 +8,9 @@
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/temporary_enable_v2?
   value: false
 - type: replace
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/temporary_enable_v2?
+  value: false
+- type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/warn_if_below_min_cli_version?
   value: true
 - type: replace
