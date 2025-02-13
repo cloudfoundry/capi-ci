@@ -1187,6 +1187,7 @@ jobs:
             seed-credhub-asg.yml
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
             base-ops-files/operations/experimental/enable-shadow-user-creation-by-org-managers.yml
+            base-ops-files/operations/enable-cc-worker-metrics.yml
             seed-uaa-asg.yml
             enable-experimental-features.yml
       - task: ensure-api-healthy
