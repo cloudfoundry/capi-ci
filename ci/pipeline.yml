@@ -514,21 +514,20 @@ jobs:
           - get: cloud_controller_ng
             trigger: true
           - get: capi-ci
-      - in_parallel:
-          - task: run-cc-unit-tests-mysql
-            attempts: 3
-            file: capi-ci/ci/test-unit/run_cc_unit_tests.yml
-            privileged: true
-            params:
-              DB: mysql
-              RUN_IN_PARALLEL: true
-          - task: run-cc-unit-tests-postgres
-            attempts: 3
-            file: capi-ci/ci/test-unit/run_cc_unit_tests.yml
-            privileged: true
-            params:
-              DB: postgres
-              RUN_IN_PARALLEL: true
+      - task: run-cc-unit-tests-mysql
+        attempts: 3
+        file: capi-ci/ci/test-unit/run_cc_unit_tests.yml
+        privileged: true
+        params:
+          DB: mysql
+          RUN_IN_PARALLEL: true
+      - task: run-cc-unit-tests-postgres
+        attempts: 3
+        file: capi-ci/ci/test-unit/run_cc_unit_tests.yml
+        privileged: true
+        params:
+          DB: postgres
+          RUN_IN_PARALLEL: true
   - name: bridge-unit-tests
     plan:
       - in_parallel:
