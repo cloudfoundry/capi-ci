@@ -280,6 +280,14 @@ resources:
       branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+  - name: cf-deployment-concourse-tasks-cf-cli-v8.9.0
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
+      branch: pin_cf-cli_to_v8.9.0
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
   - name: runtime-ci
     type: git
     icon: git
@@ -1211,6 +1219,7 @@ jobs:
             passed:
               - elsa-ha-deploy-cf
           - get: cf-deployment-concourse-tasks
+          - get: cf-deployment-concourse-tasks-cf-cli-v8.9.0
           - get: elsa-ha-integration-configs
           - get: elsa-ha-bbl-state
           - get: capi-ci
@@ -1264,7 +1273,7 @@ jobs:
       - in_parallel:
           - task: acceptance-tests
             attempts: 3
-            file: cf-deployment-concourse-tasks/run-cats/task.yml
+            file: cf-deployment-concourse-tasks-cf-cli-v8.9.0/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
             params:
@@ -1412,6 +1421,7 @@ jobs:
             passed:
               - asha-mysql-deploy-cf
           - get: cf-deployment-concourse-tasks
+          - get: cf-deployment-concourse-tasks-cf-cli-v8.9.0
           - get: asha-mysql-integration-configs
           - get: asha-mysql-bbl-state
           - get: cf-acceptance-tests
@@ -1457,7 +1467,7 @@ jobs:
       - in_parallel:
           - task: acceptance-tests
             attempts: 3
-            file: cf-deployment-concourse-tasks/run-cats/task.yml
+            file: cf-deployment-concourse-tasks-cf-cli-v8.9.0/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
             params:
@@ -1504,6 +1514,7 @@ jobs:
             passed:
               - olaf-mysql-deploy-cf
           - get: cf-deployment-concourse-tasks
+          - get: cf-deployment-concourse-tasks-cf-cli-v8.9.0
           - get: olaf-mysql-integration-configs
           - get: olaf-mysql-bbl-state
           - get: cf-acceptance-tests
@@ -1549,7 +1560,7 @@ jobs:
       - in_parallel:
           - task: acceptance-tests
             attempts: 3
-            file: cf-deployment-concourse-tasks/run-cats/task.yml
+            file: cf-deployment-concourse-tasks-cf-cli-v8.9.0/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
             params:
@@ -1601,6 +1612,7 @@ jobs:
             passed:
               - scar-psql-deploy-cf
           - get: cf-deployment-concourse-tasks
+          - get: cf-deployment-concourse-tasks-cf-cli-v8.9.0
           - get: scar-psql-integration-configs
           - get: scar-psql-bbl-state
           - get: cf-acceptance-tests
@@ -1646,7 +1658,7 @@ jobs:
       - in_parallel:
           - task: acceptance-tests
             attempts: 3
-            file: cf-deployment-concourse-tasks/run-cats/task.yml
+            file: cf-deployment-concourse-tasks-cf-cli-v8.9.0/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
             params:
@@ -1693,6 +1705,7 @@ jobs:
             passed:
               - gyro-exp-deploy-cf
           - get: cf-deployment-concourse-tasks
+          - get: cf-deployment-concourse-tasks-cf-cli-v8.9.0
           - get: gyro-exp-integration-configs
           - get: gyro-exp-bbl-state
           - get: cf-acceptance-tests
@@ -1739,7 +1752,7 @@ jobs:
       - in_parallel:
           - task: acceptance-tests
             attempts: 3
-            file: cf-deployment-concourse-tasks/run-cats/task.yml
+            file: cf-deployment-concourse-tasks-cf-cli-v8.9.0/run-cats/task.yml
             input_mapping:
               integration-config: updated-integration-configs
             params:
