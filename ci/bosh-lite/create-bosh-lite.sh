@@ -45,7 +45,7 @@ pushd "${state_dir}" > /dev/null
     -o "${deployment_repo}/gcp/cpi.yml" \
     -o "${deployment_repo}/bosh-lite.yml" \
     -o "${deployment_repo}/bosh-lite-runc.yml" \
-    -o "${deployment_repo}/gcp/bosh-lite-vm-type.yml" \
+    -o "${script_dir}/use-e2-standard-8.yml" \
     -o "${deployment_repo}/jumpbox-user.yml" \
     -o "${deployment_repo}/external-ip-not-recommended.yml" \
     -o "${deployment_repo}/uaa.yml" \
