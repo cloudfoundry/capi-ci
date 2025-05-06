@@ -36,9 +36,9 @@ unpack_capi_release_tarball() {
 }
 
 copy_db_migrations() {
-  echo "Copying NEW db migrations to OLD deployment..."
+  echo "Copying NEW db migrations (and bigint migration tools) to OLD deployment..."
   bosh ssh -d "${BOSH_DEPLOYMENT_NAME}" "${BOSH_API_INSTANCE}" \
-    "cd /tmp/packages/cloud_controller_ng; sudo cp -r db /var/vcap/packages/cloud_controller_ng/cloud_controller_ng/"
+    "cd /tmp/packages/cloud_controller_ng; sudo cp -r db lib/database/bigint_migration.rb /var/vcap/packages/cloud_controller_ng/cloud_controller_ng/"
 }
 
 run_db_migrations() {
