@@ -312,6 +312,14 @@ resources:
       branch: release-candidate
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+  - name: cf-acceptance-tests-kiki
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/cf-acceptance-tests.git
+      branch: release-candidate
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
   - name: capi-bara-tests
     type: git
     icon: git
@@ -320,7 +328,23 @@ resources:
       branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+  - name: capi-bara-tests-kiki
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-bara-tests.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
   - name: sync-integration-tests
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/sync-integration-tests.git
+      branch: master
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: sync-integration-tests-kiki
     type: git
     icon: git
     source:
@@ -1323,9 +1347,12 @@ jobs:
           - get: kiki-mig-integration-configs
           - get: kiki-mig-bbl-state
           - get: cf-acceptance-tests
+            resource: cf-acceptance-tests-kiki
           - get: capi-ci
           - get: capi-bara-tests
+            resource: capi-bara-tests-kiki
           - get: sync-integration-tests
+            resource: sync-integration-tests-kiki
       - task: updated-integration-configs
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
