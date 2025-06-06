@@ -38,6 +38,7 @@ groups:
       - olaf-mysql-tests
       - scar-psql-tests
       - gyro-exp-tests
+      - elsa-ha-destroy-cf
       - kiki-mig-destroy-cf
       - asha-mysql-destroy-cf
       - olaf-mysql-destroy-cf
@@ -82,7 +83,7 @@ groups:
       - olaf-mysql-release-pool-manual
       - scar-psql-release-pool-manual
       - gyro-exp-release-pool-manual
-      - emergency-bbl-destroy-elsa-ha
+      - manual-bbl-destroy-elsa-ha
       - manual-bbl-destroy-kiki-mig
       - manual-bbl-destroy-asha-mysql
       - manual-bbl-destroy-olaf-mysql
@@ -1796,6 +1797,33 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
+  - name: elsa-ha-destroy-cf
+    serial: true
+    plan:
+      - in_parallel:
+          - get: capi-release
+            resource: capi-release-develop
+            passed:
+              - elsa-ha-tests
+            trigger: true
+            params:
+              submodules: none
+          - get: capi-release-tarball
+            passed:
+              - elsa-ha-tests
+          - get: cf-deployment-concourse-tasks
+          - get: elsa-ha-bbl-state
+          - get: elsa-ha-pool
+      - task: delete-deployment
+        file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+          IGNORE_ERRORS: true
+      - put: elsa-ha-pool
+        params:
+          release: elsa-ha-pool
   - name: kiki-mig-destroy-cf
     serial: true
     plan:
@@ -1938,7 +1966,7 @@ jobs:
           - get: capi-release
             resource: capi-release-develop
             passed:
-              - elsa-ha-tests
+              - elsa-ha-destroy-cf
               - kiki-mig-destroy-cf
               - asha-mysql-destroy-cf
               - olaf-mysql-destroy-cf
@@ -2267,7 +2295,7 @@ jobs:
           BBL_ENV_NAME: elsa-ha
           BBL_IAAS: gcp
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-elsa-ha-service-account))
-          BBL_GCP_REGION: europe-west3
+          BBL_GCP_REGION: us-east1
           BBL_LB_CERT: ((elsa_lb.certificate))
           BBL_LB_KEY: ((elsa_lb.private_key))
           LB_DOMAIN: *elsa-ha-domain
@@ -2602,21 +2630,13 @@ jobs:
         put: gyro-exp-pool
         params:
           release: gyro-exp-pool
-  - name: emergency-bbl-destroy-elsa-ha
+  - name: manual-bbl-destroy-elsa-ha
     serial: true
     plan:
       - in_parallel:
           - get: cf-deployment-concourse-tasks
           - get: elsa-ha-bbl-state
-      - try:
-          task: delete-deployment
-          file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-          input_mapping:
-            bbl-state: elsa-ha-bbl-state
-          params:
-            BBL_STATE_DIR: elsa-ha/bbl-state
-            IGNORE_ERRORS: true
-      - task: emergency-bbl-destroy-elsa-ha
+      - task: manual-bbl-destroy-elsa-ha
         file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
