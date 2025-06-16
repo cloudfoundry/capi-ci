@@ -252,11 +252,14 @@ resources:
   - name: nginx-release
     type: git
     icon: git
+    check_every: 12h
     source:
       uri: https://github.com/nginx/nginx.git
-      branch: master
-      tag_regex: release-1\.27\..*
+      branch: stable-1.28
+      tag_regex: release-1\.28\..*
       fetch_tags: true
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
   - name: valkey-release
     type: github-release
     icon: github
