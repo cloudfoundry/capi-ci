@@ -1,0 +1,5 @@
+- type: replace
+  path: /tags?
+  value:
+    environment: ((env_name))
+    component: bosh-lite-pool
