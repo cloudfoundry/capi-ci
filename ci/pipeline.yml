@@ -63,12 +63,14 @@ groups:
       - olaf-mysql-acquire-bbl-up-pool
       - scar-psql-acquire-bbl-up-pool
       - gyro-exp-acquire-bbl-up-pool
+      - thor-azure-acquire-bbl-up-pool
       - bbl-up-elsa-ha
       - bbl-up-kiki-mig
       - bbl-up-asha-mysql
       - bbl-up-olaf-mysql
       - bbl-up-scar-psql
       - bbl-up-gyro-exp
+      - bbl-up-thor-azure
   - name: bbl-destroy
     jobs:
       - elsa-ha-release-pool-manual
@@ -77,12 +79,14 @@ groups:
       - olaf-mysql-release-pool-manual
       - scar-psql-release-pool-manual
       - gyro-exp-release-pool-manual
+      - thor-azure-release-pool-manual
       - manual-bbl-destroy-elsa-ha
       - manual-bbl-destroy-kiki-mig
       - manual-bbl-destroy-asha-mysql
       - manual-bbl-destroy-olaf-mysql
       - manual-bbl-destroy-scar-psql
       - manual-bbl-destroy-gyro-exp
+      - manual-bbl-destroy-thor-azure
 resource_types:
   - name: gcs-resource
     type: registry-image
@@ -504,6 +508,24 @@ resources:
       uri: https://github.com/cloudfoundry/capi-ci-private.git
       branch: ari-bbl-env-pool
       pool: gyro-exp
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  # Thor resources
+  - name: thor-azure-bbl-state
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: new_azure_bbl_env
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: thor-azure-pool
+    type: pool
+    icon: cloud-lock-outline
+    source:
+      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      branch: ari-bbl-env-pool
+      pool: thor-azure
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
 jobs:
@@ -2212,6 +2234,14 @@ jobs:
             params:
               acquire: true
         timeout: 4h
+  - name: thor-azure-acquire-bbl-up-pool
+    serial: true
+    plan:
+      - in_parallel:
+          - put: thor-azure-pool
+            params:
+              acquire: true
+        timeout: 4h
   - name: bbl-up-elsa-ha
     serial: true
     plan:
@@ -2514,6 +2544,60 @@ jobs:
       - put: gyro-exp-pool
         params:
           release: gyro-exp-pool
+  - name: bbl-up-thor-azure
+    serial: true
+    plan:
+      - in_parallel:
+          - get: thor-azure-pool
+            passed:
+              - thor-azure-acquire-bbl-up-pool
+            trigger: true
+          - get: cf-deployment-concourse-tasks
+          - get: thor-azure-bbl-state
+          - get: capi-ci
+      - task: bbl-up-thor-azure
+        file: cf-deployment-concourse-tasks/bbl-up/task.yml
+        input_mapping:
+          bbl-state: thor-azure-bbl-state
+          bbl-config: thor-azure-bbl-state
+        params:
+          BBL_STATE_DIR: thor-azure/bbl-state
+          BBL_CONFIG_DIR: thor-azure/bbl-config
+          BBL_ENV_NAME: thor-azure
+          BBL_IAAS: azure
+          BBL_AZURE_CLIENT_ID: ((capi-bbl-thor-azure-client-id))
+          BBL_AZURE_CLIENT_SECRET: ((capi-bbl-thor-azure-client-secret))
+          BBL_AZURE_SUBSCRIPTION_ID: ((capi-bbl-thor-azure-subscription-id))
+          BBL_AZURE_TENANT_ID: ((capi-bbl-thor-azure-tenant-id))
+          BBL_AZURE_REGION: westeurope
+          BBL_LB_CERT: ../cf.thor-bbl.cfp.sapcloud.io.pfx
+          BBL_LB_KEY: ../cf.thor-bbl.cfp.sapcloud.io.pfx_pwd.txt
+          LB_DOMAIN: cf.thor-bbl.cfp.sapcloud.io
+        ensure:
+          put: thor-azure-bbl-state
+          params:
+            repository: updated-bbl-state
+            rebase: true
+#      - task: create-dns-record
+#        attempts: 3
+#        file: capi-ci/ci/bbl-tasks/create_dns_record.yml
+#        input_mapping:
+#          bbl-state: updated-bbl-state
+#        params:
+#          BBL_STATE_DIR: thor-azure/bbl-state
+#          DNS_DOMAIN: cf.thor-bbl.cfp.sapcloud.io
+#          SHARED_DNS_ZONE_NAME: app-runtime-interfaces
+#          GCP_DNS_SERVICE_ACCOUNT_KEY: ((capi-bbl-dns-service-account))
+#          GCP_PROJECT_ID: app-runtime-interfaces-wg
+      - task: run-bosh-cleanup
+        file: capi-ci/ci/bbl-tasks/run_bosh_cleanup.yml
+        input_mapping:
+          bbl-state: updated-bbl-state
+        params:
+          BBL_STATE_DIR: thor-azure/bbl-state
+      - put: thor-azure-pool
+        params:
+          release: thor-azure-pool
   - name: elsa-ha-release-pool-manual
     serial: true
     plan:
@@ -2568,6 +2652,15 @@ jobs:
         put: gyro-exp-pool
         params:
           release: gyro-exp-pool
+  - name: thor-azure-release-pool-manual
+    serial: true
+    plan:
+      - get: thor-azure-pool
+    ensure:
+      try:
+        put: thor-azure-pool
+        params:
+          release: thor-azure-pool
   - name: manual-bbl-destroy-elsa-ha
     serial: true
     plan:
@@ -2674,6 +2767,27 @@ jobs:
           BBL_GCP_SERVICE_ACCOUNT_KEY: ((capi-bbl-gyro-exp-service-account))
         ensure:
           put: gyro-exp-bbl-state
+          params:
+            repository: updated-bbl-state
+            rebase: true
+  - name: manual-bbl-destroy-thor-azure
+    serial: true
+    plan:
+      - in_parallel:
+          - get: cf-deployment-concourse-tasks
+          - get: thor-azure-bbl-state
+      - task: manual-bbl-destroy-thor-azure
+        file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
+        input_mapping:
+          bbl-state: thor-azure-bbl-state
+        params:
+          BBL_STATE_DIR: thor-azure/bbl-state
+          BBL_AZURE_CLIENT_ID: ((capi-bbl-thor-azure-client-id))
+          BBL_AZURE_CLIENT_SECRET: ((capi-bbl-thor-azure-client-secret))
+          BBL_AZURE_SUBSCRIPTION_ID: ((capi-bbl-thor-azure-subscription-id))
+          BBL_AZURE_TENANT_ID: ((capi-bbl-thor-azure-tenant-id))
+        ensure:
+          put: thor-azure-bbl-state
           params:
             repository: updated-bbl-state
             rebase: true
