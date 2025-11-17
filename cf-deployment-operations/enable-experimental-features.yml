@@ -25,6 +25,3 @@
 - type: replace
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/min_recommended_cli_version?
   value: 8.0.0
-- type: replace
-  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/use_status_check?
-  value: true
