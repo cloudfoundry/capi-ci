@@ -365,157 +365,139 @@ resources:
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: elsa-ha-integration-configs
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: elsa-ha-pool
     type: pool
     icon: cloud-lock-outline
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: ari-bbl-env-pool
       pool: elsa-ha
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   # Kiki resources
   - name: kiki-mig-bbl-state
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: kiki-mig-integration-configs
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: kiki-mig-pool
     type: pool
     icon: cloud-lock-outline
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: ari-bbl-env-pool
       pool: kiki-mig
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   # Asha resources
   - name: asha-mysql-bbl-state
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: asha-mysql-integration-configs
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: asha-mysql-pool
     type: pool
     icon: cloud-lock-outline
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: ari-bbl-env-pool
       pool: asha-mysql
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   # Olaf resources
   - name: olaf-mysql-bbl-state
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: olaf-mysql-integration-configs
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: olaf-mysql-pool
     type: pool
     icon: cloud-lock-outline
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: ari-bbl-env-pool
       pool: olaf-mysql
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   # Scar resources
   - name: scar-psql-bbl-state
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: scar-psql-integration-configs
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: scar-psql-pool
     type: pool
     icon: cloud-lock-outline
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: ari-bbl-env-pool
       pool: scar-psql
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   # Gyro resources
   - name: gyro-exp-bbl-state
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: gyro-exp-integration-configs
     type: git
     icon: git
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: gyro-exp-pool
     type: pool
     icon: cloud-lock-outline
     source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
+      uri: git@github.com:cloudfoundry/capi-ci-private.git
+      private_key: ((ari-wg-gitbot-github-ssh-key.private_key))
       branch: ari-bbl-env-pool
       pool: gyro-exp
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
 jobs:
   - name: verify-capi-release-commits
     plan:
