@@ -24,4 +24,31 @@
               db:
                 log_level: error
                 log_db_queries: false
-
+              buildpacks:
+                blobstore_type: fog
+                fog_connection:
+                  provider: AWS
+                  aws_access_key_id: ((blobstore_access_key_id))
+                  aws_secret_access_key: ((blobstore_secret_access_key))
+                  region: ((aws_region))
+              droplets:
+                blobstore_type: fog
+                fog_connection:
+                  provider: AWS
+                  aws_access_key_id: ((blobstore_access_key_id))
+                  aws_secret_access_key: ((blobstore_secret_access_key))
+                  region: ((aws_region))
+              packages:
+                blobstore_type: fog
+                fog_connection:
+                  provider: AWS
+                  aws_access_key_id: ((blobstore_access_key_id))
+                  aws_secret_access_key: ((blobstore_secret_access_key))
+                  region: ((aws_region))
+              resource_pool:
+                blobstore_type: fog
+                fog_connection:
+                  provider: AWS
+                  aws_access_key_id: ((blobstore_access_key_id))
+                  aws_secret_access_key: ((blobstore_secret_access_key))
+                  region: ((aws_region))
