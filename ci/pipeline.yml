@@ -1162,7 +1162,6 @@ jobs:
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/tag-bbl-env.yml
-            cf-deployment-operations/use-azure-storage-cli.yml
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
       - task: deploy
@@ -1182,7 +1181,7 @@ jobs:
             base-ops-files/operations/use-compiled-releases.yml
             base-ops-files/operations/use-postgres.yml
             base-ops-files/operations/use-external-blobstore.yml
-            use-azure-storage-cli.yml
+            base-ops-files/operations/use-azure-storage-blobstore.yml
             configure-blobstore-benchmark-fog-errand.yml
             configure-blobstore-benchmark-storage-cli-errand.yml
             use-latest-capi.yml
