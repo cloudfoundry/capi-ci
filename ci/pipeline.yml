@@ -1070,7 +1070,7 @@ jobs:
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand-s3.yml
-            cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand-s3.yml
+            cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/use-s3-storage-cli.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
