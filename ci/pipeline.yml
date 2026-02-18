@@ -1071,6 +1071,7 @@ jobs:
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand-s3.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand-s3.yml
+            cf-deployment-operations/use-s3-storage-cli.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1086,8 +1087,8 @@ jobs:
             base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
             base-ops-files/operations/aws.yml
             base-ops-files/operations/use-external-blobstore.yml
-            base-ops-files/operations/use-s3-blobstore.yml
             base-ops-files/operations/use-compiled-releases.yml
+            use-s3-storage-cli.yml
             use-latest-capi.yml
             scale-up-cells.yml
             scale-generic-worker-processes.yml
@@ -1098,7 +1099,7 @@ jobs:
             seed-uaa-asg.yml
             tag-bbl-env.yml
             configure-blobstore-benchmark-fog-errand-s3.yml
-            configure-blobstore-benchmark-storage-cli-errand-s3.yml
+            configure-blobstore-benchmark-storage-cli-errand.yml
           VARS_FILES: |
             olaf-mysql/bbl-state/vars/director-vars-file.yml
       - task: ensure-api-healthy
