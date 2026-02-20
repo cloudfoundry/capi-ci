@@ -1382,6 +1382,13 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 2
+      - task: rotate-cc-database-key
+        file: capi-ci/ci/cc-database-key/run_rotate_cc_database_key.yml
+        input_mapping:
+          capi-ci-private: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+          BOSH_DEPLOYMENT_NAME: cf
   - name: kiki-mig-tests
     serial: true
     plan:

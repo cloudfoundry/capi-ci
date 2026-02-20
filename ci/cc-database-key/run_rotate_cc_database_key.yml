@@ -1,0 +1,14 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: cloudfoundry/cf-deployment-concourse-tasks
+inputs:
+  - name: capi-ci
+  - name: capi-ci-private
+run:
+  path: capi-ci/ci/cc-database-key/run_rotate_cc_database_key.sh
+params:
+  BBL_STATE_DIR: ~
+  BOSH_DEPLOYMENT_NAME: cf

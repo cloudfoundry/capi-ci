@@ -23,6 +23,7 @@ All environments are short-lived. The webserver is now "Puma" for all environmen
     |          · Database: MySQL                                           |
     |          · Platform: GCP                                             |
     |          · Blobstore: GCP blobstore                                  |
+    |          · Runs rotate-cc-database-key errand for smoke testing      |
     |                                                                      |
     |  Kiki: used for testing that db migrations are backwards compatible  |
     |          · Database: PostgreSQL                                      |
