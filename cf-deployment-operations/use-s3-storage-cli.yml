@@ -15,6 +15,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/buildpacks/fog_connection?
 
@@ -31,6 +35,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/droplets/fog_connection?
 
@@ -47,6 +55,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/packages/fog_connection?
 
@@ -63,6 +75,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/resource_pool/fog_connection?
 
@@ -80,6 +96,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/buildpacks/fog_connection?
 
@@ -96,6 +116,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/droplets/fog_connection?
 
@@ -112,6 +136,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/packages/fog_connection?
 
@@ -128,6 +156,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/resource_pool/fog_connection?
 
@@ -145,6 +177,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/buildpacks/fog_connection?
 
@@ -161,6 +197,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/droplets/fog_connection?
 
@@ -177,6 +217,10 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/packages/fog_connection?
 
@@ -193,5 +237,9 @@
     aws_access_key_id: ((blobstore_access_key_id))
     aws_secret_access_key: ((blobstore_secret_access_key))
     region: ((aws_region))
+    upload_concurrency: 10
+    upload_part_size: 16777216
+    download_concurrency: 10
+    download_part_size: 16777216
 - type: remove
   path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc/resource_pool/fog_connection?
