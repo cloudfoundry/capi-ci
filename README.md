@@ -58,6 +58,22 @@ All environments are short-lived. The webserver is now "Puma" for all environmen
 
 Kiki starts with an older version of cf-deployment. It then runs the new migrations, but keeps the old Cloud Controller code. This catches any backwards-incompatible migrations. This is important because Cloud Controller instances do rolling upgrades. For example: if you write a migration that drops a table, old CC instances that depend on that table existing will crash during the rolling deploy.
 
+### Renewing the Scar Client Secret
+
+The "Scar" environment runs on Azure. It uses an application client secret for authentication. If the secret expires, you can renew it by following these steps:
+1. Log on to the Azure portal: https://portal.azure.com/
+2. Make sure the "Cloud Foundry Foundation" directory is selected in the top right corner.
+3. Navigate to "Microsoft Entra ID" > "Manage" > "App registrations" > "All applications" > "sp-ari-bbl" > "Client secrets".
+4. Click on "New client secret". Choose 12 months for the expiration and click "Add".
+5. Copy the value of the secret. (The secret ID is not needed, just the value.)
+6. Log on to the ARI WG Concourse CredHub using the [start-credhub-cli.sh](https://github.com/cloudfoundry/app-runtime-interfaces-infrastructure/blob/main/terragrunt/scripts/concourse/start-credhub-cli.sh) script.
+7. Run the following command to set the new secret value in CredHub:
+    ```
+    credhub set -n /concourse/capi-team/capi-bbl-scar-azure-client-secret -t password
+    ```
+8. Make sure the [bbl-up-scar-psql](https://concourse.app-runtime-interfaces.ci.cloudfoundry.org/teams/capi-team/pipelines/capi/jobs/bbl-up-scar-psql) Concourse job runs. It updates the secret in the BOSH Azure CPI.
+9. Now the Scar [scar-psql-deploy-cf](https://concourse.app-runtime-interfaces.ci.cloudfoundry.org/teams/capi-team/pipelines/capi/jobs/scar-psql-deploy-cf) job should succeed again. Delete the old expired secret in the Azure portal to keep things tidy.
+
 ## Pipelines
 
 ### capi
