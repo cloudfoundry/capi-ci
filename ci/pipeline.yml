@@ -1962,7 +1962,7 @@ jobs:
           - get: olaf-mysql-bbl-state
           - get: olaf-mysql-integration-configs
           - get: cf-deployment-concourse-tasks
-      - task: run-blobstore-benchmarks-fog
+      - task: run-blobstore-benchmarks
         file: capi-ci/ci/benchmarks/run_blobstore_benchmarks.yml
         input_mapping:
           capi-ci-private: olaf-mysql-bbl-state
