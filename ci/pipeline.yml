@@ -2556,6 +2556,7 @@ jobs:
           bbl-config: olaf-mysql-bbl-state
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
+          BBL_CONFIG_DIR: olaf-mysql/bbl-config
           BBL_ENV_NAME: olaf-mysql
           BBL_IAAS: aws
           BBL_AWS_ACCESS_KEY_ID: ((capi-bbl-olaf-aws-access-key))
