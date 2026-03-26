@@ -2105,7 +2105,7 @@ jobs:
         params:
           GIT_USER_NAME: "ari-wg-gitbot"
           GIT_USER_EMAIL: "app-runtime-interfaces@cloudfoundry.org"
-          PACKAGE: ruby-3.2
+          PACKAGE: ruby-3.3
           RUBY_VERSION_PATH: ./.ruby-version
           PRIVATE_YML: ((capi_release_private_yaml))
       - put: capi-release-develop
