@@ -204,6 +204,34 @@ module ReleaseNotes
     end
   end
 
+  def self.get_ccng_shas(previous_version, version)
+    diff = `git diff #{previous_version}...#{version} -- src/cloud_controller_ng`
+    old_sha = diff.match(/^-Subproject commit ([0-9a-f]+)/)&.captures&.first
+    new_sha = diff.match(/^\+Subproject commit ([0-9a-f]+)/)&.captures&.first
+    [old_sha, new_sha]
+  end
+
+  def self.get_new_migration_files(ccng_path, old_sha, new_sha)
+    return [] unless old_sha && new_sha
+
+    `git -C #{ccng_path} diff #{old_sha}...#{new_sha} --name-only -- db/migrations/`
+      .lines
+      .map(&:chomp)
+      .reject(&:empty?)
+      .map { |path| File.basename(path) }
+  end
+
+  def self.print_db_migrations(ccng_path, previous_version, version)
+    old_sha, new_sha = get_ccng_shas(previous_version, version)
+    migrations = get_new_migration_files(ccng_path, old_sha, new_sha)
+    puts "\n"
+    puts '### Cloud Controller Database Migrations'
+    return puts 'None' if migrations.empty?
+
+    base_url = "https://github.com/cloudfoundry/cloud_controller_ng/blob/#{new_sha}/db/migrations"
+    migrations.each { |f| puts "- [#{f}](#{base_url}/#{f})" }
+  end
+
   def self.run
     args = ARGV
 
@@ -211,12 +239,13 @@ module ReleaseNotes
                 # Test mode, i.e. read given git-log txt file
                 File.read(args[0])
               else
-                raise 'release_notes.rb <previous version> <version>' if args.length != 2
+                raise 'release_notes.rb <previous version> <version> <ccng path>' if args.length != 3
 
                 execute_git_log_command(args[0], args[1])
               end
     items = parse_git_log(git_log)
     print_release_notes(items)
+    print_db_migrations(args[2], args[0], args[1]) unless args.length == 1
   end
 end
 
