@@ -12,5 +12,5 @@ popd > /dev/null
 pushd capi-release-ci-passed > /dev/null
   # get latest commit id of "ci-passed" branch (= new release candidate)
   CI_PASSED_VERSION="$(git rev-parse HEAD)"
-  "$SCRIPT_DIR/release_notes.rb" "$PREVIOUS_VERSION" "$CI_PASSED_VERSION"
+  "$SCRIPT_DIR/release_notes.rb" "$PREVIOUS_VERSION" "$CI_PASSED_VERSION" "src/cloud_controller_ng"
 popd > /dev/null
