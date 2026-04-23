@@ -808,6 +808,7 @@ jobs:
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand-gcs.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
+            cf-deployment-operations/add-loggregator-tls-cert.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -840,6 +841,7 @@ jobs:
             tag-bbl-env.yml
             configure-blobstore-benchmark-fog-errand-gcs.yml
             configure-blobstore-benchmark-storage-cli-errand.yml
+            add-loggregator-tls-cert.yml
           VARS_FILES: |
             elsa-ha/gcs-storage-vars.yml
       - task: ensure-api-healthy
@@ -895,6 +897,7 @@ jobs:
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/log-all-sequel-activity.yml
             cf-deployment-operations/tag-bbl-env.yml
+            cf-deployment-operations/add-loggregator-tls-cert.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -918,6 +921,7 @@ jobs:
             seed-uaa-asg.yml
             log-all-sequel-activity.yml
             tag-bbl-env.yml
+            add-loggregator-tls-cert.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -984,6 +988,7 @@ jobs:
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/tag-bbl-env.yml
+            cf-deployment-operations/add-loggregator-tls-cert.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1007,6 +1012,7 @@ jobs:
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
             seed-uaa-asg.yml
             tag-bbl-env.yml
+            add-loggregator-tls-cert.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -1070,6 +1076,7 @@ jobs:
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand-s3.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
+            cf-deployment-operations/add-loggregator-tls-cert.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1098,6 +1105,7 @@ jobs:
             tag-bbl-env.yml
             configure-blobstore-benchmark-fog-errand-s3.yml
             configure-blobstore-benchmark-storage-cli-errand.yml
+            add-loggregator-tls-cert.yml
           VARS_FILES: |
             olaf-mysql/bbl-state/vars/director-vars-file.yml
       - task: ensure-api-healthy
@@ -1163,6 +1171,7 @@ jobs:
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
+            cf-deployment-operations/add-loggregator-tls-cert.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1191,6 +1200,7 @@ jobs:
             base-ops-files/operations/test/speed-up-dynamic-asgs.yml
             seed-uaa-asg.yml
             tag-bbl-env.yml
+            add-loggregator-tls-cert.yml
           VARS_FILES: |
             scar-psql/bbl-state/vars/director-vars-file.yml
       - task: ensure-api-healthy
@@ -1248,6 +1258,7 @@ jobs:
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/enable-experimental-features.yml
             cf-deployment-operations/tag-bbl-env.yml
+            cf-deployment-operations/add-loggregator-tls-cert.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1273,6 +1284,7 @@ jobs:
             seed-uaa-asg.yml
             enable-experimental-features.yml
             tag-bbl-env.yml
+            add-loggregator-tls-cert.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:

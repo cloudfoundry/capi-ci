@@ -1,0 +1,14 @@
+# This ops file can be removed once the loggregator_tls properties are added & released in cf-deployment.
+---
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/loggregator_tls?
+  value:
+    ca_cert: "((loggregator_tls_agent.ca))"
+    certificate: "((loggregator_tls_agent.certificate))"
+    private_key: "((loggregator_tls_agent.private_key))"
+- type: replace
+  path: /instance_groups/name=cc-worker/jobs/name=cloud_controller_worker/properties/cc/loggregator_tls?
+  value:
+    ca_cert: "((loggregator_tls_agent.ca))"
+    certificate: "((loggregator_tls_agent.certificate))"
+    private_key: "((loggregator_tls_agent.private_key))"
