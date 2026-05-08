@@ -806,6 +806,7 @@ jobs:
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
+            cf-deployment-operations/fast-deploy-with-downtime-and-danger-external-blobstore.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -840,7 +841,7 @@ jobs:
             configure-blobstore-benchmark-storage-cli-errand.yml
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
-            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
+            fast-deploy-with-downtime-and-danger-external-blobstore.yml
           VARS_FILES: |
             elsa-ha/gcs-storage-vars.yml
       - task: ensure-api-healthy
@@ -892,6 +893,7 @@ jobs:
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
+            cf-deployment-operations/fast-deploy-with-downtime-and-danger.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -917,7 +919,7 @@ jobs:
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
-            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
+            fast-deploy-with-downtime-and-danger.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -980,6 +982,7 @@ jobs:
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
+            cf-deployment-operations/fast-deploy-with-downtime-and-danger.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1005,7 +1008,7 @@ jobs:
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
-            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
+            fast-deploy-with-downtime-and-danger.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -1064,6 +1067,7 @@ jobs:
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
+            cf-deployment-operations/fast-deploy-with-downtime-and-danger-external-blobstore.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1094,7 +1098,7 @@ jobs:
             configure-blobstore-benchmark-storage-cli-errand.yml
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
-            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
+            fast-deploy-with-downtime-and-danger-external-blobstore.yml
           VARS_FILES: |
             olaf-mysql/bbl-state/vars/director-vars-file.yml
       - task: ensure-api-healthy
@@ -1155,6 +1159,7 @@ jobs:
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
+            cf-deployment-operations/fast-deploy-with-downtime-and-danger-external-blobstore.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1185,7 +1190,7 @@ jobs:
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
-            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
+            fast-deploy-with-downtime-and-danger-external-blobstore.yml
           VARS_FILES: |
             scar-psql/bbl-state/vars/director-vars-file.yml
       - task: ensure-api-healthy
@@ -1245,6 +1250,7 @@ jobs:
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
+            cf-deployment-operations/fast-deploy-with-downtime-and-danger.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1272,7 +1278,7 @@ jobs:
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
-            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
+            fast-deploy-with-downtime-and-danger.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:

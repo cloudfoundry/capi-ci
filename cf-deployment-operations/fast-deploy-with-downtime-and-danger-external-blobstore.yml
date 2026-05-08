@@ -1,0 +1,16 @@
+---
+- type: replace
+  path: /update/canaries
+  value: 0
+
+- type: replace
+  path: /update/max_in_flight
+  value: 100%
+
+- type: replace
+  path: /instance_groups/name=database/update/serial
+  value: true
+
+- type: replace
+  path: /instance_groups/name=router/update/serial
+  value: false
