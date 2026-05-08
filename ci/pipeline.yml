@@ -1369,7 +1369,7 @@ jobs:
             input_mapping:
               integration-config: updated-integration-configs
             params:
-              NODES: 10
+              NODES: 6
               FLAKE_ATTEMPTS: 5
               CONFIG_FILE_PATH: elsa-ha/baras_integration_config.json
           - task: sync-integration-tests
@@ -1467,7 +1467,7 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 10
+                NODES: 6
                 FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: kiki-mig/baras_integration_config.json
             - task: sync-integration-tests
@@ -1574,7 +1574,7 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 10
+                NODES: 6
                 FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: asha-mysql/baras_integration_config.json
             - task: sync-integration-tests
@@ -1680,7 +1680,7 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 10
+                NODES: 6
                 FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: olaf-mysql/baras_integration_config.json
             - task: sync-integration-tests
@@ -1782,7 +1782,7 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 10
+                NODES: 6
                 FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: scar-psql/baras_integration_config.json
             - task: sync-integration-tests
@@ -1878,7 +1878,7 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 10
+                NODES: 6
                 FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: gyro-exp/baras_integration_config.json
             - task: sync-integration-tests
