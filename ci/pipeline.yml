@@ -558,6 +558,8 @@ jobs:
           - get: cloud_controller_ng
             trigger: true
           - get: capi-ci
+      - task: run-rubocop
+        file: capi-ci/ci/test-unit/run_rubocop.yml
       - task: run-cc-unit-tests-mysql
         attempts: 3
         file: capi-ci/ci/test-unit/run_cc_unit_tests.yml
@@ -777,12 +779,6 @@ jobs:
           - get: capi-ci
           - get: runtime-ci
           - get: elsa-ha-integration-configs
-      - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
-        input_mapping:
-          bbl-state: elsa-ha-bbl-state
-        params:
-          BBL_STATE_DIR: elsa-ha/bbl-state
       - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
@@ -809,6 +805,7 @@ jobs:
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand-gcs.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
+            cf-deployment-operations/speed-up-diego-sync.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -842,6 +839,8 @@ jobs:
             configure-blobstore-benchmark-fog-errand-gcs.yml
             configure-blobstore-benchmark-storage-cli-errand.yml
             add-loggregator-tls-cert.yml
+            speed-up-diego-sync.yml
+            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
           VARS_FILES: |
             elsa-ha/gcs-storage-vars.yml
       - task: ensure-api-healthy
@@ -877,12 +876,6 @@ jobs:
         params:
           BBL_STATE_DIR: kiki-mig/bbl-state
           IGNORE_ERRORS: true
-      - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
-        input_mapping:
-          bbl-state: kiki-mig-bbl-state
-        params:
-          BBL_STATE_DIR: kiki-mig/bbl-state
       - task: collect-ops-files
         file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
         input_mapping:
@@ -898,6 +891,7 @@ jobs:
             cf-deployment-operations/log-all-sequel-activity.yml
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
+            cf-deployment-operations/speed-up-diego-sync.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -922,6 +916,8 @@ jobs:
             log-all-sequel-activity.yml
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
+            speed-up-diego-sync.yml
+            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -961,12 +957,6 @@ jobs:
         params:
           BBL_STATE_DIR: asha-mysql/bbl-state
           IGNORE_ERRORS: true
-      - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
-        input_mapping:
-          bbl-state: asha-mysql-bbl-state
-        params:
-          BBL_STATE_DIR: asha-mysql/bbl-state
       - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
@@ -989,6 +979,7 @@ jobs:
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
+            cf-deployment-operations/speed-up-diego-sync.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1013,6 +1004,8 @@ jobs:
             seed-uaa-asg.yml
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
+            speed-up-diego-sync.yml
+            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -1046,13 +1039,6 @@ jobs:
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           IGNORE_ERRORS: true
-      - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
-        input_mapping:
-          bbl-state: olaf-mysql-bbl-state
-        params:
-          BBL_STATE_DIR: olaf-mysql/bbl-state
-          INFRASTRUCTURE: aws
       - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
@@ -1077,6 +1063,7 @@ jobs:
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand-s3.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
+            cf-deployment-operations/speed-up-diego-sync.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1106,6 +1093,8 @@ jobs:
             configure-blobstore-benchmark-fog-errand-s3.yml
             configure-blobstore-benchmark-storage-cli-errand.yml
             add-loggregator-tls-cert.yml
+            speed-up-diego-sync.yml
+            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
           VARS_FILES: |
             olaf-mysql/bbl-state/vars/director-vars-file.yml
       - task: ensure-api-healthy
@@ -1141,13 +1130,6 @@ jobs:
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
           IGNORE_ERRORS: true
-      - task: stemcell-upload
-        file: cf-deployment-concourse-tasks/bosh-upload-stemcells/task.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-          INFRASTRUCTURE: azure
       - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
@@ -1172,6 +1154,7 @@ jobs:
             cf-deployment-operations/configure-blobstore-benchmark-fog-errand.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
+            cf-deployment-operations/speed-up-diego-sync.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1201,6 +1184,8 @@ jobs:
             seed-uaa-asg.yml
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
+            speed-up-diego-sync.yml
+            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
           VARS_FILES: |
             scar-psql/bbl-state/vars/director-vars-file.yml
       - task: ensure-api-healthy
@@ -1259,6 +1244,7 @@ jobs:
             cf-deployment-operations/enable-experimental-features.yml
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
+            cf-deployment-operations/speed-up-diego-sync.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1285,6 +1271,8 @@ jobs:
             enable-experimental-features.yml
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
+            speed-up-diego-sync.yml
+            base-ops-files/operations/experimental/fast-deploy-with-downtime-and-danger.yml
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -1367,6 +1355,7 @@ jobs:
               NODES: 10
               CONFIG_FILE_PATH: elsa-ha/cats_integration_config.json
               CAPTURE_LOGS: true
+              FLAKE_ATTEMPTS: 5
               SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
           - task: capi-bara-tests
             attempts: 3
@@ -1374,8 +1363,8 @@ jobs:
             input_mapping:
               integration-config: updated-integration-configs
             params:
-              NODES: 6
-              FLAKE_ATTEMPTS: 2
+              NODES: 10
+              FLAKE_ATTEMPTS: 5
               CONFIG_FILE_PATH: elsa-ha/baras_integration_config.json
           - task: sync-integration-tests
             attempts: 3
@@ -1391,14 +1380,7 @@ jobs:
               BBL_STATE_DIR: elsa-ha/bbl-state
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
-              FLAKE_ATTEMPTS: 2
-      - task: rotate-cc-database-key
-        file: capi-ci/ci/cc-database-key/run_rotate_cc_database_key.yml
-        input_mapping:
-          capi-ci-private: elsa-ha-bbl-state
-        params:
-          BBL_STATE_DIR: elsa-ha/bbl-state
-          BOSH_DEPLOYMENT_NAME: cf
+              FLAKE_ATTEMPTS: 5
   - name: kiki-mig-tests
     serial: true
     plan:
@@ -1471,6 +1453,7 @@ jobs:
                 NODES: 10
                 CONFIG_FILE_PATH: kiki-mig/cats_integration_config.json
                 CAPTURE_LOGS: true
+                FLAKE_ATTEMPTS: 5
                 SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
             - task: capi-bara-tests
               attempts: 3
@@ -1478,8 +1461,8 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 6
-                FLAKE_ATTEMPTS: 2
+                NODES: 10
+                FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: kiki-mig/baras_integration_config.json
             - task: sync-integration-tests
               attempts: 3
@@ -1495,7 +1478,7 @@ jobs:
                 BBL_STATE_DIR: kiki-mig/bbl-state
                 USE_CREDHUB: true
                 RUN_REVISIONS_TESTS: true
-                FLAKE_ATTEMPTS: 2
+                FLAKE_ATTEMPTS: 5
         ensure:
           do:
             - task: delete-deployment
@@ -1577,6 +1560,7 @@ jobs:
                 NODES: 10
                 CONFIG_FILE_PATH: asha-mysql/cats_integration_config.json
                 CAPTURE_LOGS: true
+                FLAKE_ATTEMPTS: 5
                 SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
             - task: capi-bara-tests
               attempts: 3
@@ -1584,8 +1568,8 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 6
-                FLAKE_ATTEMPTS: 2
+                NODES: 10
+                FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: asha-mysql/baras_integration_config.json
             - task: sync-integration-tests
               attempts: 3
@@ -1601,7 +1585,7 @@ jobs:
                 BBL_STATE_DIR: asha-mysql/bbl-state
                 USE_CREDHUB: true
                 RUN_REVISIONS_TESTS: true
-                FLAKE_ATTEMPTS: 2
+                FLAKE_ATTEMPTS: 5
         ensure:
           do:
           - task: delete-deployment
@@ -1683,14 +1667,15 @@ jobs:
                 NODES: 10
                 CONFIG_FILE_PATH: olaf-mysql/cats_integration_config.json
                 CAPTURE_LOGS: true
+                FLAKE_ATTEMPTS: 5
             - task: capi-bara-tests
               attempts: 3
               file: capi-ci/ci/baras/run-baras.yml
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 6
-                FLAKE_ATTEMPTS: 2
+                NODES: 10
+                FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: olaf-mysql/baras_integration_config.json
             - task: sync-integration-tests
               attempts: 3
@@ -1706,7 +1691,14 @@ jobs:
                 BBL_STATE_DIR: olaf-mysql/bbl-state
                 USE_CREDHUB: true
                 RUN_REVISIONS_TESTS: true
-                FLAKE_ATTEMPTS: 2
+                FLAKE_ATTEMPTS: 5
+      - task: rotate-cc-database-key
+        file: capi-ci/ci/cc-database-key/run_rotate_cc_database_key.yml
+        input_mapping:
+          capi-ci-private: olaf-mysql-bbl-state
+        params:
+          BBL_STATE_DIR: olaf-mysql/bbl-state
+          BOSH_DEPLOYMENT_NAME: cf
   - name: scar-psql-tests
     serial: true
     plan:
@@ -1776,6 +1768,7 @@ jobs:
                 NODES: 10
                 CONFIG_FILE_PATH: scar-psql/cats_integration_config.json
                 CAPTURE_LOGS: true
+                FLAKE_ATTEMPTS: 5
                 SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
             - task: capi-bara-tests
               attempts: 3
@@ -1783,8 +1776,8 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 6
-                FLAKE_ATTEMPTS: 2
+                NODES: 10
+                FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: scar-psql/baras_integration_config.json
             - task: sync-integration-tests
               attempts: 3
@@ -1800,7 +1793,7 @@ jobs:
                 BBL_STATE_DIR: scar-psql/bbl-state
                 USE_CREDHUB: true
                 RUN_REVISIONS_TESTS: true
-                FLAKE_ATTEMPTS: 2
+                FLAKE_ATTEMPTS: 5
   - name: gyro-exp-tests
     serial: true
     plan:
@@ -1871,6 +1864,7 @@ jobs:
                 NODES: 10
                 CONFIG_FILE_PATH: gyro-exp/cats_integration_config.json
                 CAPTURE_LOGS: true
+                FLAKE_ATTEMPTS: 5
                 SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
             - task: capi-bara-tests
               attempts: 3
@@ -1878,8 +1872,8 @@ jobs:
               input_mapping:
                 integration-config: updated-integration-configs
               params:
-                NODES: 6
-                FLAKE_ATTEMPTS: 2
+                NODES: 10
+                FLAKE_ATTEMPTS: 5
                 CONFIG_FILE_PATH: gyro-exp/baras_integration_config.json
             - task: sync-integration-tests
               attempts: 3
@@ -1895,7 +1889,7 @@ jobs:
                 BBL_STATE_DIR: gyro-exp/bbl-state
                 USE_CREDHUB: true
                 RUN_REVISIONS_TESTS: true
-                FLAKE_ATTEMPTS: 2
+                FLAKE_ATTEMPTS: 5
         ensure:
           do:
             - task: delete-deployment

@@ -1,0 +1,5 @@
+# Reduce sync interval from 30s to 10s to minimize flakiness in sync-integration-tests
+---
+- type: replace
+  path: /instance_groups/name=scheduler/jobs/name=cloud_controller_clock/properties/cc?/diego_sync?/frequency_in_seconds?
+  value: 10
