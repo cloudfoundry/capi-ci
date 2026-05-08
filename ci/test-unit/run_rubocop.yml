@@ -9,8 +9,4 @@ inputs:
   - name: capi-ci
   - name: cloud_controller_ng
 run:
-  path: capi-ci/ci/test-unit/run_cc_unit_tests.sh
-params:
-  DB: ~
-  RUN_IN_PARALLEL: ~
-  RUN_RUBOCOP: false
+  path: capi-ci/ci/test-unit/run_rubocop.sh

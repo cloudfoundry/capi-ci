@@ -4,6 +4,8 @@ set -e
 
 : ${DB:?}
 
+export RUBY_YJIT_ENABLE=1
+
 start_db() {
   mkdir -p /var/lib/ramdisk
   mount -t tmpfs -o size=8192m ramdisk /var/lib/ramdisk
@@ -53,11 +55,17 @@ pushd cloud_controller_ng > /dev/null
   export BUNDLE_GEMFILE=Gemfile
   bundle install
 
+  if [ "${RUN_RUBOCOP}" = "true" ]; then
+    if [ -n "${RUN_IN_PARALLEL}" ]; then
+      bundle exec rubocop --parallel
+    else
+      bundle exec rubocop
+    fi
+  fi
+
   if [ -n "${RUN_IN_PARALLEL}" ]; then
-    bundle exec rubocop --parallel
     bundle exec rake spec:all
   else
-    bundle exec rubocop
     bundle exec rake spec:serial
   fi
 popd > /dev/null
