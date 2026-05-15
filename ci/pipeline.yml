@@ -2642,7 +2642,7 @@ jobs:
           BBL_AZURE_CLIENT_SECRET: ((capi-bbl-scar-azure-client-secret))
           BBL_AZURE_SUBSCRIPTION_ID: ((capi-bbl-scar-azure-subscription-id))
           BBL_AZURE_TENANT_ID: ((capi-bbl-scar-azure-tenant-id))
-          BBL_AZURE_REGION: westeurope
+          BBL_AZURE_REGION: eastus2
           BBL_LB_CERT: ../scar-psql.pfx
           BBL_LB_KEY: ../pfx_password.txt
           LB_DOMAIN: *scar-psql-domain
