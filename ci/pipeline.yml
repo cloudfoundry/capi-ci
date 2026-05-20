@@ -2136,6 +2136,8 @@ jobs:
             resource: capi-release-develop
             params:
               submodules: none
+      - task: check-nginx-stable-line
+        file: capi-ci/ci/update-packages/check_nginx_stable_line.yml
       - task: update-nginx-blob
         file: capi-ci/ci/update-packages/update_nginx_blob.yml
         params:
