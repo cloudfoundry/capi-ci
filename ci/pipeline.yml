@@ -1160,6 +1160,7 @@ jobs:
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
             cf-deployment-operations/fast-deploy-with-downtime-and-danger-external-blobstore.yml
+            cf-deployment-operations/disable-tcp-router.yml
       - task: deploy
         file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
         input_mapping:
@@ -1191,6 +1192,7 @@ jobs:
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
             fast-deploy-with-downtime-and-danger-external-blobstore.yml
+            disable-tcp-router.yml
           VARS_FILES: |
             scar-psql/bbl-state/vars/director-vars-file.yml
       - task: ensure-api-healthy
@@ -2642,7 +2644,7 @@ jobs:
           BBL_AZURE_CLIENT_SECRET: ((capi-bbl-scar-azure-client-secret))
           BBL_AZURE_SUBSCRIPTION_ID: ((capi-bbl-scar-azure-subscription-id))
           BBL_AZURE_TENANT_ID: ((capi-bbl-scar-azure-tenant-id))
-          BBL_AZURE_REGION: westeurope
+          BBL_AZURE_REGION: eastus2
           BBL_LB_CERT: ../scar-psql.pfx
           BBL_LB_KEY: ../pfx_password.txt
           LB_DOMAIN: *scar-psql-domain
