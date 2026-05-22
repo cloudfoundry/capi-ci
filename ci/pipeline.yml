@@ -24,23 +24,19 @@ groups:
       - kiki-mig-acquire-pool
       - asha-mysql-acquire-pool
       - olaf-mysql-acquire-pool
-      - scar-psql-acquire-pool
       - gyro-exp-acquire-pool
       - elsa-ha-deploy-cf
       - kiki-mig-deploy-cf
       - asha-mysql-deploy-cf
       - olaf-mysql-deploy-cf
-      - scar-psql-deploy-cf
       - gyro-exp-deploy-cf
       - elsa-ha-tests
       - kiki-mig-tests
       - asha-mysql-tests
       - olaf-mysql-tests
-      - scar-psql-tests
       - gyro-exp-tests
       - elsa-ha-blobstore-benchmarks
       - olaf-mysql-blobstore-benchmarks
-      - scar-psql-blobstore-benchmarks
       - bump-ci-passed
       - generate-release-notes
       - rc-docs-v3
@@ -66,13 +62,11 @@ groups:
       - kiki-mig-acquire-bbl-up-pool
       - asha-mysql-acquire-bbl-up-pool
       - olaf-mysql-acquire-bbl-up-pool
-      - scar-psql-acquire-bbl-up-pool
       - gyro-exp-acquire-bbl-up-pool
       - bbl-up-elsa-ha
       - bbl-up-kiki-mig
       - bbl-up-asha-mysql
       - bbl-up-olaf-mysql
-      - bbl-up-scar-psql
       - bbl-up-gyro-exp
   - name: bbl-destroy
     jobs:
@@ -80,13 +74,11 @@ groups:
       - kiki-mig-release-pool-manual
       - asha-mysql-release-pool-manual
       - olaf-mysql-release-pool-manual
-      - scar-psql-release-pool-manual
       - gyro-exp-release-pool-manual
       - manual-bbl-destroy-elsa-ha
       - manual-bbl-destroy-kiki-mig
       - manual-bbl-destroy-asha-mysql
       - manual-bbl-destroy-olaf-mysql
-      - manual-bbl-destroy-scar-psql
       - manual-bbl-destroy-gyro-exp
 resource_types:
   - name: gcs-resource
@@ -475,32 +467,6 @@ resources:
       pool: olaf-mysql
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
-  # Scar resources
-  - name: scar-psql-bbl-state
-    type: git
-    icon: git
-    source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
-      branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: scar-psql-integration-configs
-    type: git
-    icon: git
-    source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
-      branch: main
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
-  - name: scar-psql-pool
-    type: pool
-    icon: cloud-lock-outline
-    source:
-      uri: https://github.com/cloudfoundry/capi-ci-private.git
-      branch: ari-bbl-env-pool
-      pool: scar-psql
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   # Gyro resources
   - name: gyro-exp-bbl-state
     type: git
@@ -720,24 +686,6 @@ jobs:
             passed:
               - create-release-candidate
           - put: olaf-mysql-pool
-            params:
-              acquire: true
-        timeout: 4h
-  - name: scar-psql-acquire-pool
-    serial: true
-    plan:
-      - in_parallel:
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - create-release-candidate
-            trigger: true
-            params:
-              submodules: none
-          - get: capi-release-tarball
-            passed:
-              - create-release-candidate
-          - put: scar-psql-pool
             params:
               acquire: true
         timeout: 4h
@@ -1107,100 +1055,6 @@ jobs:
           cats-integration-config: olaf-mysql-integration-configs
         params:
           CONFIG_FILE_PATH: olaf-mysql/cats_integration_config.json
-  - name: scar-psql-deploy-cf
-    serial: true
-    plan:
-      - in_parallel:
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - scar-psql-acquire-pool
-            trigger: true
-            params:
-              submodules: none
-          - get: capi-release-tarball
-            passed:
-              - scar-psql-acquire-pool
-          - get: cf-deployment-concourse-tasks
-          - get: scar-psql-bbl-state
-          - get: cf-deployment
-          - get: capi-ci
-          - get: runtime-ci
-          - get: scar-psql-integration-configs
-      - task: delete-deployment
-        file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-          IGNORE_ERRORS: true
-      - task: upload-capi-release-tarball
-        file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-          release-tarball: capi-release-tarball
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-      - task: collect-ops-files
-        file: cf-deployment-concourse-tasks/collect-ops-files/task.yml
-        input_mapping:
-          base-ops-files: cf-deployment
-          new-ops-files: capi-ci
-        params:
-          NEW_OPS_FILES: |
-            cf-deployment-operations/use-latest-capi.yml
-            cf-deployment-operations/scale-up-cells-large.yml
-            cf-deployment-operations/scale-generic-worker-processes.yml
-            cf-deployment-operations/disable-uaa-get-requests.yml
-            cf-deployment-operations/seed-credhub-asg.yml
-            cf-deployment-operations/seed-uaa-asg.yml
-            cf-deployment-operations/tag-bbl-env.yml
-            cf-deployment-operations/configure-blobstore-benchmark-fog-errand.yml
-            cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
-            cf-deployment-operations/add-loggregator-tls-cert.yml
-            cf-deployment-operations/speed-up-diego-sync.yml
-            cf-deployment-operations/fast-deploy-with-downtime-and-danger-external-blobstore.yml
-            cf-deployment-operations/disable-tcp-router.yml
-      - task: deploy
-        file: cf-deployment-concourse-tasks/bosh-deploy/task.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-          ops-files: collected-ops-files
-          vars-files: scar-psql-bbl-state
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-          SYSTEM_DOMAIN: &scar-psql-domain cf.scar.app-runtime-interfaces.ci.cloudfoundry.org
-          BOSH_DEPLOY_ARGS: |
-            --var bbl_env_name=scar-psql
-          OPS_FILES: |
-            base-ops-files/operations/azure.yml
-            base-ops-files/operations/add-persistent-isolation-segment-diego-cell.yml
-            base-ops-files/operations/use-compiled-releases.yml
-            base-ops-files/operations/use-postgres.yml
-            base-ops-files/operations/use-external-blobstore.yml
-            base-ops-files/operations/use-azure-storage-blobstore.yml
-            configure-blobstore-benchmark-fog-errand.yml
-            configure-blobstore-benchmark-storage-cli-errand.yml
-            use-latest-capi.yml
-            scale-up-cells-large.yml
-            scale-generic-worker-processes.yml
-            disable-uaa-get-requests.yml
-            seed-credhub-asg.yml
-            base-ops-files/operations/test/speed-up-dynamic-asgs.yml
-            seed-uaa-asg.yml
-            tag-bbl-env.yml
-            add-loggregator-tls-cert.yml
-            speed-up-diego-sync.yml
-            fast-deploy-with-downtime-and-danger-external-blobstore.yml
-            disable-tcp-router.yml
-          VARS_FILES: |
-            scar-psql/bbl-state/vars/director-vars-file.yml
-      - task: ensure-api-healthy
-        file: runtime-ci/tasks/ensure-api-healthy/task.yml
-        input_mapping:
-          cats-integration-config: scar-psql-integration-configs
-        params:
-          CONFIG_FILE_PATH: scar-psql/cats_integration_config.json
   - name: gyro-exp-deploy-cf
     serial: true
     plan:
@@ -1707,101 +1561,6 @@ jobs:
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           BOSH_DEPLOYMENT_NAME: cf
-  - name: scar-psql-tests
-    serial: true
-    plan:
-      - in_parallel:
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - scar-psql-deploy-cf
-            trigger: true
-            params:
-              submodules: none
-          - get: capi-release-tarball
-            passed:
-              - scar-psql-deploy-cf
-          - get: cf-deployment-concourse-tasks
-          - get: scar-psql-integration-configs
-          - get: scar-psql-bbl-state
-          - get: cf-acceptance-tests
-          - get: capi-ci
-          - get: capi-bara-tests
-          - get: sync-integration-tests
-          - get: scar-psql-pool
-      - task: updated-integration-configs
-        file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-          integration-configs: scar-psql-integration-configs
-        params:
-          CATS_INTEGRATION_CONFIG_FILE: scar-psql/cats_integration_config.json
-          BBL_STATE_DIR: scar-psql/bbl-state
-          SYSTEM_DOMAIN: *scar-psql-domain
-        ensure:
-          put: scar-psql-integration-configs
-          params:
-            repository: updated-integration-configs
-            rebase: true
-      - task: updated-baras-integration-configs
-        file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-          integration-configs: updated-integration-configs
-        params:
-          CATS_INTEGRATION_CONFIG_FILE: scar-psql/baras_integration_config.json
-          BBL_STATE_DIR: scar-psql/bbl-state
-          SYSTEM_DOMAIN: *scar-psql-domain
-        ensure:
-          put: scar-psql-integration-configs
-          params:
-            repository: updated-integration-configs
-            rebase: true
-      - task: enable-feature-flags
-        file: cf-deployment-concourse-tasks/set-feature-flags/task.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-        params:
-          SYSTEM_DOMAIN: *scar-psql-domain
-          BBL_STATE_DIR: scar-psql/bbl-state
-          ENABLED_FEATURE_FLAGS: diego_docker diego_cnb service_instance_sharing route_sharing
-      - do:
-        - in_parallel:
-            - task: acceptance-tests
-              attempts: 3
-              file: cf-deployment-concourse-tasks/run-cats/task.yml
-              input_mapping:
-                integration-config: updated-integration-configs
-              params:
-                NODES: 10
-                CONFIG_FILE_PATH: scar-psql/cats_integration_config.json
-                CAPTURE_LOGS: true
-                FLAKE_ATTEMPTS: 5
-                SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
-            - task: capi-bara-tests
-              attempts: 3
-              file: capi-ci/ci/baras/run-baras.yml
-              input_mapping:
-                integration-config: updated-integration-configs
-              params:
-                NODES: 6
-                FLAKE_ATTEMPTS: 5
-                CONFIG_FILE_PATH: scar-psql/baras_integration_config.json
-            - task: sync-integration-tests
-              attempts: 3
-              file: sync-integration-tests/concourse/task_with_credhub.yml
-              input_mapping:
-                environment: updated-integration-configs
-              params:
-                BOSH_DEPLOYMENT_NAME: cf
-                BOSH_API_INSTANCE: api/0
-                CF_API_TARGET: https://api.cf.scar.app-runtime-interfaces.ci.cloudfoundry.org
-                CF_SKIP_SSL_VALIDATION: true
-                CF_APPS_DOMAIN: *scar-psql-domain
-                BBL_STATE_DIR: scar-psql/bbl-state
-                USE_CREDHUB: true
-                RUN_REVISIONS_TESTS: true
-                FLAKE_ATTEMPTS: 5
   - name: gyro-exp-tests
     serial: true
     plan:
@@ -1939,7 +1698,6 @@ jobs:
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
           BOSH_DEPLOYMENT_NAME: cf
-          ERRAND_FOG: blobstore-benchmark-fog
           ERRAND_STORAGE_CLI: blobstore-benchmark-storage-cli
     ensure:
       do:
@@ -1982,7 +1740,6 @@ jobs:
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           BOSH_DEPLOYMENT_NAME: cf
-          ERRAND_FOG: blobstore-benchmark-fog
           ERRAND_STORAGE_CLI: blobstore-benchmark-storage-cli
     ensure:
       do:
@@ -1996,49 +1753,6 @@ jobs:
         - put: olaf-mysql-pool
           params:
             release: olaf-mysql-pool
-  - name: scar-psql-blobstore-benchmarks
-    serial: true
-    plan:
-      - get: scar-psql-pool
-        params:
-          acquire: true
-      - in_parallel:
-          - get: capi-release
-            resource: capi-release-develop
-            passed:
-              - scar-psql-tests
-            trigger: true
-            params:
-              submodules: none
-          - get: capi-release-tarball
-            passed:
-              - scar-psql-tests
-          - get: capi-ci
-          - get: runtime-ci
-          - get: scar-psql-bbl-state
-          - get: scar-psql-integration-configs
-          - get: cf-deployment-concourse-tasks
-      - task: run-blobstore-benchmarks
-        file: capi-ci/ci/benchmarks/run_blobstore_benchmarks.yml
-        input_mapping:
-          capi-ci-private: scar-psql-bbl-state
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-          BOSH_DEPLOYMENT_NAME: cf
-          ERRAND_FOG: blobstore-benchmark-fog
-          ERRAND_STORAGE_CLI: blobstore-benchmark-storage-cli
-    ensure:
-      do:
-        - task: delete-deployment
-          file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
-          input_mapping:
-            bbl-state: scar-psql-bbl-state
-          params:
-            BBL_STATE_DIR: scar-psql/bbl-state
-            IGNORE_ERRORS: true
-        - put: scar-psql-pool
-          params:
-            release: scar-psql-pool
   - name: bump-ci-passed
     serial: true
     plan:
@@ -2050,7 +1764,6 @@ jobs:
               - kiki-mig-tests
               - asha-mysql-tests
               - olaf-mysql-tests
-              - scar-psql-tests
               - gyro-exp-tests
             trigger: true
             params:
@@ -2384,16 +2097,6 @@ jobs:
             params:
               acquire: true
         timeout: 4h
-  - name: scar-psql-acquire-bbl-up-pool
-    serial: true
-    plan:
-      - in_parallel:
-          - get: nightly
-            trigger: true
-          - put: scar-psql-pool
-            params:
-              acquire: true
-        timeout: 4h
   - name: gyro-exp-acquire-bbl-up-pool
     serial: true
     plan:
@@ -2607,76 +2310,6 @@ jobs:
       - put: olaf-mysql-pool
         params:
           release: olaf-mysql-pool
-  - name: bbl-up-scar-psql
-    serial: true
-    plan:
-      - in_parallel:
-          - get: scar-psql-pool
-            passed:
-              - scar-psql-acquire-bbl-up-pool
-            trigger: true
-          - get: cf-deployment-concourse-tasks
-          - get: scar-psql-bbl-state
-          - get: capi-ci
-      - task: export-pkcs12-certificate
-        file: capi-ci/ci/bbl-tasks/export_pkcs12_certificate.yml
-        input_mapping:
-          capi-ci-private-certs: scar-psql-bbl-state
-        params:
-          BBL_ENV_NAME: scar-psql
-          BBL_LB_CERT: ((scar_lb.certificate))
-          BBL_LB_KEY: ((scar_lb.private_key))
-          GIT_COMMIT_USERNAME: ((ari-wg-gitbot-username))
-          GIT_COMMIT_EMAIL: ((ari-wg-gitbot-email))
-          GIT_COMMIT_MESSAGE: "Update pfx certificate"
-        ensure:
-          put: scar-psql-bbl-state
-          params:
-            repository: updated-capi-ci-private-certs
-            rebase: true
-      - task: bbl-up-scar-psql
-        file: cf-deployment-concourse-tasks/bbl-up/task.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-          bbl-config: scar-psql-bbl-state
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-          BBL_CONFIG_DIR: scar-psql/bbl-config
-          BBL_ENV_NAME: scar-psql
-          BBL_IAAS: azure
-          BBL_AZURE_CLIENT_ID: ((capi-bbl-scar-azure-client-id))
-          BBL_AZURE_CLIENT_SECRET: ((capi-bbl-scar-azure-client-secret))
-          BBL_AZURE_SUBSCRIPTION_ID: ((capi-bbl-scar-azure-subscription-id))
-          BBL_AZURE_TENANT_ID: ((capi-bbl-scar-azure-tenant-id))
-          BBL_AZURE_REGION: eastus2
-          BBL_LB_CERT: ../scar-psql.pfx
-          BBL_LB_KEY: ../pfx_password.txt
-          LB_DOMAIN: *scar-psql-domain
-        ensure:
-          put: scar-psql-bbl-state
-          params:
-            repository: updated-bbl-state
-            rebase: true
-      - task: create-dns-record
-        attempts: 3
-        file: capi-ci/ci/bbl-tasks/create_dns_record.yml
-        input_mapping:
-          bbl-state: updated-bbl-state
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-          DNS_DOMAIN: *scar-psql-domain
-          SHARED_DNS_ZONE_NAME: app-runtime-interfaces
-          GCP_DNS_SERVICE_ACCOUNT_KEY: ((capi-bbl-dns-service-account))
-          GCP_PROJECT_ID: app-runtime-interfaces-wg
-      - task: run-bosh-cleanup
-        file: capi-ci/ci/bbl-tasks/run_bosh_cleanup.yml
-        input_mapping:
-          bbl-state: updated-bbl-state
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-      - put: scar-psql-pool
-        params:
-          release: scar-psql-pool
   - name: bbl-up-gyro-exp
     serial: true
     plan:
@@ -2763,15 +2396,6 @@ jobs:
         put: olaf-mysql-pool
         params:
           release: olaf-mysql-pool
-  - name: scar-psql-release-pool-manual
-    serial: true
-    plan:
-      - get: scar-psql-pool
-    ensure:
-      try:
-        put: scar-psql-pool
-        params:
-          release: scar-psql-pool
   - name: gyro-exp-release-pool-manual
     serial: true
     plan:
@@ -2851,27 +2475,6 @@ jobs:
           BBL_AWS_SECRET_ACCESS_KEY: ((capi-bbl-olaf-aws-secret-key))
         ensure:
           put: olaf-mysql-bbl-state
-          params:
-            repository: updated-bbl-state
-            rebase: true
-  - name: manual-bbl-destroy-scar-psql
-    serial: true
-    plan:
-      - in_parallel:
-          - get: cf-deployment-concourse-tasks
-          - get: scar-psql-bbl-state
-      - task: manual-bbl-destroy-scar-psql
-        file: cf-deployment-concourse-tasks/bbl-destroy/task.yml
-        input_mapping:
-          bbl-state: scar-psql-bbl-state
-        params:
-          BBL_STATE_DIR: scar-psql/bbl-state
-          BBL_AZURE_CLIENT_ID: ((capi-bbl-scar-azure-client-id))
-          BBL_AZURE_CLIENT_SECRET: ((capi-bbl-scar-azure-client-secret))
-          BBL_AZURE_SUBSCRIPTION_ID: ((capi-bbl-scar-azure-subscription-id))
-          BBL_AZURE_TENANT_ID: ((capi-bbl-scar-azure-tenant-id))
-        ensure:
-          put: scar-psql-bbl-state
           params:
             repository: updated-bbl-state
             rebase: true
