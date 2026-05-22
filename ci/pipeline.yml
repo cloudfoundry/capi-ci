@@ -2131,6 +2131,8 @@ jobs:
       - in_parallel:
           - get: nginx-release
             trigger: true
+          - get: weekly-sunday
+            trigger: true
           - get: capi-ci
           - get: capi-release
             resource: capi-release-develop
