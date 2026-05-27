@@ -1177,6 +1177,7 @@ jobs:
             base-ops-files/operations/use-compiled-releases.yml
             base-ops-files/operations/use-postgres.yml
             base-ops-files/operations/use-external-blobstore.yml
+            base-ops-files/operations/use-azure-storage-blobstore.yml
             configure-blobstore-benchmark-storage-cli-errand.yml
             use-latest-capi.yml
             scale-up-cells-large.yml
