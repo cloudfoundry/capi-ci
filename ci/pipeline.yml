@@ -1936,6 +1936,7 @@ jobs:
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
           BOSH_DEPLOYMENT_NAME: cf
+          ERRAND_FOG: blobstore-benchmark-fog
           ERRAND_STORAGE_CLI: blobstore-benchmark-storage-cli
     ensure:
       do:
@@ -1978,6 +1979,7 @@ jobs:
         params:
           BBL_STATE_DIR: olaf-mysql/bbl-state
           BOSH_DEPLOYMENT_NAME: cf
+          ERRAND_FOG: blobstore-benchmark-fog
           ERRAND_STORAGE_CLI: blobstore-benchmark-storage-cli
     ensure:
       do:
