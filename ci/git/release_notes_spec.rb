@@ -165,7 +165,7 @@ RSpec.describe ReleaseNotes do
         allow(ReleaseNotes).to receive(:get_ccng_shas).and_return([old_sha, new_sha])
         allow(ReleaseNotes).to receive(:get_new_migration_files).and_return([migration_filename])
 
-        expected_output = "\n### Cloud Controller Database Migrations\n" \
+        expected_output = "\n### Cloud Controller Database Migrations\n\n" \
           "- [#{migration_filename}](https://github.com/cloudfoundry/cloud_controller_ng/blob/#{new_sha}/db/migrations/#{migration_filename})\n"
         expect { ReleaseNotes.print_db_migrations('/path/to/ccng', '1.231.0', '1.232.0') }
           .to output(expected_output).to_stdout
@@ -176,7 +176,7 @@ RSpec.describe ReleaseNotes do
         allow(ReleaseNotes).to receive(:get_new_migration_files).and_return([])
 
         expect { ReleaseNotes.print_db_migrations('/path/to/ccng', '1.231.0', '1.232.0') }
-          .to output("\n### Cloud Controller Database Migrations\nNone\n").to_stdout
+          .to output("\n### Cloud Controller Database Migrations\n\nNone\n").to_stdout
       end
     end
   end
