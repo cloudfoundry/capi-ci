@@ -1155,7 +1155,6 @@ jobs:
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/tag-bbl-env.yml
-            cf-deployment-operations/configure-blobstore-benchmark-fog-errand.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
@@ -1179,7 +1178,6 @@ jobs:
             base-ops-files/operations/use-postgres.yml
             base-ops-files/operations/use-external-blobstore.yml
             base-ops-files/operations/use-azure-storage-blobstore.yml
-            configure-blobstore-benchmark-fog-errand.yml
             configure-blobstore-benchmark-storage-cli-errand.yml
             use-latest-capi.yml
             scale-up-cells-large.yml
@@ -2025,7 +2023,6 @@ jobs:
         params:
           BBL_STATE_DIR: scar-psql/bbl-state
           BOSH_DEPLOYMENT_NAME: cf
-          ERRAND_FOG: blobstore-benchmark-fog
           ERRAND_STORAGE_CLI: blobstore-benchmark-storage-cli
     ensure:
       do:
