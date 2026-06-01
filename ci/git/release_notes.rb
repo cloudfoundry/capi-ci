@@ -4,7 +4,6 @@
 require 'cgi/util'
 require 'net/http'
 require 'json'
-require 'set'
 
 module ReleaseNotes
   def self.execute_git_log_command(previous_version, version)
@@ -162,6 +161,8 @@ module ReleaseNotes
   def self.print_highlights(ccng_path)
     versions = read_cc_versions(ccng_path)
 
+    puts '<< PREVIEW - Fill in "Highlights" and "Pull Requests and Issues" >>'
+    puts
     puts '**Highlights**'
     puts
     puts "**CC API Version: #{versions[:v2]} and [#{versions[:v3]}](http://v3-apidocs.cloudfoundry.org/version/#{versions[:v3]}/)**"
@@ -275,7 +276,6 @@ module ReleaseNotes
     migrations = get_new_migration_files(ccng_path, old_sha, new_sha)
     puts
     puts '### Cloud Controller Database Migrations'
-    puts
     return puts 'None' if migrations.empty?
 
     base_url = "https://github.com/cloudfoundry/cloud_controller_ng/blob/#{new_sha}/db/migrations"
