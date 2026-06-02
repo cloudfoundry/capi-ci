@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# To test the release notes generations locally, run in this folder:
+# git clone --recursive --branch=main https://github.com/cloudfoundry/capi-release.git capi-release-main
+# git clone --recursive --branch=develop https://github.com/cloudfoundry/capi-release.git capi-release-ci-passed
+# ./generate_release_notes.sh
+
 set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

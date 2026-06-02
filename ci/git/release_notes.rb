@@ -149,58 +149,62 @@ module ReleaseNotes
     puts item_str
   end
 
-  def self.print_release_notes(items)
-    github_users = {}
+  def self.read_cc_versions(ccng_path)
+    config_path = File.join(ccng_path, 'config')
 
-    # Print release notes in the following order: CAPI Release, Cloud Controller, other subprojects
-    subprojects = [nil, 'cloud_controller_ng'] + (items.map { |item|
-      item[:subproject]
-    }.compact.uniq - ['cloud_controller_ng']).sort
-    subprojects.each do |subproject|
-      puts "\n"
-      case subproject
-      when nil
-        puts '### CAPI Release'
-      when 'cloud_controller_ng'
-        puts '### Cloud Controller'
+    {
+      v2: File.read(File.join(config_path, 'version_v2')).strip,
+      v3: File.read(File.join(config_path, 'version')).strip,
+      broker: File.read(File.join(config_path, 'osbapi_version')).strip
+    }
+  end
+
+  def self.print_highlights(ccng_path)
+    versions = read_cc_versions(ccng_path)
+
+    puts '<< PREVIEW - Fill in "Highlights" and "Pull Requests and Issues" >>'
+    puts
+    puts '**Highlights**'
+    puts
+    puts "**CC API Version: #{versions[:v2]} and [#{versions[:v3]}](http://v3-apidocs.cloudfoundry.org/version/#{versions[:v3]}/)**"
+    puts
+    puts "**Service Broker API Version: [#{versions[:broker]}](https://github.com/openservicebrokerapi/servicebroker/blob/v#{versions[:broker]}/spec.md)**"
+  end
+
+  def self.print_subproject_items(items, subproject, github_users)
+    # Print changes
+    changes = items.select { |item| item[:subproject] == subproject && !item[:dependency_update] }
+    changes.each { |item| print_item(item, github_users) }
+
+    # Print dependency updates
+    dependency_updates = items.select { |item| item[:subproject] == subproject && item[:dependency_update] }
+    return if dependency_updates.empty?
+
+    puts '#### Dependency Updates'
+    bumps = {
+      docs_dev: Set.new,
+      docs_deps: Set.new,
+      dev: Set.new,
+      deps: Set.new,
+      other: Set.new
+    }
+    dependency_updates.each do |item|
+      case item[:message]
+      when %r{[Bb]uild\(deps-dev\):.*in /docs/v3}
+        bumps[:docs_dev] << item
+      when %r{[Bb]uild\(deps\):.*in /docs/v3}
+        bumps[:docs_deps] << item
+      when /[Bb]uild\(deps-dev\):/
+        bumps[:dev] << item
+      when /[Bb]uild\(deps\):/
+        bumps[:deps] << item
       else
-        puts "### #{subproject}"
+        bumps[:other] << item
       end
+    end
 
-      # Print changes
-      changes = items.select { |item| item[:subproject] == subproject && !item[:dependency_update] }
-      changes.each { |item| print_item(item, github_users) }
-
-      # Print dependency updates
-      dependency_updates = items.select { |item| item[:subproject] == subproject && item[:dependency_update] }
-      next if dependency_updates.empty?
-
-      puts '#### Dependency Updates'
-      bumps = {
-        docs_dev: Set.new,
-        docs_deps: Set.new,
-        dev: Set.new,
-        deps: Set.new,
-        other: Set.new
-      }
-      dependency_updates.each do |item|
-        case item[:message]
-        when %r{[Bb]uild\(deps-dev\):.*in /docs/v3}
-          bumps[:docs_dev] << item
-        when %r{[Bb]uild\(deps\):.*in /docs/v3}
-          bumps[:docs_deps] << item
-        when /[Bb]uild\(deps-dev\):/
-          bumps[:dev] << item
-        when /[Bb]uild\(deps\):/
-          bumps[:deps] << item
-        else
-          bumps[:other] << item
-        end
-      end
-
-      %i[other deps dev docs_deps docs_dev].each do |type|
-        bumps[type].each { |item| print_item(item, github_users) }
-      end
+    %i[other deps dev docs_deps docs_dev].each do |type|
+      bumps[type].each { |item| print_item(item, github_users) }
     end
   end
 
@@ -224,7 +228,7 @@ module ReleaseNotes
   def self.print_db_migrations(ccng_path, previous_version, version)
     old_sha, new_sha = get_ccng_shas(previous_version, version)
     migrations = get_new_migration_files(ccng_path, old_sha, new_sha)
-    puts "\n"
+    puts
     puts '### Cloud Controller Database Migrations'
     return puts 'None' if migrations.empty?
 
@@ -232,20 +236,48 @@ module ReleaseNotes
     migrations.each { |f| puts "- [#{f}](#{base_url}/#{f})" }
   end
 
+  def self.resolve_release_shas(version)
+    capi_sha = `git rev-parse #{version} 2>/dev/null`.strip
+    ccng_sha = `git rev-parse #{version}:src/cloud_controller_ng 2>/dev/null`.strip
+    {
+      capi: capi_sha.empty? ? nil : capi_sha,
+      ccng: ccng_sha.empty? ? nil : ccng_sha
+    }
+  end
+
+  # for local testing setup, see generate_release_notes.sh
   def self.run
     args = ARGV
+    raise 'release_notes.rb <previous version> <version> <ccng path>' if args.length != 3
 
-    git_log = if args.length == 1
-                # Test mode, i.e. read given git-log txt file
-                File.read(args[0])
-              else
-                raise 'release_notes.rb <previous version> <version> <ccng path>' if args.length != 3
+    previous_version = args[0]
+    version = args[1]
+    ccng_path = args[2]
 
-                execute_git_log_command(args[0], args[1])
-              end
+    git_log = execute_git_log_command(previous_version, version)
     items = parse_git_log(git_log)
-    print_release_notes(items)
-    print_db_migrations(args[2], args[0], args[1]) unless args.length == 1
+
+    subprojects = (items.map { |item| item[:subproject] }.compact.uniq - ['cloud_controller_ng']).sort
+    print_highlights(ccng_path)
+    github_users = {}
+
+    shas = resolve_release_shas(version)
+    puts
+    puts(shas[:capi] ? "### [CAPI Release](https://github.com/cloudfoundry/capi-release/tree/#{shas[:capi]})" : '### CAPI Release')
+    print_subproject_items(items, nil, github_users)
+    puts
+    puts(shas[:ccng] ? "### [Cloud Controller](https://github.com/cloudfoundry/cloud_controller_ng/tree/#{shas[:ccng]})" : '### Cloud Controller')
+
+    print_subproject_items(items, 'cloud_controller_ng', github_users)
+    subprojects.each do |subproject|
+      puts
+      puts "### #{subproject}"
+      print_subproject_items(items, subproject, github_users)
+    end
+
+    print_db_migrations(ccng_path, previous_version, version)
+    puts
+    puts '#### Pull Requests and Issues'
   end
 end
 

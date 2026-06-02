@@ -180,4 +180,75 @@ RSpec.describe ReleaseNotes do
       end
     end
   end
+
+  describe '.print_highlights' do
+    it 'prints the highlights section with API and broker versions' do
+      allow(ReleaseNotes).to receive(:read_cc_versions).and_return({
+                                                                      v2: '2.286.0',
+                                                                      v3: '3.221.0',
+                                                                      broker: '2.15'
+                                                                    })
+
+      expected_output = "<< PREVIEW - Fill in \"Highlights\" and \"Pull Requests and Issues\" >>\n\n" \
+        "**Highlights**\n\n" \
+        "**CC API Version: 2.286.0 and [3.221.0](http://v3-apidocs.cloudfoundry.org/version/3.221.0/)**\n\n" \
+        "**Service Broker API Version: [2.15](https://github.com/openservicebrokerapi/servicebroker/blob/v2.15/spec.md)**\n"
+
+      expect { ReleaseNotes.print_highlights('/path/to/ccng') }
+        .to output(expected_output).to_stdout
+    end
+  end
+
+
+  describe '.print_subproject_items' do
+    it 'prints non-dependency changes for the selected subproject' do
+      items = [
+        {
+          subproject: 'cloud_controller_ng',
+          dependency_update: false,
+          message: 'Improve route mapping behavior',
+          pr_link: 'cloudfoundry/cloud_controller_ng#9999',
+          authors: []
+        },
+        {
+          subproject: 'other-subproject',
+          dependency_update: false,
+          message: 'Should not be printed',
+          pr_link: nil,
+          authors: []
+        }
+      ]
+
+      expect {
+        ReleaseNotes.print_subproject_items(items, 'cloud_controller_ng', {})
+      }.to output("- Improve route mapping behavior (cloudfoundry/cloud_controller_ng#9999)\n").to_stdout
+    end
+
+    it 'prints dependency updates grouped under the dependency heading' do
+      items = [
+        {
+          subproject: 'cloud_controller_ng',
+          dependency_update: true,
+          message: 'build(deps): bump rack from 2.2.0 to 2.2.1',
+          pr_link: nil,
+          authors: []
+        },
+        {
+          subproject: 'cloud_controller_ng',
+          dependency_update: true,
+          message: 'build(deps-dev): bump rspec from 3.12.0 to 3.13.0',
+          pr_link: nil,
+          authors: []
+        }
+      ]
+
+      expected_output = "#### Dependency Updates\n" \
+        "- build(deps): bump rack from 2.2.0 to 2.2.1\n" \
+        "- build(deps-dev): bump rspec from 3.12.0 to 3.13.0\n"
+
+      expect {
+        ReleaseNotes.print_subproject_items(items, 'cloud_controller_ng', {})
+      }.to output(expected_output).to_stdout
+    end
+  end
 end
