@@ -245,6 +245,7 @@ module ReleaseNotes
     }
   end
 
+  # for local testing setup, see generate_release_notes.sh
   def self.run
     args = ARGV
     raise 'release_notes.rb <previous version> <version> <ccng path>' if args.length != 3
