@@ -51,6 +51,7 @@ groups:
       - bump-nginx-blob
       - bump-valkey-blob
       - bump-storagecli-blob
+      - bump-jemalloc-blob
   - name: ship-it
     jobs:
       - ship-it
