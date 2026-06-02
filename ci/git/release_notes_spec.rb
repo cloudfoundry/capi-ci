@@ -199,24 +199,6 @@ RSpec.describe ReleaseNotes do
     end
   end
 
-  describe '.print_release_overview' do
-    it 'prints linked headings when SHAs are provided' do
-      expected_output = "\n### [CAPI Release](https://github.com/cloudfoundry/capi-release/tree/capi-sha)\n\n" \
-        "### [Cloud Controller](https://github.com/cloudfoundry/cloud_controller_ng/tree/ccng-sha)\n"
-
-      expect {
-        ReleaseNotes.print_release_overview(capi_sha: 'capi-sha', ccng_sha: 'ccng-sha')
-      }.to output(expected_output).to_stdout
-    end
-
-    it 'prints plain headings when SHAs are not provided' do
-      expected_output = "\n### CAPI Release\n\n### Cloud Controller\n"
-
-      expect {
-        ReleaseNotes.print_release_overview(capi_sha: nil, ccng_sha: nil)
-      }.to output(expected_output).to_stdout
-    end
-  end
 
   describe '.print_subproject_items' do
     it 'prints non-dependency changes for the selected subproject' do
