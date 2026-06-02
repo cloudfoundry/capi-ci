@@ -283,6 +283,15 @@ resources:
       owner: cloudfoundry
       repository: storage-cli
       access_token: ((ari-wg-gitbot-token))
+  - name: jemalloc-release
+    type: github-release
+    icon: github
+    source:
+      owner: jemalloc
+      repository: jemalloc
+      globs:
+      - "jemalloc-*.tar.bz2"
+      access_token: ((ari-wg-gitbot-token))
   - name: capi-ci
     type: git
     icon: git
@@ -2182,6 +2191,28 @@ jobs:
               submodules: none
       - task: update-storagecli-blob
         file: capi-ci/ci/update-packages/update_storagecli_blob.yml
+        params:
+          PRIVATE_YAML: ((capi_release_private_yaml))
+      - put: capi-release-develop
+        params:
+          repository: updated-capi-release
+          rebase: true
+  - name: bump-jemalloc-blob
+    serial: true
+    plan:
+      - in_parallel:
+          - get: jemalloc-release
+            trigger: true
+            params:
+              globs:
+                - jemalloc-*.tar.bz2
+          - get: capi-ci
+          - get: capi-release
+            resource: capi-release-develop
+            params:
+              submodules: none
+      - task: update-jemalloc-blob
+        file: capi-ci/ci/update-packages/update_jemalloc_blob.yml
         params:
           PRIVATE_YAML: ((capi_release_private_yaml))
       - put: capi-release-develop
