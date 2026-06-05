@@ -7,7 +7,7 @@ PREVIOUS_RELEASE_TAG=$(cat github-published-release/tag)
 pushd capi-release > /dev/null
   SHA_CAPI=$(git rev-parse HEAD)
   echo "$SHA_CAPI" > "../$FINAL_RELEASE_DIR/commitish"
-  ruby ../release_notes.rb "$PREVIOUS_RELEASE_TAG" HEAD src/cloud_controller_ng > "../$FINAL_RELEASE_DIR/body"
+  ruby ../capi-ci/ci/git/release_notes.rb "$PREVIOUS_RELEASE_TAG" HEAD src/cloud_controller_ng > "../$FINAL_RELEASE_DIR/body"
 popd > /dev/null
 
 ALL_CAPI_REL_TGZS=( "$FINAL_RELEASE_DIR"/capi-*.tgz )
