@@ -8,6 +8,8 @@ image_resource:
 inputs:
   - name: capi-ci
   - name: cloud_controller_ng
+caches:
+  - path: cloud_controller_ng/tmp/parallel_rspec_runtime
 run:
   path: capi-ci/ci/test-unit/run_cc_unit_tests.sh
 params:

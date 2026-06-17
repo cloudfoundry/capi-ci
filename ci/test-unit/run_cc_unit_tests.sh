@@ -55,6 +55,9 @@ pushd cloud_controller_ng > /dev/null
   export BUNDLE_GEMFILE=Gemfile
   bundle install
 
+  mkdir -p tmp/parallel_rspec_runtime
+  cp tmp/parallel_rspec_runtime/parallel_runtime_rspec_*.log tmp/ 2>/dev/null || true
+
   if [ "${RUN_RUBOCOP}" = "true" ]; then
     if [ -n "${RUN_IN_PARALLEL}" ]; then
       bundle exec rubocop --parallel
@@ -68,4 +71,6 @@ pushd cloud_controller_ng > /dev/null
   else
     bundle exec rake spec:serial
   fi
+
+  cp tmp/parallel_runtime_rspec_*.log tmp/parallel_rspec_runtime/ 2>/dev/null || true
 popd > /dev/null
