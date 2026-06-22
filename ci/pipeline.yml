@@ -854,6 +854,7 @@ jobs:
             fast-deploy-with-downtime-and-danger-external-blobstore.yml
           VARS_FILES: |
             elsa-ha/gcs-storage-vars.yml
+          REGENERATE_CREDENTIALS: true
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -930,6 +931,7 @@ jobs:
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
             fast-deploy-with-downtime-and-danger.yml
+          REGENERATE_CREDENTIALS: true
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -1019,6 +1021,7 @@ jobs:
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
             fast-deploy-with-downtime-and-danger.yml
+          REGENERATE_CREDENTIALS: true
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -1111,6 +1114,7 @@ jobs:
             fast-deploy-with-downtime-and-danger-external-blobstore.yml
           VARS_FILES: |
             olaf-mysql/bbl-state/vars/director-vars-file.yml
+          REGENERATE_CREDENTIALS: true
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -1203,6 +1207,7 @@ jobs:
             disable-tcp-router.yml
           VARS_FILES: |
             scar-psql/bbl-state/vars/director-vars-file.yml
+          REGENERATE_CREDENTIALS: true
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
@@ -1291,6 +1296,7 @@ jobs:
             speed-up-diego-sync.yml
             fast-deploy-with-downtime-and-danger.yml
             enable-dav-storage-cli.yml
+          REGENERATE_CREDENTIALS: true
       - task: ensure-api-healthy
         file: runtime-ci/tasks/ensure-api-healthy/task.yml
         input_mapping:
