@@ -2456,6 +2456,7 @@ jobs:
           bbl-state: elsa-ha-bbl-state
           bbl-config: elsa-ha-bbl-state
         params:
+          BBL_CONFIG_DIR: elsa-ha/bbl-config
           BBL_STATE_DIR: elsa-ha/bbl-state
           BBL_ENV_NAME: elsa-ha
           BBL_IAAS: gcp
