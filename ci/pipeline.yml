@@ -789,6 +789,13 @@ jobs:
           - get: capi-ci
           - get: runtime-ci
           - get: elsa-ha-integration-configs
+      - task: delete-deployment
+        file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+        input_mapping:
+          bbl-state: elsa-ha-bbl-state
+        params:
+          BBL_STATE_DIR: elsa-ha/bbl-state
+          IGNORE_ERRORS: true
       - task: upload-capi-release-tarball
         file: capi-ci/ci/bosh/upload_capi_release_tarball.yml
         input_mapping:
