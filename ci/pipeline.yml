@@ -819,7 +819,6 @@ jobs:
             cf-deployment-operations/disable-skip-cert-verify.yml
             cf-deployment-operations/disable-skip-cert-verify-iso-seg.yml
             cf-deployment-operations/tag-bbl-env.yml
-            cf-deployment-operations/configure-blobstore-benchmark-fog-errand-gcs.yml
             cf-deployment-operations/configure-blobstore-benchmark-storage-cli-errand.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
@@ -854,7 +853,6 @@ jobs:
             disable-skip-cert-verify.yml
             disable-skip-cert-verify-iso-seg.yml
             tag-bbl-env.yml
-            configure-blobstore-benchmark-fog-errand-gcs.yml
             configure-blobstore-benchmark-storage-cli-errand.yml
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
@@ -1960,7 +1958,6 @@ jobs:
         params:
           BBL_STATE_DIR: elsa-ha/bbl-state
           BOSH_DEPLOYMENT_NAME: cf
-          ERRAND_FOG: blobstore-benchmark-fog
           ERRAND_STORAGE_CLI: blobstore-benchmark-storage-cli
     ensure:
       do:
