@@ -13,8 +13,11 @@ pushd tps > /dev/null
 popd > /dev/null
 
 # building locket for TPS watcher tests
+# locket was moved from a git submodule under src/code.cloudfoundry.org/locket
+# to an external Go module (diego-release commit 40a87f2d5). Build it from
+# the vendor tree via its Go import path.
 pushd diego-release/src/code.cloudfoundry.org > /dev/null
-  go build -buildvcs=false -o /go/bin/locket ./locket/cmd/locket
+  go build -buildvcs=false -mod=vendor -o /go/bin/locket code.cloudfoundry.org/locket/cmd/locket
 popd > /dev/null
 
 pushd capi-release > /dev/null
