@@ -2512,6 +2512,7 @@ jobs:
           bbl-state: kiki-mig-bbl-state
           bbl-config: kiki-mig-bbl-state
         params:
+          BBL_CONFIG_DIR: kiki-mig/bbl-config
           BBL_STATE_DIR: kiki-mig/bbl-state
           BBL_ENV_NAME: kiki-mig
           BBL_IAAS: gcp
@@ -2562,6 +2563,7 @@ jobs:
           bbl-state: asha-mysql-bbl-state
           bbl-config: asha-mysql-bbl-state
         params:
+          BBL_CONFIG_DIR: asha-mysql/bbl-config
           BBL_STATE_DIR: asha-mysql/bbl-state
           BBL_ENV_NAME: asha-mysql
           BBL_IAAS: gcp
@@ -2734,6 +2736,7 @@ jobs:
           bbl-state: gyro-exp-bbl-state
           bbl-config: gyro-exp-bbl-state
         params:
+          BBL_CONFIG_DIR: gyro-exp/bbl-config
           BBL_STATE_DIR: gyro-exp/bbl-state
           BBL_ENV_NAME: gyro-exp
           BBL_IAAS: gcp
