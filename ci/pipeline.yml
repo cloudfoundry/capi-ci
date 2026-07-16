@@ -1329,6 +1329,7 @@ jobs:
           - get: sync-integration-tests
           - get: elsa-ha-pool
       - task: updated-integration-configs
+        attempts: 3
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: elsa-ha-bbl-state
@@ -1434,6 +1435,7 @@ jobs:
             resource: sync-integration-tests-kiki
           - get: kiki-mig-pool
       - task: updated-integration-configs
+        attempts: 3
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: kiki-mig-bbl-state
@@ -1541,6 +1543,7 @@ jobs:
           - get: sync-integration-tests
           - get: asha-mysql-pool
       - task: updated-integration-configs
+        attempts: 3
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: asha-mysql-bbl-state
@@ -1648,6 +1651,7 @@ jobs:
           - get: sync-integration-tests
           - get: olaf-mysql-pool
       - task: updated-integration-configs
+        attempts: 3
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: olaf-mysql-bbl-state
@@ -1749,6 +1753,7 @@ jobs:
           - get: sync-integration-tests
           - get: scar-psql-pool
       - task: updated-integration-configs
+        attempts: 3
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: scar-psql-bbl-state
@@ -1844,6 +1849,7 @@ jobs:
           - get: sync-integration-tests
           - get: gyro-exp-pool
       - task: updated-integration-configs
+        attempts: 3
         file: cf-deployment-concourse-tasks/update-integration-configs/task.yml
         input_mapping:
           bbl-state: gyro-exp-bbl-state
