@@ -24,12 +24,6 @@ perform_blobstore_benchmarks() {
   else
     echo "Skipping storage-cli errand (ERRAND_STORAGE_CLI not set)"
   fi
-
-  if [ -n "${ERRAND_FOG:-}" ]; then
-    run_errand "${ERRAND_FOG}"
-  else
-    echo "Skipping fog errand (ERRAND_FOG not set)"
-  fi
 }
 
 main() {
