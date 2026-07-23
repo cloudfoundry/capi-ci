@@ -1409,6 +1409,18 @@ jobs:
               USE_CREDHUB: true
               RUN_REVISIONS_TESTS: true
               FLAKE_ATTEMPTS: 5
+        on_failure:
+          do:
+            - task: delete-deployment
+              file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+              input_mapping:
+                bbl-state: elsa-ha-bbl-state
+              params:
+                BBL_STATE_DIR: elsa-ha/bbl-state
+                IGNORE_ERRORS: true
+            - put: elsa-ha-pool
+              params:
+                release: elsa-ha-pool
   - name: kiki-mig-tests
     serial: true
     plan:
@@ -1723,6 +1735,18 @@ jobs:
                 USE_CREDHUB: true
                 RUN_REVISIONS_TESTS: true
                 FLAKE_ATTEMPTS: 5
+        on_failure:
+          do:
+            - task: delete-deployment
+              file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+              input_mapping:
+                bbl-state: olaf-mysql-bbl-state
+              params:
+                BBL_STATE_DIR: olaf-mysql/bbl-state
+                IGNORE_ERRORS: true
+            - put: olaf-mysql-pool
+              params:
+                release: olaf-mysql-pool
       - task: rotate-cc-database-key
         file: capi-ci/ci/cc-database-key/run_rotate_cc_database_key.yml
         input_mapping:
@@ -1826,6 +1850,18 @@ jobs:
                 USE_CREDHUB: true
                 RUN_REVISIONS_TESTS: true
                 FLAKE_ATTEMPTS: 5
+        on_failure:
+          do:
+            - task: delete-deployment
+              file: cf-deployment-concourse-tasks/bosh-delete-deployment/task.yml
+              input_mapping:
+                bbl-state: scar-psql-bbl-state
+              params:
+                BBL_STATE_DIR: scar-psql/bbl-state
+                IGNORE_ERRORS: true
+            - put: scar-psql-pool
+              params:
+                release: scar-psql-pool
   - name: gyro-exp-tests
     serial: true
     plan:
