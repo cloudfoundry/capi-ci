@@ -1265,6 +1265,7 @@ jobs:
             cf-deployment-operations/seed-credhub-asg.yml
             cf-deployment-operations/seed-uaa-asg.yml
             cf-deployment-operations/enable-experimental-features.yml
+            cf-deployment-operations/enable-async-recursive-delete.yml
             cf-deployment-operations/tag-bbl-env.yml
             cf-deployment-operations/add-loggregator-tls-cert.yml
             cf-deployment-operations/speed-up-diego-sync.yml
@@ -1293,6 +1294,7 @@ jobs:
             base-ops-files/operations/enable-cc-worker-metrics.yml
             seed-uaa-asg.yml
             enable-experimental-features.yml
+            enable-async-recursive-delete.yml
             tag-bbl-env.yml
             add-loggregator-tls-cert.yml
             speed-up-diego-sync.yml
