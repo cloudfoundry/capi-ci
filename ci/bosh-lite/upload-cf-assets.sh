@@ -13,7 +13,7 @@ source "${env_info}/metadata"
 echo "Uploading stemcell..."
 stemcell_version=$(bosh interpolate --path /stemcells/alias=default/version "${cf_deployment_repo}/cf-deployment.yml")
 bosh -n upload-stemcell \
-  "https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-noble?v=${stemcell_version}"
+  "https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-jammy-go_agent?v=${stemcell_version}"
 
 echo "Uploading cloud-config..."
 bosh -n update-cloud-config "${cf_deployment_repo}/iaas-support/bosh-lite/cloud-config.yml"
