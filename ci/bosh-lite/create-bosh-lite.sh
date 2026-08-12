@@ -52,6 +52,7 @@ bosh interpolate "${deployment_repo}/bosh.yml" \
   -o "${deployment_repo}/uaa.yml" \
   -o "${deployment_repo}/external-ip-not-recommended-uaa.yml" \
   -o "${deployment_repo}/credhub.yml" \
+  -o "${deployment_repo}/misc/source-releases/bosh.yml" \
   -o "${script_dir}/use-external-ip-credhub.yml" ${additional_args} \
   -o "${script_dir}/use-ssd-disks.yml" \
   -o "${script_dir}/tag-bosh-lite-env.yml" \
