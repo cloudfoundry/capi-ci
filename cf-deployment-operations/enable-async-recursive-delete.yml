@@ -1,0 +1,7 @@
+---
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/temporary_enable_async_recursive_delete?/service_instances?
+  value: true
+- type: replace
+  path: /instance_groups/name=api/jobs/name=cloud_controller_ng/properties/cc/temporary_enable_async_recursive_delete?/apps?
+  value: true
