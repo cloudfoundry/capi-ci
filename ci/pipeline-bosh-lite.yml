@@ -8,6 +8,10 @@ resource_types:
     type: docker-image
     source:
       repository: cloudfoundry/bosh-deployment-resource
+  - name: gcs-resource
+    type: registry-image
+    source:
+      repository: frodenas/gcs-resource
 resources:
   - name: terraform
     type: terraform
@@ -93,6 +97,40 @@ resources:
     icon: clock-outline
     source:
       interval: 1h
+  - name: weekly
+    type: time
+    icon: clock-outline
+    source:
+      location: America/Los_Angeles
+      start: 01:00
+      stop: 02:00
+      days:
+        - Saturday
+  - name: cloud_controller_ng
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/cloud_controller_ng.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  # Needs the commit that lets the suite target a plain-HTTP endpoint, so this
+  # job only works once that has landed on main.
+  - name: capi-bara-tests
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-bara-tests.git
+      branch: main
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
+  - name: openapi-traffic-har
+    type: gcs-resource
+    icon: google-cloud
+    source:
+      bucket: capi-openapi-validation
+      regexp: traffic-(.*).har.gz
+      json_key: ((capi-release-blobs-uploader_key))
 jobs:
   - name: create-bosh-lite
     plan:
@@ -270,3 +308,38 @@ jobs:
             put: broken-pool
             params:
               acquire: true
+  - name: openapi-record-har
+    serial: true
+    plan:
+      - in_parallel:
+          steps:
+            - get: weekly
+              trigger: true
+            - get: capi-ci
+            - get: cloud_controller_ng
+            - get: capi-bara-tests
+            - get: ready-pool
+              params:
+                acquire: true
+      - do:
+          - task: record-traffic
+            file: capi-ci/ci/openapi/record-traffic.yml
+            timeout: 3h
+            input_mapping:
+              bosh-lite-env: ready-pool
+              cloud-controller-ng: cloud_controller_ng
+              acceptance-tests: capi-bara-tests
+            params:
+              TEST_SUITE: capi-bara-tests
+              THREADS: 4
+              HAR_MAX_PER_KEY: 3
+        ensure:
+          do:
+            # Publish first: a partial corpus from an interrupted run still
+            # beats no corpus, and the recorder flushes on cleanup.
+            - put: openapi-traffic-har
+              params:
+                file: compliance-report/traffic-*.har.gz
+            - put: ready-pool
+              params:
+                release: ready-pool

@@ -69,6 +69,14 @@ resources:
       branch: main
       paths:
         - bosh-lite/Dockerfile
+  - name: capi-dockerfiles-openapi-record
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/capi-dockerfiles.git
+      branch: main
+      paths:
+        - capi-openapi-record/Dockerfile
   - name: docker-image-rc-docs
     type: docker-image
     icon: docker
@@ -107,6 +115,14 @@ resources:
     source:
       repository: cloudfoundry/capi
       tag: bosh-lite
+      username: ((dockerhub_user))
+      password: ((dockerhub_pass))
+  - name: docker-image-openapi-record
+    type: docker-image
+    icon: docker
+    source:
+      repository: cloudfoundry/capi
+      tag: openapi-record
       username: ((dockerhub_user))
       password: ((dockerhub_pass))
 jobs:
@@ -179,3 +195,14 @@ jobs:
       - put: docker-image-bosh-lite
         params:
           build: capi-dockerfiles-bosh-lite/bosh-lite
+  - name: openapi-record-docker
+    serial: true
+    plan:
+      - in_parallel:
+          - get: weekly
+            trigger: true
+          - get: capi-dockerfiles-openapi-record
+            trigger: true
+      - put: docker-image-openapi-record
+        params:
+          build: capi-dockerfiles-openapi-record/capi-openapi-record

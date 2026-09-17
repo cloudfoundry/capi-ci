@@ -1,0 +1,37 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: cloudfoundry/capi
+    tag: openapi-record
+inputs:
+  - name: capi-ci
+  - name: cloud-controller-ng
+  # Either capi-bara-tests or cf-acceptance-tests; TEST_SUITE picks which.
+  - name: acceptance-tests
+  # A claimed bosh-lite from the pool: contains `metadata` (exports) and `name`.
+  - name: bosh-lite-env
+outputs:
+  # traffic.har.gz, summary.json, violations.md and the raw logs.
+  - name: compliance-report
+run:
+  path: capi-ci/ci/openapi/record-traffic.sh
+params:
+  # - Optional
+  # - Which acceptance suite drives the proxy: capi-bara-tests or
+  #   cf-acceptance-tests. Must match the `acceptance-tests` input.
+  TEST_SUITE: capi-bara-tests
+  # - Optional
+  # - Number of parallel ginkgo nodes.
+  THREADS: 4
+  # - Optional
+  # - How many exchanges to keep per (method, path, query, status). More than
+  #   one catches edge cases that only some instances exercise.
+  HAR_MAX_PER_KEY: 3
+  # - Optional
+  # - Largest request/response body recorded into the HAR, in bytes.
+  HAR_MAX_BODY_BYTES: 262144
+  # - Optional
+  # - CredHub path holding the bosh-lite's CF admin password.
+  CF_ADMIN_PASSWORD_CREDHUB_PATH: /bosh-lite/cf/cf_admin_password
