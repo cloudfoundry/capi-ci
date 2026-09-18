@@ -129,6 +129,8 @@ module ReleaseNotes
         sleep(3)
       end
     end
+
+    nil
   end
 
   def self.print_item(item, github_users)
