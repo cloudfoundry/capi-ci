@@ -181,6 +181,29 @@ RSpec.describe ReleaseNotes do
     end
   end
 
+  describe '.get_github_user' do
+    let(:http) { instance_double(Net::HTTP) }
+
+    before do
+      allow(Net::HTTP).to receive(:start).and_yield(http)
+      allow(ReleaseNotes).to receive(:sleep)
+    end
+
+    it 'returns the GitHub login when a query matches' do
+      response = instance_double(Net::HTTPResponse, code: '200', body: '[{"author":{"login":"someuser"}}]')
+      expect(http).to receive(:request).once.and_return(response)
+
+      expect(ReleaseNotes.get_github_user('someone@example.com')).to eq('someuser')
+    end
+
+    it 'returns nil when no query matches' do
+      response = instance_double(Net::HTTPResponse, code: '404', body: '{}')
+      allow(http).to receive(:request).and_return(response)
+
+      expect(ReleaseNotes.get_github_user('unknown@example.com')).to be_nil
+    end
+  end
+
   describe '.print_highlights' do
     it 'prints the highlights section with API and broker versions' do
       allow(ReleaseNotes).to receive(:read_cc_versions).and_return({
