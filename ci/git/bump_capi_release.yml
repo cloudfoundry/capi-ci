@@ -10,7 +10,6 @@ inputs:
   - name: cloud_controller_ng
   - name: cc-uploader
   - name: tps
-  - name: blobstore_url_signer
 outputs:
   - name: updated-capi-release
 run:

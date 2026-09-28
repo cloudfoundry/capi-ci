@@ -148,14 +148,6 @@ resources:
       branch: master
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
-  - name: blobstore_url_signer
-    type: git
-    icon: git
-    source:
-      uri: https://github.com/cloudfoundry/blobstore_url_signer.git
-      branch: master
-      username: ((ari-wg-gitbot-username))
-      password: ((ari-wg-gitbot-token))
   - name: capi-release-develop
     type: git
     icon: git
@@ -626,8 +618,6 @@ jobs:
           - get: tps
             passed:
               - bridge-unit-tests
-            trigger: true
-          - get: blobstore_url_signer
             trigger: true
           - get: capi-ci
       - task: bump-capi-release

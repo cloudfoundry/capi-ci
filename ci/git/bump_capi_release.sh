@@ -16,10 +16,6 @@ pushd tps > /dev/null
   TPS_SHA=$(git rev-parse HEAD)
 popd > /dev/null
 
-pushd blobstore_url_signer > /dev/null
-  BLOBSTORE_URL_SIGNER_SHA=$(git rev-parse HEAD)
-popd > /dev/null
-
 pushd capi-release > /dev/null
   pushd src/cloud_controller_ng > /dev/null
     git fetch
@@ -38,11 +34,6 @@ pushd capi-release > /dev/null
     popd > /dev/null
   popd > /dev/null
 
-  pushd src/github.com/cloudfoundry/blobstore_url_signer > /dev/null
-    git fetch
-    git checkout "${BLOBSTORE_URL_SIGNER_SHA}"
-  popd > /dev/null
-
   set +e
     git diff --exit-code
     exit_code=$?
@@ -57,7 +48,6 @@ pushd capi-release > /dev/null
 
     git add src/cloud_controller_ng
     git add src/code.cloudfoundry.org
-    git add src/github.com/cloudfoundry/blobstore_url_signer
 
     "$SCRIPT_DIR/staged_shortlog.rb"
     "$SCRIPT_DIR/staged_shortlog.rb" | git commit -F -
