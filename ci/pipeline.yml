@@ -309,6 +309,15 @@ resources:
       branch: main
       username: ((ari-wg-gitbot-username))
       password: ((ari-wg-gitbot-token))
+  - name: cf-deployment-concourse-tasks-v21
+    type: git
+    icon: git
+    source:
+      uri: https://github.com/cloudfoundry/cf-deployment-concourse-tasks.git
+      branch: main
+      tag_filter: v21.0.0
+      username: ((ari-wg-gitbot-username))
+      password: ((ari-wg-gitbot-token))
   - name: runtime-ci
     type: git
     icon: git
@@ -2698,7 +2707,7 @@ jobs:
             passed:
               - scar-psql-acquire-bbl-up-pool
             trigger: true
-          - get: cf-deployment-concourse-tasks
+          - get: cf-deployment-concourse-tasks-v21
           - get: scar-psql-bbl-state
           - get: capi-ci
       - task: export-pkcs12-certificate
@@ -2718,8 +2727,9 @@ jobs:
             repository: updated-capi-ci-private-certs
             rebase: true
       - task: bbl-up-scar-psql
-        file: cf-deployment-concourse-tasks/bbl-up/task.yml
+        file: cf-deployment-concourse-tasks-v21/bbl-up/task.yml
         input_mapping:
+          cf-deployment-concourse-tasks: cf-deployment-concourse-tasks-v21
           bbl-state: scar-psql-bbl-state
           bbl-config: scar-psql-bbl-state
         params:
