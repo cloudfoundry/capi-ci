@@ -68,6 +68,9 @@ else
     sed -i "s/nginx-$current_nginx_version/nginx-$new_nginx_version/g" packages/nginx/README.md || { echo "Error: sed command for 'packages/nginx/README.md' failed."; exit 1; }
     sed -i "s/nginx-$current_nginx_version/nginx-$new_nginx_version/g" packages/nginx/spec || { echo "Error: sed command for 'packages/nginx/spec' failed."; exit 1; }
 
+    sed -i "s/nginx-$current_nginx_version/nginx-$new_nginx_version/g" packages/nginx_webdav/packaging || { echo "Error: sed command for 'packages/nginx_webdav/packaging' failed."; exit 1; }
+    sed -i "s/nginx-$current_nginx_version/nginx-$new_nginx_version/g" packages/nginx_webdav/spec || { echo "Error: sed command for 'packages/nginx_webdav/spec' failed."; exit 1; }
+
     bosh upload-blobs -n
 
     git --no-pager diff packages .final_builds config
