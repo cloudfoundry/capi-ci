@@ -1,0 +1,17 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: amazon/aws-cli
+inputs:
+  - name: capi-ci
+  - name: bbl-state
+run:
+  path: bash
+  args:
+    - capi-ci/ci/s3/delete-from-s3.sh
+params:
+  BBL_STATE_DIR: ~
+
+
