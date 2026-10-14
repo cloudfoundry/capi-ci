@@ -2086,6 +2086,12 @@ jobs:
           params:
             BBL_STATE_DIR: olaf-mysql/bbl-state
             IGNORE_ERRORS: true
+        - task: cleanup-olaf-s3-blobstore-buckets
+          file: capi-ci/ci/s3/delete-from-s3.yml
+          input_mapping:
+            bbl-state: olaf-mysql-bbl-state
+          params:
+            BBL_STATE_DIR: olaf-mysql/bbl-state
         - put: olaf-mysql-pool
           params:
             release: olaf-mysql-pool
