@@ -2010,6 +2010,40 @@ jobs:
           params:
             BBL_STATE_DIR: elsa-ha/bbl-state
             IGNORE_ERRORS: true
+        - in_parallel:
+            steps:
+              - task: cleanup-elsa-buildpacks-bucket
+                file: capi-ci/ci/gcs/delete-from-gcs.yml
+                input_mapping:
+                  environment: elsa-ha-pool
+                params:
+                  GCP_JSON_KEY: ((capi-bbl-elsa-ha-blobstore-service-account))
+                  GCP_BUCKET: capi-elsa-ha-buildpacks
+                  USE_ENV_NAMED_SUBDIR: false
+              - task: cleanup-elsa-droplets-bucket
+                file: capi-ci/ci/gcs/delete-from-gcs.yml
+                input_mapping:
+                  environment: elsa-ha-pool
+                params:
+                  GCP_JSON_KEY: ((capi-bbl-elsa-ha-blobstore-service-account))
+                  GCP_BUCKET: capi-elsa-ha-droplets
+                  USE_ENV_NAMED_SUBDIR: false
+              - task: cleanup-elsa-packages-bucket
+                file: capi-ci/ci/gcs/delete-from-gcs.yml
+                input_mapping:
+                  environment: elsa-ha-pool
+                params:
+                  GCP_JSON_KEY: ((capi-bbl-elsa-ha-blobstore-service-account))
+                  GCP_BUCKET: capi-elsa-ha-packages
+                  USE_ENV_NAMED_SUBDIR: false
+              - task: cleanup-elsa-resources-bucket
+                file: capi-ci/ci/gcs/delete-from-gcs.yml
+                input_mapping:
+                  environment: elsa-ha-pool
+                params:
+                  GCP_JSON_KEY: ((capi-bbl-elsa-ha-blobstore-service-account))
+                  GCP_BUCKET: capi-elsa-ha-resources
+                  USE_ENV_NAMED_SUBDIR: false
         - put: elsa-ha-pool
           params:
             release: elsa-ha-pool

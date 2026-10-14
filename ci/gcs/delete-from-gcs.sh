@@ -24,4 +24,11 @@ fi
 if [ "${USE_ENV_NAMED_SUBDIR}" == "true" ]; then
   remote_path="${remote_path}${environment}"
 fi
-gsutil rm -r "${remote_path}"
+
+# Delete objects under the target path, never the bucket resource itself.
+object_glob="${remote_path%/}/**"
+if gcloud storage ls "${object_glob}" >/dev/null 2>&1; then
+  gcloud storage rm "${object_glob}"
+else
+  echo "No objects found under ${remote_path}; nothing to delete"
+fi
