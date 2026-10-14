@@ -2134,6 +2134,12 @@ jobs:
           params:
             BBL_STATE_DIR: scar-psql/bbl-state
             IGNORE_ERRORS: true
+        - task: cleanup-scar-azure-blobstore-containers
+          file: capi-ci/ci/azure/delete-from-azure-blobstore.yml
+          input_mapping:
+            bbl-state: scar-psql-bbl-state
+          params:
+            BBL_STATE_DIR: scar-psql/bbl-state
         - put: scar-psql-pool
           params:
             release: scar-psql-pool
