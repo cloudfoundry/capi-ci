@@ -9,7 +9,6 @@ target=$1
 
 # List of pipeline files
 files=(
-  "./ci/pipeline-bosh-lite.yml"
   "./ci/pipeline-certificate-validation.yml"
   "./ci/cve-pipeline.yml"
   "./ci/pipeline.yml"
@@ -18,7 +17,6 @@ files=(
 
 # Corresponding pipeline names
 names=(
-  "bosh-lites"
   "capi-cert-validation"
   "cve-scan"
   "capi"
