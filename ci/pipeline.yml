@@ -1383,6 +1383,8 @@ jobs:
               CONFIG_FILE_PATH: elsa-ha/cats_integration_config.json
               CAPTURE_LOGS: true
               FLAKE_ATTEMPTS: 5
+              CATS_TRACE: true
+              CATS_TRACE_TOP: 20
               SKIP_REGEXP: "(shows logs and metrics)|(appropriately handles certain reserved\\/unsafe characters)"
           - task: capi-bara-tests
             attempts: 3
